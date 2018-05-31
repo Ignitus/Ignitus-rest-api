@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var Users= require('../controllers/user');
+const Users= require('../controllers/user');
 
 // routes dealing with user collection
 
 router.post('/register',Users.register);
 router.post('/login',Users.login);
-
+router.get('/verify',Users.verify);
 module.exports = router;
