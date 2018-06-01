@@ -19,7 +19,7 @@ var rand,mailOptions,host,link;
 
 //register controller
 
-exports.register= function (req,res) {
+function register(req,res,user_role) {
     Users.find({email: req.body.email})
         .exec()
         .then(data => {
@@ -51,6 +51,7 @@ exports.register= function (req,res) {
                             _id: new mongoose.Types.ObjectId(),
                             email: req.body.email,
                             password: hash,
+                            user_role:user_role,
                             verified : 0,
                             verifytoken : val
 
@@ -98,8 +99,14 @@ exports.register= function (req,res) {
                 });
             }
         });
+}
+exports.studentRegister=function (req,res) {
+    register(req,res,'student');
 };
 
+exports.professorRegister=function (req,res) {
+    register(req,res,'professor');
+};
 //login controller
 
 exports.login= function (req,res) {
