@@ -5,10 +5,10 @@ const Users=require('../models/user').Users;
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
-var nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
 //mailing credentials
-var smtpTransport = nodemailer.createTransport({
+const smtpTransport = nodemailer.createTransport({
     service: "Gmail",
     auth: {
         user: "",
@@ -69,12 +69,16 @@ exports.register= function (req,res) {
 
                                 smtpTransport.sendMail(mailOptions, (error, response) =>{
                                     if(error){
-                                        console.log(error);
-                                        //res.end("error unable to send verification email.");
-                                        res.status(500).json({
-                                            success: false,
-                                            message: 'registered but UNABLE to send verification email'
-                                        });
+                                        Users.findOneAndRemove({email: req.body.email}).exec()
+                                            .then(result=> {
+                                                console.log(error);
+                                                //res.end("error unable to send verification email.");
+                                                res.status(500).json({
+                                                    success: false,
+                                                    message: 'registered but UNABLE to send verification email'
+                                                });
+                                            });
+
                                     }
                                     else{
                                         res.status(200).json({
