@@ -20,6 +20,32 @@ const scope = ['r_basicprofile','r_emailaddress'];
 var rand,mailOptions,host,link;
 const secret='secret';
 
+//check if a registering user is already registered using social login
+function socialLoginCheck(req,res,user_role,data){
+    if((user_role==data[0].user_role) && data[0].linkedin.profile_url&& data[0].linkedin.access_token){
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+           if(err){
+               return res.status(500).json({
+                   success: false,
+                   message: 'sorry! something happened, please try again'
+               });
+           }
+           Users.update({email:req.body.email},{ $set : {'password':hash}}, (err,result)=> {
+               if(err){
+                   return res.status(500).json({
+                       success: false,
+                       message: 'sorry! something happened, please try again'
+                   });
+               }
+               res.status(200).json({
+                   success: true,
+                   message: 'sucessfully registered. Please login to continue'
+               });
+           });
+        });
+    }
+}
+
 //register function
 
 function register(req,res,user_role) {
