@@ -15,9 +15,12 @@ const smtpTransport = nodemailer.createTransport({
         pass: ""
     }
 });
+const Linkedin = require('node-linkedin')('', '');
+const scope = ['r_basicprofile','r_emailaddress'];
 var rand,mailOptions,host,link;
+const secret='secret';
 
-//register controller
+//register function
 
 function register(req,res,user_role) {
     Users.find({email: req.body.email})
@@ -100,14 +103,15 @@ function register(req,res,user_role) {
             }
         });
 }
+//student register controller
 exports.studentRegister=function (req,res) {
     register(req,res,'student');
 };
-
+//professor register controller
 exports.professorRegister=function (req,res) {
     register(req,res,'professor');
 };
-//login controller
+// normal login controller
 
 exports.login= function (req,res) {
     Users.find({email: req.body.email})
@@ -138,7 +142,7 @@ exports.login= function (req,res) {
                                 email: data[0].email,
                                 userId: data[0]._id
                             },
-                            'secret',
+                            secret,
                             {expiresIn: "1h"}
                         );
                         return res.status(200).json({
@@ -208,4 +212,94 @@ exports.verify= function (req,res) {
         });
     }
 
+};
+
+//linkedin student login controller
+exports.studentlinkedlogin= function (req,res) {
+    Linkedin.setCallback("http://localhost:3000/student/oauth/linkedin/callback");
+    Linkedin.auth.authorize(res, scope);
+};
+
+//linked login callback
+function linkedinlogin(req,res,user_role) {
+    Linkedin.auth.getAccessToken(res, req.query.code, req.query.state, (err, results)=> {
+        if ( err )
+            return console.error(err);
+
+        const token=results.access_token;
+        const linkedin_user=Linkedin.init(token);
+        linkedin_user.people.me((err,data)=> {
+            let user_email=data.emailAddress;
+            let user_linked_profile=data.publicProfileUrl;
+            let access_token=results.access_token;
+
+            //finding if the user already exists
+            Users.find({email:user_email})
+                .exec()
+                .then(result =>{
+                    if(result.length>0){
+                        const token = jwt.sign({
+                                email: result[0].email,
+                                userId: result[0]._id
+                            },
+                            secret,
+                            {expiresIn: "1h"}
+                        );
+                        return res.status(200).json({
+                            success: 'successfully logged in',
+                            token: token
+                        });
+                    }
+            });
+            //creating a new user if not found
+            const user = new Users({
+                _id: new mongoose.Types.ObjectId(),
+                email: user_email,
+                user_role:user_role,
+                verified : 1,
+                linkedin: {
+                    profile_url: user_linked_profile,
+                    access_token: access_token
+                }
+            });
+            //saving the user
+            user.save()
+                .then(result =>{
+                    //logging in the new user
+                    Users.find({email:user_email})
+                        .exec()
+                        .then(result =>{
+                            if(result.length>0){
+                                const token = jwt.sign({
+                                        email: result[0].email,
+                                        userId: result[0]._id
+                                    },
+                                    secret,
+                                    {expiresIn: "1h"}
+                                );
+                                return res.status(200).json({
+                                    success: 'successfully logged in',
+                                    token: token
+                                });
+                            }
+                        });
+                });
+        });
+        // console.log(results.access_token);
+
+    });
+}
+//linkedin student login callback
+exports.studentlinkedlogincallback= function(req,res){
+    linkedinlogin(req,res,'student');
+};
+
+//linkedin professor login controller
+exports.professorlinkedlogin= function (req,res) {
+    Linkedin.setCallback("http://localhost:3000/professor/oauth/linkedin/callback");
+    Linkedin.auth.authorize(res, scope);
+};
+//linkedin professor login callback
+exports.professorlinkedlogincallback= function(req,res){
+    linkedinlogin(req,res,'professor');
 };
