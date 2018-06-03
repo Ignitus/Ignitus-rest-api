@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var checkAuth=require('../middlewares/check-auth');
+const checkAuth=require('../middlewares/check-auth');
 
 // other routes
 
