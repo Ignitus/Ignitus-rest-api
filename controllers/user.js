@@ -2,7 +2,7 @@
 const mongoose=require('mongoose');
 
 const Users=require('../models/user').Users;
-const bcrypt=require('bcrypt');
+const bcryptjs=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
@@ -23,7 +23,7 @@ const secret='secret';
 //check if a registering user is already registered using social login
 function socialLoginCheck(req,res,user_role,data){
     if((user_role==data[0].user_role) && data[0].linkedin.profile_url&& data[0].linkedin.access_token){
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
+        bcryptjs.hash(req.body.password, 10, (err, hash) => {
            if(err){
                return res.status(500).json({
                    success: false,
@@ -65,7 +65,7 @@ function register(req,res,user_role) {
                 });
             }
             else {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                bcryptjs.hash(req.body.password, 10, (err, hash) => {
                     if (err) {
                         return res.status(500).json({
                             success: false,
@@ -156,7 +156,7 @@ exports.login= function (req,res) {
                 });
             }
             else {
-                bcrypt.compare(req.body.password, data[0].password, (err, result) => {
+                bcryptjs.compare(req.body.password, data[0].password, (err, result) => {
                     if (err) {
                         return res.status(401).json({
                             success: false,
