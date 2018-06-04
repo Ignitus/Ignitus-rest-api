@@ -9,8 +9,8 @@ const userSchema= mongoose.Schema({
     verified : {type : Number , required:true},
     verifytoken : {type : String},
     linkedin: {
-        profile_url: {type:String,required:true},
-        access_token: {type:String,required:true}
+        profile_url: {type:String},
+        access_token: {type:String}
     }
 });
 
