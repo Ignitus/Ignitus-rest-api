@@ -1,7 +1,8 @@
 # Ignitus-rest-api
 Ignitus Server Side Development
 Packages to be installed
-1. Bcrypt
+use `npm install --save` instead of `npm install`
+1. bcryptjs
 2. body-parser
 3. crypto
 4. jsonwebtoken
