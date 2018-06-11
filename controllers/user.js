@@ -15,7 +15,7 @@ const smtpTransport = nodemailer.createTransport({
         pass: ""
     }
 });
-const Linkedin = require('node-linkedin')('', '');
+const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
 const scope = ['r_basicprofile','r_emailaddress'];
 var rand,mailOptions,host,link;
 const secret='secret';
