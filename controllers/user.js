@@ -2,6 +2,8 @@
 const mongoose=require('mongoose');
 
 const Users=require('../models/user').Users;
+const studentProfile=require('../models/student_profile').studentProfile;
+const professorProfile=require('../models/professor_profile').professorProfile;
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
@@ -23,7 +25,8 @@ const secret='secret';
 //check if a registering user is already registered using social login
 function socialLoginCheck(req,res,user_role,data){
 
-    if((user_role==data[0].user_role) && !(data[0].password) &&data[0].linkedin.profile_url&& data[0].linkedin.access_token){
+    if(data.length >= 1 && data[0].verified==1 &&(user_role==data[0].user_role) && !(data[0].password) &&
+        data[0].linkedin.profile_url&& data[0].linkedin.access_token){
         bcrypt.hash(req.body.password, 10, (err, hash) => {
            if(err){
                return res.status(500).json({
@@ -45,16 +48,32 @@ function socialLoginCheck(req,res,user_role,data){
            });
         });
     }
-
 }
-
+//inserting data into student profile or professor profile
+function profileDataInsertion(email,user_role) {
+    let profile;
+    if(user_role=='student'){
+        profile=new studentProfile({
+            _id: new mongoose.Types.ObjectId(),
+            email: email
+        });
+    }
+    else if(user_role=='professor'){
+        profile= new professorProfile({
+            _id: new mongoose.Types.ObjectId(),
+            email: email
+        });
+    }
+    profile.save();
+}
 //register function
 
 function register(req,res,user_role) {
     Users.find({email: req.body.email})
         .exec()
         .then(data => {
-            if((user_role==data[0].user_role) && !(data[0].password) &&data[0].linkedin.profile_url&& data[0].linkedin.access_token){
+            if(data.length >= 1 && data[0].verified==1 && (user_role==data[0].user_role) && !(data[0].password)
+                &&data[0].linkedin.profile_url&& data[0].linkedin.access_token){
                 //if the user is registered via social login and the trying to register via normal login
                 socialLoginCheck(req,res,user_role,data);
             }
@@ -97,6 +116,7 @@ function register(req,res,user_role) {
                         });
                         user.save()
                             .then(result => {
+
                                 //sending the mail to users mail id
                                 rand=Math.floor((Math.random() * 100) + 54);
                                 host=req.get('host');
@@ -119,9 +139,9 @@ function register(req,res,user_role) {
                                                     message: 'registered but UNABLE to send verification email'
                                                 });
                                             });
-
                                     }
                                     else{
+                                        profileDataInsertion(req.body.email,user_role);
                                         res.status(200).json({
                                             success: true,
                                             message: 'sucessfully registered. Verify your email id.'
@@ -307,6 +327,7 @@ function linkedinlogin(req,res,user_role) {
             //saving the user
             user.save()
                 .then(result =>{
+                    profileDataInsertion(req.body.email,user_role);
                     //logging in the new user
                     Users.find({email:user_email})
                         .exec()
