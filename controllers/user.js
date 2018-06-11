@@ -2,7 +2,7 @@
 const mongoose=require('mongoose');
 
 const Users=require('../models/user').Users;
-const bcrypt=require('bcryptjs');
+const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
