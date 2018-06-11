@@ -201,6 +201,7 @@ exports.login= function (req,res) {
                     if (result) {
                         const token = jwt.sign({
                                 email: data[0].email,
+                                user_role: data[0].user_role,
                                 userId: data[0]._id
                             },
                             secret,
@@ -302,6 +303,7 @@ function linkedinlogin(req,res,user_role) {
                     if(result.length>0){
                         const token = jwt.sign({
                                 email: result[0].email,
+                                user_role: data[0].user_role,
                                 userId: result[0]._id
                             },
                             secret,
@@ -335,6 +337,7 @@ function linkedinlogin(req,res,user_role) {
                             if(result.length>0){
                                 const token = jwt.sign({
                                         email: result[0].email,
+                                        user_role: data[0].user_role,
                                         userId: result[0]._id
                                     },
                                     secret,
