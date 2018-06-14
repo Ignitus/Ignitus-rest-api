@@ -5,7 +5,7 @@ const user_roleSchema= mongoose.Schema({
 
 });
 
-const user_roles=mongoose.model('users',user_roleSchema);
+const user_roles=mongoose.model('users_role',user_roleSchema);
 
 module.exports={
     User_roles:user_roles

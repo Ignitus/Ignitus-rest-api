@@ -2,7 +2,9 @@
 const mongoose=require('mongoose');
 
 const Users=require('../models/user').Users;
-const bcrypt=require('bcryptjs');
+const studentProfile=require('../models/student_profile').studentProfile;
+const professorProfile=require('../models/professor_profile').professorProfile;
+const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
@@ -15,14 +17,16 @@ const smtpTransport = nodemailer.createTransport({
         pass: ""
     }
 });
-const Linkedin = require('node-linkedin')('', '');
+const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
 const scope = ['r_basicprofile','r_emailaddress'];
 var rand,mailOptions,host,link;
 const secret='secret';
 
 //check if a registering user is already registered using social login
 function socialLoginCheck(req,res,user_role,data){
-    if((user_role==data[0].user_role) && data[0].linkedin.profile_url&& data[0].linkedin.access_token){
+
+    if(data.length >= 1 && data[0].verified==1 &&(user_role==data[0].user_role) && !(data[0].password) &&
+        data[0].linkedin.profile_url&& data[0].linkedin.access_token){
         bcrypt.hash(req.body.password, 10, (err, hash) => {
            if(err){
                return res.status(500).json({
@@ -45,25 +49,49 @@ function socialLoginCheck(req,res,user_role,data){
         });
     }
 }
-
+//inserting data into student profile or professor profile
+function profileDataInsertion(email,user_role) {
+    let profile;
+    if(user_role=='student'){
+        profile=new studentProfile({
+            _id: new mongoose.Types.ObjectId(),
+            email: email
+        });
+    }
+    else if(user_role=='professor'){
+        profile= new professorProfile({
+            _id: new mongoose.Types.ObjectId(),
+            email: email
+        });
+    }
+    profile.save();
+}
 //register function
 
 function register(req,res,user_role) {
     Users.find({email: req.body.email})
         .exec()
         .then(data => {
-            if (data.length >= 1 && data[0].verified==1) {
+            if(data.length >= 1 && data[0].verified==1 && (user_role==data[0].user_role) && !(data[0].password)
+                &&data[0].linkedin.profile_url&& data[0].linkedin.access_token){
+                //if the user is registered via social login and the trying to register via normal login
+                socialLoginCheck(req,res,user_role,data);
+            }
+            else if (data.length >= 1 && data[0].verified==1) {
+                //user already exists
                 return res.status(409).json({
                     success: false,
                     message: 'user already exists'
                 });
             }
+            //user has not verified mail
             else if (data.length>=1 && data[0].verified==0){
                 return res.status(409).json({
                     success:false,
                     message: 'please verify your email address by clicking the link sent on your mail'
                 });
             }
+            //register the user
             else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     if (err) {
@@ -72,6 +100,7 @@ function register(req,res,user_role) {
                             message: 'sorry! something happened, please try again'
                         });
                     } else {
+                        //genrating the token for email verification
                         var rand=Math.floor((Math.random() * 100) + 54);
                         rand= rand.toString();
                         var val = crypto.createHash('md5').update(rand).digest('hex');
@@ -88,6 +117,7 @@ function register(req,res,user_role) {
                         user.save()
                             .then(result => {
 
+                                //sending the mail to users mail id
                                 rand=Math.floor((Math.random() * 100) + 54);
                                 host=req.get('host');
                                 link="http://"+req.get('host')+"/verify?id="+val+"&email="+req.body.email;
@@ -99,6 +129,7 @@ function register(req,res,user_role) {
 
                                 smtpTransport.sendMail(mailOptions, (error, response) =>{
                                     if(error){
+                                        //removing the in case mail is not send
                                         Users.findOneAndRemove({email: req.body.email}).exec()
                                             .then(result=> {
                                                 console.log(error);
@@ -108,9 +139,9 @@ function register(req,res,user_role) {
                                                     message: 'registered but UNABLE to send verification email'
                                                 });
                                             });
-
                                     }
                                     else{
+                                        profileDataInsertion(req.body.email,user_role);
                                         res.status(200).json({
                                             success: true,
                                             message: 'sucessfully registered. Verify your email id.'
@@ -137,24 +168,28 @@ exports.studentRegister=function (req,res) {
 exports.professorRegister=function (req,res) {
     register(req,res,'professor');
 };
+
 // normal login controller
 
 exports.login= function (req,res) {
     Users.find({email: req.body.email})
         .exec()
         .then(data => {
+            //user account does not exists
             if (data.length < 1) {
                 return res.status(401).json({
                     success: false,
                     message: 'invalid user'
                 });
             }
+            //email not verfied
             else if (data.length==1 && data[0].verified==0){
                 return res.status(401).json({
                     success: false,
                     message: 'verify your email by clicking on link sent on your mail before logging in with this email id.'
                 });
             }
+            //allow user to log in and send the jwt token
             else {
                 bcrypt.compare(req.body.password, data[0].password, (err, result) => {
                     if (err) {
@@ -166,6 +201,7 @@ exports.login= function (req,res) {
                     if (result) {
                         const token = jwt.sign({
                                 email: data[0].email,
+                                user_role: data[0].user_role,
                                 userId: data[0]._id
                             },
                             secret,
@@ -192,6 +228,7 @@ exports.login= function (req,res) {
         });
 };
 
+//email verification
 exports.verify= function (req,res) {
 
     if((req.protocol+"://"+req.get('host'))==("http://"+host))
@@ -266,6 +303,7 @@ function linkedinlogin(req,res,user_role) {
                     if(result.length>0){
                         const token = jwt.sign({
                                 email: result[0].email,
+                                user_role: data[0].user_role,
                                 userId: result[0]._id
                             },
                             secret,
@@ -291,6 +329,7 @@ function linkedinlogin(req,res,user_role) {
             //saving the user
             user.save()
                 .then(result =>{
+                    profileDataInsertion(req.body.email,user_role);
                     //logging in the new user
                     Users.find({email:user_email})
                         .exec()
@@ -298,6 +337,7 @@ function linkedinlogin(req,res,user_role) {
                             if(result.length>0){
                                 const token = jwt.sign({
                                         email: result[0].email,
+                                        user_role: data[0].user_role,
                                         userId: result[0]._id
                                     },
                                     secret,
