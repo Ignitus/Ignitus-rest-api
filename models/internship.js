@@ -1,8 +1,8 @@
 const mongoose=require('mongoose');
 
 const internshipSchema = mongoose.Schema({
-    _id:mongoose.Schema.Types.ObjectId,
-    offeredBy:{type: String, required: true},
+    offeredBy: {type: String, required: true},
+    details: {type: String, required: true},
     documentsRequired:{
         resume: {type: Boolean},
         letterRecommendation: {type: Boolean},
