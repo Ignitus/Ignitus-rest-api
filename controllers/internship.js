@@ -5,7 +5,7 @@ const Internships = require('../models/internship').Internships
 
 //adding a new intership
     exports.addInternship = function (req, res) {
-        Internships.create(req.body, function (err) {
+        Internships.create(req.body, (err) => {
              if (err){
                 res.sendStatus(400);
              } else{
