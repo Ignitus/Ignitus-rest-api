@@ -7,8 +7,7 @@ const Internships = require('../models/internship').Internships
     exports.addInternship = function (req, res) {
         Internships.create(req.body, function (err) {
              if (err){
-                console.log("could not add internship");  
-                throw err;
+                res.sendStatus(400);
              } else{
                  res.sendStatus(201);
              }
@@ -17,22 +16,23 @@ const Internships = require('../models/internship').Internships
 
 //displaying all internships
     exports.viewAllInternships = function (req, res) {
-        Internships.find({}, function (err, docs) {
+        Internships.find({}, (err, docs) => {
               if (err) {
-                console.log("oops something went wrong...");  
-                throw err;
+                res.sendStatus(404)
               }else{
-                  res.json(docs)
-                }
-        });
+                res.send(docs)
+                
+              }
+        
+        })
+
     }
 
 //find internship by Id
     exports.viewInternshipByID = function (req, res){
-        Internships.findById(req.params.id, function (err, docs) {
+        Internships.findById(req.params.id, (err, docs) => {
             if (err){ 
-                console.log("cannot load the requested internship")
-                throw err;
+                res.sendStatus(400)
             }else{
                 res.json(docs)
             }
@@ -41,26 +41,24 @@ const Internships = require('../models/internship').Internships
 
 //update an internship
     exports.updateInternship = function (req, res) {
-        Internships.findByIdAndUpdate(req.params.id, req.body, {new:true}, function (err, docs) {
+        Internships.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, docs) => {
                if (err){
-                  console.log("cannot update internship!"); 
-                  throw err;
-                }else{
-                    res.json(docs);
-                }
+                res.sendStatus(400)
+               }else{
+                  res.sendStatus(200)
+                 }
         })
     }
 
 //delete an internship
      exports.deleteInternship = function(req, res) { 
-        Internships.findByIdAndRemove(req.params.id, function(err) {
+        Internships.findByIdAndRemove(req.params.id, (err) => {
             if (err){
-                console.log("could not delete!!!")
-                throw err;
+                res.sendStatus(400)
             }else{
-               console.log(`internship id ${req.params.id} removed!`);
-                  res.sendStatus(200);
-            }
-        });
+                  res.sendStatus(200)
+                 }
+        }) 
+    }
+
     
-}
