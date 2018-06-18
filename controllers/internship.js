@@ -7,9 +7,9 @@ const Internships = require('../models/internship').Internships
     exports.addInternship = function (req, res) {
         Internships.create(req.body, (err) => {
              if (err){
-                res.sendStatus(400);
+                res.status(404).send({message:"cannot create internship, please try again!", err:err});
              } else{
-                 res.sendStatus(201);
+                 res.status(201).send("internship successfully added!");
              }
         });
     }
@@ -18,11 +18,10 @@ const Internships = require('../models/internship').Internships
     exports.viewAllInternships = function (req, res) {
         Internships.find({}, (err, docs) => {
               if (err) {
-                res.sendStatus(404)
+                res.status(404).send({message:"could not load internships", err: err});
               }else{
-                res.send(docs)
-                
-              }
+                res.send(docs);
+                }
         
         })
 
@@ -32,9 +31,9 @@ const Internships = require('../models/internship').Internships
     exports.viewInternshipByID = function (req, res){
         Internships.findById(req.params.id, (err, docs) => {
             if (err){ 
-                res.sendStatus(400)
+                res.status(404).send({message:"could not locate internship!", err: err});
             }else{
-                res.json(docs)
+                res.send(docs);
             }
         });
     }
@@ -43,9 +42,9 @@ const Internships = require('../models/internship').Internships
     exports.updateInternship = function (req, res) {
         Internships.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, docs) => {
                if (err){
-                res.sendStatus(400)
+                res.status(404).send({message:"cannot update internship, please try again!", err: err});
                }else{
-                  res.sendStatus(200)
+                  res.send("successfully updated!");
                  }
         })
     }
@@ -54,9 +53,9 @@ const Internships = require('../models/internship').Internships
      exports.deleteInternship = function(req, res) { 
         Internships.findByIdAndRemove(req.params.id, (err) => {
             if (err){
-                res.sendStatus(400)
+                res.status(404).send({message:"cannot delete internship, please try again!", err: err});
             }else{
-                  res.sendStatus(200)
+                  res.send("successfully deleted!");
                  }
         }) 
     }
