@@ -3,14 +3,14 @@
     'use strict';
 
     var responseHandler = {
-        response : function(res, response){
+        success : function(res, response){
 
             /*
                     A handler for success responses.
 
                     Arguments---------------
                     res - Response object
-                    response - The data that needs to be returned to the client.
+                    success - The data that needs to be returned to the client.
              */
 
 

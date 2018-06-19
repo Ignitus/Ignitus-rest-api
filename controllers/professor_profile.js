@@ -9,7 +9,7 @@ exports.viewProfile= function (req,res) {
         .exec()
         .then(result =>{
             if(result.length>0){
-                return responseHandler.response(res, result);
+                return responseHandler.success(res, result);
             }
         })
         .catch(err=>{

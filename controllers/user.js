@@ -35,7 +35,7 @@ function socialLoginCheck(req,res,user_role,data){
                if(err){
                    return responseHandler.error(res);
                }
-               return responseHandler.response(res)
+               return responseHandler.success(res)
            });
         });
     }
@@ -121,7 +121,7 @@ function register(req,res,user_role) {
                                     }
                                     else{
                                         profileDataInsertion(req.body.email,user_role);
-                                        return responseHandler.response(res);
+                                        return responseHandler.success(res);
                                     }
                                 });
                             })
@@ -171,7 +171,7 @@ exports.login= function (req,res) {
                             secret,
                             {expiresIn: "1h"}
                         );
-                       return responseHandler.response(res,{token : token});
+                       return responseHandler.success(res,{token : token});
                     } else {
                         return responseHandler.error(res,'Wrong password', 401);
                     }
@@ -203,7 +203,7 @@ exports.verify= function (req,res) {
                         return responseHandler.error(res)
                     }
                     else{
-                        return responseHandler.response(res);
+                        return responseHandler.success(res);
                     }
                 });
 
@@ -251,7 +251,7 @@ function linkedinlogin(req,res,user_role) {
                             secret,
                             {expiresIn: "1h"}
                         );
-                        return responseHandler.response(res,{token: token});
+                        return responseHandler.success(res,{token: token});
                     }
             });
             //creating a new user if not found
@@ -282,7 +282,7 @@ function linkedinlogin(req,res,user_role) {
                                     secret,
                                     {expiresIn: "1h"}
                                 );
-                                return responseHandler.response(res,{token: token});
+                                return responseHandler.success(res,{token: token});
                             }
                         });
                 });
