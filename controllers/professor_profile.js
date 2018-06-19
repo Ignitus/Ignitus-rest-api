@@ -3,22 +3,16 @@ const mongoose=require('mongoose');
 
 const studentProfile=require('../models/student_profile').studentProfile;
 const professorProfile=require('../models/professor_profile').professorProfile;
-
+const responseHandler = require('../helper/responseHandler');
 exports.viewProfile= function (req,res) {
     professorProfile.find({email:req.userData.email})
         .exec()
         .then(result =>{
             if(result.length>0){
-                res.status(200).json({
-                    sucess:true,
-                    data:result
-                });
+                return responseHandler.success(res, result);
             }
         })
         .catch(err=>{
-            res.status(404).json({
-                sucess:false,
-                message: 'professor profile not found'
-            });
+            return responseHandler.error(res, 'Profile not found', 404);
         });
 };

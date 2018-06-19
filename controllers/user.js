@@ -8,7 +8,7 @@ const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
-
+const responseHandler  = require('../helper/responseHandler');
 //mailing credentials
 const smtpTransport = nodemailer.createTransport({
     service: "Gmail",
@@ -29,22 +29,13 @@ function socialLoginCheck(req,res,user_role,data){
         data[0].linkedin.profile_url&& data[0].linkedin.access_token){
         bcrypt.hash(req.body.password, 10, (err, hash) => {
            if(err){
-               return res.status(500).json({
-                   success: false,
-                   message: 'sorry! something happened, please try again'
-               });
+               return responseHandler.error(res);
            }
            Users.update({email:req.body.email},{ $set : {'password':hash}}, (err,result)=> {
                if(err){
-                   return res.status(500).json({
-                       success: false,
-                       message: 'sorry! something happened, please try again'
-                   });
+                   return responseHandler.error(res);
                }
-               res.status(200).json({
-                   success: true,
-                   message: 'sucessfully registered. Please login to continue'
-               });
+               return responseHandler.success(res)
            });
         });
     }
@@ -79,26 +70,17 @@ function register(req,res,user_role) {
             }
             else if (data.length >= 1 && data[0].verified==1) {
                 //user already exists
-                return res.status(409).json({
-                    success: false,
-                    message: 'user already exists'
-                });
+                return responseHandler.error(res,'User already exists', 409);
             }
             //user has not verified mail
             else if (data.length>=1 && data[0].verified==0){
-                return res.status(409).json({
-                    success:false,
-                    message: 'please verify your email address by clicking the link sent on your mail'
-                });
+                return responseHandler.error(res,'Email ID not verified', 401);
             }
             //register the user
             else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     if (err) {
-                        return res.status(500).json({
-                            success: false,
-                            message: 'sorry! something happened, please try again'
-                        });
+                        return responseHandler.error(res);
                     } else {
                         //genrating the token for email verification
                         var rand=Math.floor((Math.random() * 100) + 54);
@@ -134,26 +116,17 @@ function register(req,res,user_role) {
                                             .then(result=> {
                                                 console.log(error);
                                                 //res.end("error unable to send verification email.");
-                                                res.status(500).json({
-                                                    success: false,
-                                                    message: 'registered but UNABLE to send verification email'
-                                                });
+                                                return responseHandler.error(res,'Unable to send mail');
                                             });
                                     }
                                     else{
                                         profileDataInsertion(req.body.email,user_role);
-                                        res.status(200).json({
-                                            success: true,
-                                            message: 'sucessfully registered. Verify your email id.'
-                                        });
+                                        return responseHandler.success(res);
                                     }
                                 });
                             })
                             .catch(err => {
-                                res.status(500).json({
-                                    success: false,
-                                    message: 'sorry! something happened, please try again'
-                                });
+                                return responseHandler.error(res);
                             });
                     }
                 });
@@ -177,26 +150,17 @@ exports.login= function (req,res) {
         .then(data => {
             //user account does not exists
             if (data.length < 1) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'invalid user'
-                });
+                return responseHandler.error(res,'Invalid user',401);
             }
             //email not verfied
             else if (data.length==1 && data[0].verified==0){
-                return res.status(401).json({
-                    success: false,
-                    message: 'verify your email by clicking on link sent on your mail before logging in with this email id.'
-                });
+                return responseHandler.error(res,'Email ID not verified', 401);
             }
             //allow user to log in and send the jwt token
             else {
                 bcrypt.compare(req.body.password, data[0].password, (err, result) => {
                     if (err) {
-                        return res.status(401).json({
-                            success: false,
-                            message: 'invalid user'
-                        });
+                        return responseHandler.error(res);
                     }
                     if (result) {
                         const token = jwt.sign({
@@ -207,30 +171,20 @@ exports.login= function (req,res) {
                             secret,
                             {expiresIn: "1h"}
                         );
-                        return res.status(200).json({
-                            success: 'successfully logged in',
-                            token: token
-                        });
+                       return responseHandler.success(res,{token : token});
                     } else {
-                        return res.status(401).json({
-                            success: false,
-                            message: 'invalid user'
-                        });
+                        return responseHandler.error(res,'Wrong password', 401);
                     }
                 });
             }
         })
         .catch(err => {
-            return res.status(500).json({
-                success: false,
-                message: 'something happened! please try again'
-            });
+            return responseHandler.error(res);
         });
 };
 
 //email verification
 exports.verify= function (req,res) {
-
     if((req.protocol+"://"+req.get('host'))==("http://"+host))
     {
         console.log("Domain is matched. Information is from Authentic email");
@@ -238,41 +192,29 @@ exports.verify= function (req,res) {
             if(!err)
             {
                 console.log("email is verified and token verified");
-               //console.log(req.query.email);
-                var query = {'email' : req.query.email};
                 //console.log(query);
 
                 var newvalues = { $set : {'verified':1}};
                 //console.log(newvalues);
+               //console.log(req.query.email);
+                var query = {'email' : req.query.email};
                 Users.update(query,newvalues, (err,result)=>{
                     if(err){
-                        res.status(500).json({
-                            success: false,
-                            message: 'email not verified .try again'
-                        });
+                        return responseHandler.error(res)
                     }
                     else{
-                        res.status(200).json({
-                            success: true,
-                            message: 'sucessfully verified your email id.'
-                        });
+                        return responseHandler.success(res);
                     }
                 });
 
             }
             else{
-                res.status(500).json({
-                    success: false,
-                    message: 'email not verified bcz of wrong token'
-                });
+                return responseHandler.error(res);
             }
         });
     }
     else{
-        res.status(500).json({
-            success: false,
-            message: 'req from unknown source'
-        });
+        return responseHandler.error(res);
     }
 
 };
@@ -309,10 +251,7 @@ function linkedinlogin(req,res,user_role) {
                             secret,
                             {expiresIn: "1h"}
                         );
-                        return res.status(200).json({
-                            success: 'successfully logged in',
-                            token: token
-                        });
+                        return responseHandler.success(res,{token: token});
                     }
             });
             //creating a new user if not found
@@ -343,10 +282,7 @@ function linkedinlogin(req,res,user_role) {
                                     secret,
                                     {expiresIn: "1h"}
                                 );
-                                return res.status(200).json({
-                                    success: 'successfully logged in',
-                                    token: token
-                                });
+                                return responseHandler.success(res,{token: token});
                             }
                         });
                 });

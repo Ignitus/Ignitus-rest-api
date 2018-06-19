@@ -1,63 +1,52 @@
 'use strict';
 const mongoose=require('mongoose');
 
-const Internships = require('../models/internship').Internships
+const Internships = require('../models/internship').Internships;
+const responseHandler = require('../helper/responseHandler');
 
 //adding a new intership
     exports.addInternship = function (req, res) {
         Internships.create(req.body, (err) => {
-             if (err){
-                res.status(404).send({message:"cannot create internship, please try again!", err:err});
-             } else{
-                 res.status(201).send("internship successfully added!");
-             }
+            return err ? responseHandler.error(res) : responseHandler.success(res);
         });
-    }
+    };
 
 //displaying all internships
     exports.viewAllInternships = function (req, res) {
         Internships.find({}, (err, docs) => {
-              if (err) {
-                res.status(404).send({message:"could not load internships", err: err});
-              }else{
-                res.send(docs);
-                }
+            return err ? responseHandler.error(res) : responseHandler.success(res,{internship: docs});
         
         })
 
-    }
+    };
 
 //find internship by Id
     exports.viewInternshipByID = function (req, res){
         Internships.findById(req.params.id, (err, docs) => {
-            if (err){ 
-                res.status(404).send({message:"could not locate internship!", err: err});
-            }else{
-                res.send(docs);
-            }
+            return !err && docs ? responseHandler.success(res,docs) : responseHandler.error(res,'Internship not found', 404)
         });
-    }
+    };
 
 //update an internship
     exports.updateInternship = function (req, res) {
         Internships.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, docs) => {
-               if (err){
-                res.status(404).send({message:"cannot update internship, please try again!", err: err});
-               }else{
-                  res.send("successfully updated!");
-                 }
+            if(err || !docs) {
+                return err ?  responseHandler.error(res) : responseHandler.error(res,'Internship not found',404);
+            }else {
+                return responseHandler.success(res, docs);
+            }
         })
-    }
+    };
 
 //delete an internship
      exports.deleteInternship = function(req, res) { 
-        Internships.findByIdAndRemove(req.params.id, (err) => {
-            if (err){
-                res.status(404).send({message:"cannot delete internship, please try again!", err: err});
-            }else{
-                  res.send("successfully deleted!");
-                 }
-        }) 
-    }
+        Internships.findByIdAndRemove(req.params.id, (err, doc) => {
+            if(err || !doc) {
+                return err ?  responseHandler.error(res) : responseHandler.error(res,'Internship not found',404);
+            }else {
+                return responseHandler.success(res, {_id: doc._id});
+            }
+        });
+    };
 
     
