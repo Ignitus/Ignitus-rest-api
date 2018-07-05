@@ -1,6 +1,5 @@
 # Ignitus-rest-api
-# Ignitus-client-side
-Client side development Ignitus.
+Server side development Ignitus.
 
 ## About Ignitus
 
