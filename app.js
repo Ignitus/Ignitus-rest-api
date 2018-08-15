@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const internships = require('./routes/internships');
+const testimonial = require('./routes/testimonial');
 
 const app = express();
 
@@ -15,8 +16,8 @@ const app = express();
 const db=require('./config/db');
 
 // view engine not required so commented it
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 
 // uncomment after placing your favicon in /public
@@ -43,6 +44,7 @@ app.use(function (req,res,next) {
 app.use('/', index);
 app.use('/', users);
 app.use('/', internships);
+app.use('/', testimonial);
 
 
 // catch 404 and forward to error handler
@@ -50,17 +52,19 @@ app.use(function(req, res, next) {
     let err = new Error('Not Found');
   err.status = 404;
   next(err);
+  res.render('error');
 });
 
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
- // res.render('error');
+  res.render('error');
 });
 
 module.exports = app;
