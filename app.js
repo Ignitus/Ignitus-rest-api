@@ -16,8 +16,8 @@ const app = express();
 const db=require('./config/db');
 
 // view engine not required so commented it
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
 
 // uncomment after placing your favicon in /public
