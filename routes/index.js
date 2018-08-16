@@ -5,9 +5,6 @@ const checkAuth=require('../middlewares/check-auth');
 const professor_profile=require('../controllers/professor_profile');
 const student_profile=require('../controllers/student_profile');
 
-router.get('/', (req, res) => {
-  res.render('index', {title: 'lgnitus'});
-})
 // student profile
 router.get('/student/profile',checkAuth.checkStudentAuth,student_profile.viewProfile);
 //professor profile
