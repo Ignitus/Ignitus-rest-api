@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const internships = require('./routes/internships');
+const testimonial = require('./routes/testimonial');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use(function (req,res,next) {
 app.use('/', index);
 app.use('/', users);
 app.use('/', internships);
+app.use('/', testimonial);
 
 
 // catch 404 and forward to error handler
