@@ -14,6 +14,7 @@ const professorProfileSchema= mongoose.Schema({
         google_plus: {type: String}
     },
     about:{type:String},
+    profile_pic: {type:String},
     education: [{
         college_name:{type: String},
         position: {type:String},
