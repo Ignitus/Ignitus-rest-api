@@ -7,7 +7,7 @@ const Testimonial = require('../controllers/testimonial');
 //Routes handling testimonial pages:
 
 //add testimonial
-router.post('/testimonial/add', verify.checkStudentAuth, Testimonial.addTestimonial);
+router.post('/testimonial/add', Testimonial.addTestimonial);
 
 //update testimonial
 router.put('/testimonial/:id/',  verify.checkStudentAuth, Testimonial.updateTestimonial);
