@@ -22,4 +22,3 @@ router.get('/testimonial/:id', verify.checkStudentAuth, Testimonial.viewTestimon
 router.delete('/testimonial/:id', verify.checkStudentAuth, Testimonial.deleteTestimonial);
 
 module.exports = router;
-
