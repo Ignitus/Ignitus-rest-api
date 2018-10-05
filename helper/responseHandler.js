@@ -13,7 +13,6 @@
                     success - The data that needs to be returned to the client.
              */
 
-
             var statusCode = 200;
             var data = {statusCode : 200};
             data.data = response;

@@ -7,13 +7,13 @@
     "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^3.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
-    "express": "~4.15.5",
+    "express": "^4.16.3",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.12",
     "morgan": "~1.9.0",

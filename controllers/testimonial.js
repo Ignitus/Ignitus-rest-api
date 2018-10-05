@@ -14,7 +14,7 @@ const responseHandler = require('../helper/responseHandler');
 //displaying all testimonials
     exports.viewAllTestimonial = function (req, res) {
         Testimonial.find({}, (err, docs) => {
-            return err ? responseHandler.error(res) : responseHandler.success(res,{testimonial: docs});
+            return err ? responseHandler.error(res) : responseHandler.success(res,docs);
 
         })
 
