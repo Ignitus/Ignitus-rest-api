@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint . --ext .js",
+    "lint:fix": "npm run lint -- --fix",
     "start": "node ./bin/www",
     "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www"
   },
