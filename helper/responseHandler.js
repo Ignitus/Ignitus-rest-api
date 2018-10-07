@@ -1,4 +1,4 @@
-(function () {
+(() => {
   const responseHandler = {
     success(res, response) {
       /*
@@ -26,13 +26,13 @@
                     statusCode - The return status
              */
 
-      var message = message != undefined && message.length > 0 ? message : 'Something went wrong!';
-      const data = { message };
-      data.statusCode = statusCode == undefined ? 500 : statusCode;
+      const dataMessage = (message !== undefined && message.length > 0) ? message : 'Something went wrong!';
+      const data = { dataMessage };
+      data.statusCode = statusCode === undefined ? 500 : statusCode;
       data.success = false;
       res.status(data.statusCode).json(data);
     },
   };
 
   module.exports = responseHandler;
-}());
+})();

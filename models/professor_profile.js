@@ -6,7 +6,7 @@ const professorProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
   },
   name: { type: String, match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/ },
   bio: { type: String },
