@@ -1,0 +1,9 @@
+# Files we don't want to copy in our Docker Image
+Dockerfile
+.dockerignore
+.github
+.gitignore
+README.md
+docker-compose.yml
+node_modules
+installed package

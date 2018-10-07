@@ -1,0 +1,11 @@
+version: '3.2'
+services:
+  api:
+    container_name: ignitus-rest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '/usr/src/app/node_modules'
+    ports:
+      - '4000:4000'
