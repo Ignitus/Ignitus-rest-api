@@ -7,13 +7,37 @@
     "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix",
-    "test": "nyc --reporter=lcov --reporter=text mocha **/*.spec.js"
+    "test": "nyc mocha **/*.spec.js"
   },
   "nyc": {
-    "sourceMap": false,
-    "instrument": false
+    "check-coverage": false,
+    "all": true,
+    "extension": [
+      ".js"
+    ],
+    "include": [
+      "**/*.js"
+    ],
+    "exclude": [
+      "**/*.spec.js",
+      "build",
+      "node_modules"
+    ],
+    "collectCoverageFrom": [
+      "./config/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "dependencies": {
+    "babel-register": "^6.26.0",
     "bcrypt": "^3.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.18.2",
