@@ -15,11 +15,11 @@
 
 * Clone or download the repo. into any fresh temporary folder.
 
-    ``` git clone https://github.com/Ignitus/Ignitus-Client-Side-Development.git ```
+    ``` git clone https://github.com/Ignitus/Ignitus-rest-api```
 
 * Cd into that root folder you just cloned locally.
 
-    ``` cd Ignitus-Client-Side-Development ```
+    ``` cd Ignitus-rest-api ```
 
 * Open terminal in the current folder and to install all dependencies type.
 
