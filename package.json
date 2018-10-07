@@ -7,7 +7,11 @@
     "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix",
-    "test": "nyc --reporter=html mocha"
+    "test": "nyc --reporter=lcov --reporter=text mocha **/*.spec.js"
+  },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
   },
   "dependencies": {
     "bcrypt": "^3.0.1",

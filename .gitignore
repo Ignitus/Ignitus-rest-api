@@ -3,4 +3,5 @@ package-lock.json
 .idea/*
 package.json
 /coverage
+/.nyc_output
 .DS_Store
