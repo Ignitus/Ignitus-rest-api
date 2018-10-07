@@ -46,4 +46,4 @@ Add the mongoURL in db.js and then recreate the docker image.
  
 ## Fix Lint Warnings
 
- * ``` ./node_modules/.bin/eslint src --fix ```
+ * ``` npm run lint:fix ```
