@@ -1,0 +1,8 @@
+/.github
+/.nyc_output/**
+/node_modules/**
+/.gitignore
+/package.json
+/README.md
+/.travis.yml
+/views/**

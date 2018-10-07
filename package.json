@@ -5,6 +5,7 @@
   "scripts": {
     "test": "nyc mocha",
     "start": "node ./bin/www",
+    "lint":"./node_modules/.bin/eslint .",
     "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
+    "eslint": "^5.6.1",
     "nodemon": "^1.18.3",
     "nyc": "^13.0.1"
   }

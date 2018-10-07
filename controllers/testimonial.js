@@ -1,52 +1,52 @@
-'use strict';
-const mongoose=require('mongoose');
+"use strict";
+const mongoose=require("mongoose");
 
-const Testimonial = require('../models/testimonial').Testimonial;
-const responseHandler = require('../helper/responseHandler');
+const Testimonial = require("../models/testimonial").Testimonial;
+const responseHandler = require("../helper/responseHandler");
 
 //adding a new testimonial
-    exports.addTestimonial = function (req, res) {
-        Testimonial.create(req.body, (err) => {
-            return err ? responseHandler.error(res) : responseHandler.success(res);
-        });
-    };
+exports.addTestimonial = function (req, res) {
+	Testimonial.create(req.body, (err) => {
+		return err ? responseHandler.error(res) : responseHandler.success(res);
+	});
+};
 
 //displaying all testimonials
-    exports.viewAllTestimonial = function (req, res) {
-        Testimonial.find({}, (err, docs) => {
-            return err ? responseHandler.error(res) : responseHandler.success(res,docs);
+exports.viewAllTestimonial = function (req, res) {
+	Testimonial.find({}, (err, docs) => {
+		return err ? responseHandler.error(res) : responseHandler.success(res,docs);
 
-        })
+	});
 
-    };
+};
 
 //find testimonial by Id
-    exports.viewTestimonialByID = function (req, res){
-        Testimonial.findById(req.params.id, (err, docs) => {
-            return !err && docs ? responseHandler.success(res,docs) : responseHandler.error(res,'Testimonial not found', 404)
-        });
-    };
+exports.viewTestimonialByID = function (req, res){
+	Testimonial.findById(req.params.id, (err, docs) => {
+		return !err && docs ? responseHandler.success(res,docs) : responseHandler.error(res,"Testimonial not found", 404);
+	});
+};
 
 //update an testimonial
-    exports.updateTestimonial = function (req, res) {
-        Testimonial.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, docs) => {
-            if(err || !docs) {
-                return err ?  responseHandler.error(res) : responseHandler.error(res,'Testimonial not found',404);
-            }else {
-                return responseHandler.success(res, docs);
-            }
-        })
-    };
+exports.updateTestimonial = function (req, res) {
+	Testimonial.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, docs) => {
+		if(err || !docs) {
+			return err ?  responseHandler.error(res) : responseHandler.error(res,"Testimonial not found",404);
+		}else {
+			return responseHandler.success(res, docs);
+		}
+	});
+};
 
 //delete an testimonial
-     exports.deleteTestimonial = function(req, res) {
-        Testimonial.findByIdAndRemove(req.params.id, (err, doc) => {
-            if(err || !doc) {
-                return err ?  responseHandler.error(res) : responseHandler.error(res,'Testimonial not found',404);
-            }else {
-                return responseHandler.success(res, {_id: doc._id});
-            }
-        });
-    };
+exports.deleteTestimonial = function(req, res) {
+	Testimonial.findByIdAndRemove(req.params.id, (err, doc) => {
+		if(err || !doc) {
+			return err ?  responseHandler.error(res) : responseHandler.error(res,"Testimonial not found",404);
+		}else {
+			return responseHandler.success(res, {_id: doc._id});
+		}
+	});
+};
 
 
