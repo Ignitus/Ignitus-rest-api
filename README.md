@@ -68,3 +68,5 @@ Few Blogs Posts on Ignitus that can help you better Understand it's Mission :
 * [Introducing Ignitus Scholar](https://medium.com/@afelio_22020/introducing-ignitus-scholar-6b0c677ba9d7)
 * [Ignitus Woo Tech](https://medium.com/@gargdeepika146/ignitus-woo-tech-d68e0174cc75)
 
+### For Installation kindly refer [this](https://github.com/Ignitus/Ignitus-rest-api/blob/master/CONTRIBUTION.md)
+
