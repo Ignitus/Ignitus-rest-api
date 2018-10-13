@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const teamMemberProfileSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   designation: {
     type: String,
   },
@@ -22,5 +21,5 @@ const teamMemberProfileSchema = mongoose.Schema({
 const teamMemberProfile = mongoose.model('teamMemberProfile', teamMemberProfileSchema);
 
 module.exports = {
-  teamMemberProfile
+  teamMemberProfile,
 }
