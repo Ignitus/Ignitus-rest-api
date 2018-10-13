@@ -174,7 +174,7 @@ exports.login = function (req, res) {
           },
           secret,
           { expiresIn: '1h' });
-          return responseHandler.success(res, { token });
+          return responseHandler.success(res, { token }, { data });
         }
         return responseHandler.error(res, 'Wrong password', 401);
       });

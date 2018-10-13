@@ -1,6 +1,6 @@
 (function () {
   const responseHandler = {
-    success(res, response) {
+    success(res, response, information) {
       /*
                     A handler for success responses.
 
@@ -12,6 +12,7 @@
       const statusCode = 200;
       const data = { statusCode: 200 };
       data.data = response;
+      data.infromation = information
       data.message = 'Success';
       data.success = true;
       res.status(statusCode).json(data);
