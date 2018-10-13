@@ -19,14 +19,14 @@ exports.getAllTeamMembers = function (req, res) {
 // fetch single TeamMember by Id
 
 exports.getTeamMember = function (req, res) {
-  teamMemberProfile.findById(
-    req,
-    req.params.id,
-    (err, docs) =>
-      !err && docs
-        ? responseHandler.success(res, docs)
-        : responseHandler.error(res, 'TeamMember not found', 404)
-  );
+  teamMemberProfile.findById(req.params.id, (err, teamMember) => {
+    if (err) {
+      return responseHandler.error(res, 'TeamMember not found', 404)
+    }
+
+    return responseHandler.success(res, teamMember)
+  })
+
 };
 
 // create a Team Member

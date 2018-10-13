@@ -18,6 +18,10 @@ router.put('/team-member/:id', TeamMember.updateTeamMember);
 
 router.get('/team-members', TeamMember.getAllTeamMembers);
 
+// fetch a single TeamMember
+
+router.get('/team-member/:id', TeamMember.getTeamMember);
+
 // delete TeamMember
 
 router.delete('/team-member/:id', TeamMember.deleteTeamMember);
