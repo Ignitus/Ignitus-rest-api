@@ -174,7 +174,13 @@ exports.login = function (req, res) {
           },
           secret,
           { expiresIn: '1h' });
-          return responseHandler.success(res, { token }, { data });
+
+          const clientData = {
+            email: data[0].email,
+            user_role: data[0].user_role,
+          }
+
+          return responseHandler.success(res, { token }, { clientData });
         }
         return responseHandler.error(res, 'Wrong password', 401);
       });
