@@ -104,7 +104,17 @@ function register(req, res, user_role) {
               mailOptions = {
                 to: req.body.email,
                 subject: 'Please confirm your Email account',
-                html: `Hello,<br> Please Click on the link to verify your email.<br><a href=${link}>Click here to verify</a>`,
+                html: `<h3>Welcome to Ignitus!</h3> 
+                       <p>We're glad to have you here.</p>
+                       <p>Next, please verify your email address using the following link <a href=${link}>verify</a>,
+                       then log in using your email and the password
+                       that you set.<p>
+
+                       If you did not request an account at www.ignitus.org, you can safely ignore this email.
+
+                       <p>Sincerely</p>
+                       <p>Team Ignitus</p>
+                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`
               };
 
               smtpTransport.sendMail(mailOptions, (error, response) => {
