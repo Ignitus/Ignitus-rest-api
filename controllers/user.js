@@ -11,8 +11,8 @@ const responseHandler = require('../helper/responseHandler');
 const smtpTransport = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: '',
-    pass: '',
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 });
 const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
