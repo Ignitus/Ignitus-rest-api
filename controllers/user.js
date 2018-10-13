@@ -11,7 +11,7 @@ const responseHandler = require('../helper/responseHandler');
 const smtpTransport = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: process.env.SMTP_ACCOUNT,
+    user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
