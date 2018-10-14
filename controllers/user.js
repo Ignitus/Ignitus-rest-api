@@ -206,6 +206,7 @@ exports.verify = function (req, res) {
             return responseHandler.error(res);
           }
 
+          res.redirect('http://www.ignitus.org/login/student');
           return responseHandler.success(res);
         });
       } else {
