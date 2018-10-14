@@ -6,25 +6,17 @@ const responseHandler = require('../helper/responseHandler');
 // fetch all TeamMembers
 
 exports.getAllTeamMembers = (req, res) => {
-  teamMemberProfile.find({}, (err, docs) => {
-    if (err) {
-      return responseHandler.error(res);
-    }
-
-    return responseHandler.success(res, docs);
-  });
+  teamMemberProfile.find({})
+    .then(teamMembers => responseHandler.success(res, teamMembers))
+    .catch(() => responseHandler.error(res, 'Failed to fetch all TeamMembers', 404));
 };
 
 // fetch single TeamMember by Id
 
 exports.getTeamMember = (req, res) => {
-  teamMemberProfile.findById(req.params.id, (err, teamMember) => {
-    if (err) {
-      return responseHandler.error(res, 'TeamMember not found', 404);
-    }
-
-    return responseHandler.success(res, teamMember);
-  });
+  teamMemberProfile.findById(req.params.id)
+    .then(teamMember => responseHandler.success(res, teamMember))
+    .catch(() => responseHandler.error(res, 'Failed to fetch TeamMember', 404));
 };
 
 // create a Team Member
@@ -33,7 +25,7 @@ exports.createTeamMember = (req, res) => {
   teamMemberProfile
     .create(req.body)
     .then(teamMember => responseHandler.success(res, teamMember))
-    .catch(err => res.send(err));
+    .catch(() => responseHandler.error(res, 'Failed to create TeamMember', 400));
 };
 
 // update/edit a TeamMember
