@@ -1,7 +1,8 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/39058097?s=200&v=4)
 
-# Ignitus-rest-api
-Server side development Ignitus.
+# Ignitus-client-side
+
+Client side development Ignitus.
 
 [![forthebadge](https://forthebadge.com/images/badges/built-by-developers.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-responsibility.svg)](https://forthebadge.com)
@@ -10,6 +11,39 @@ Server side development Ignitus.
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
+
+## Client-Side
+Written in universal JavaScript
+
+* react
+* redux
+* travis-ci
+* heroku
+* prop-types
+* redux-thunk
+* docker-container
+* redux-sagas
+* flow
+* reselect
+* jest-tests
+* istanbul
+* ignitus-rest-api
+* heroku-pipeline
+* airbnb-eslint
+* react-router-v4
+* bootstrap4
+* enzyme-testing
+* service-worker-precache
+* sass
+
+## Server-Side
+* Node.js
+* JWT
+* Mocha
+* Mongoose
+* MongoDB
+* Docker
+* TRAVIS CI
 
 ## About Ignitus
 
@@ -68,5 +102,26 @@ Few Blogs Posts on Ignitus that can help you better Understand it's Mission :
 * [Introducing Ignitus Scholar](https://medium.com/@afelio_22020/introducing-ignitus-scholar-6b0c677ba9d7)
 * [Ignitus Woo Tech](https://medium.com/@gargdeepika146/ignitus-woo-tech-d68e0174cc75)
 
+Ignitus YouTube - 
+* [Why Ignitus?](https://www.youtube.com/watch?v=bIR4xi1ZLvQ)
+* [Ignitus Scholar Presentation](https://www.youtube.com/watch?v=P_01fzigkPs&t=270s)
+* [Ignitus (A Non-Profit Organization)](https://www.youtube.com/watch?v=2IU_Paf2nF0)
+* [Culture At Ignitus](https://www.youtube.com/watch?v=NhU-9cNM1h0)
+
+Ignitus Quora - 
+* [What are Ignitus and WooTech about?](https://www.quora.com/What-are-Ignitus-and-WooTech-about)
+* [What is Ignitus and Ignitus Scholars?](https://www.quora.com/What-is-Ignitus-and-Ignitus-Scholars)
+
+This Repository is powered by 
+
+![alt tag](https://travis-ci.com/images/logos/TravisCI-Full-Color-light.png
+)
+
+![alt tag](http://i1.wp.com/seanshadmand.com/wp-content/uploads/2015/02/heroku-logo.jpg?resize=248%2C225
+)
+
+![alt tag](https://cdn-images-1.medium.com/max/788/1*lUNmBw_oyS2ADWqZs4DLOA.png)
+
 ### For Installation kindly refer [this](https://github.com/Ignitus/Ignitus-rest-api/blob/master/CONTRIBUTION.md)
 
+### Thank You!
