@@ -38,7 +38,36 @@
 Add the mongoURL in db.js and then recreate the docker image.
  
  * ```docker-compose up -d --force-recreate --build```
+
+ ## Running locally via `start-dev` or `start` script and mLab
+
+ * create `dev.js` in `/config`
+
+```javascript
+const username = '';
+
+const password = '';
+
+module.exports = {
+  dbURI: `mongodb://${username}:${password}@dsxxxxxx.mlab.com:xxxx/name`,
+};
+ ```
+
+ > You will need to create an mLab account, database for this project and a user within that database. After doing so, you will copy the database user creds and the database URI to `/config/dev.js`
+
+ * In `/config/db.js`, uncomment lines 3 and 5 and comment line 7 so that it appears like this:
+
+ ```javascript
+ const dev = require('./dev');
+
+mongoose.connect(dev.dbURI);
+
+// mongoose.connect(process.env.DATABASE_URI);
+ ```
  
+ * Now you can run `start-dev` or `start` scripts and have it connect to your mLab instance
+
+ > Note: `/config/dev.js` is gitignored so it will not bbe pushed. Regardless, please ensure you aren't exposing your personal credentials.
  
 ## Linting
 

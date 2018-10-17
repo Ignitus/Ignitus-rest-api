@@ -5,3 +5,5 @@ package.json
 /coverage
 /.nyc_output
 .DS_Store
+
+/config/dev.js
