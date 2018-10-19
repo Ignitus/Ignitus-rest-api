@@ -20,7 +20,7 @@ const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 console.log('keys',publicVapidKey,privateVapidKey )
 // Replace with your email
-webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', vapidKeys.publicKey, vapidKeys.privateKey);
+webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
 
