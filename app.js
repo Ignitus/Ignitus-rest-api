@@ -15,8 +15,10 @@ const teamMember = require('./routes/teamMember');
 const vapidKeys = webpush.generateVAPIDKeys();
 
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
+console.log('keys',publicVapidKey,privateVapidKey )
 // Replace with your email
 webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', vapidKeys.publicKey, vapidKeys.privateKey);
 
