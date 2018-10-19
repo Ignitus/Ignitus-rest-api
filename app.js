@@ -17,7 +17,7 @@ const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 // Replace with your email
-webpush.setVapidDetails('mailto:sidbentifraouine@gmail.com', publicVapidKey, privateVapidKey);
+webpush.setVapidDetails(process.env.mailTo, publicVapidKey, privateVapidKey);
 
 const app = express();
 
