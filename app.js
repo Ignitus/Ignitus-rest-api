@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -5,11 +6,18 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const webpush = require('web-push');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const internships = require('./routes/internships');
 const testimonial = require('./routes/testimonial');
-const teamMember = require('./routes/teamMember')
+const teamMember = require('./routes/teamMember');
+
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+// Replace with your email
+webpush.setVapidDetails('mailto:sidbentifraouine@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
 
@@ -19,7 +27,6 @@ const db = require('./config/db');
 // view engine not required so commented it
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'pug');
-
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -43,12 +50,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 // });
 
 // Routes middleware
+app.post('/subscribe', (req, res) => {
+  const subscription = req.body;
+  res.status(201).json({});
+  const payload = JSON.stringify({ title: 'Hello from Backend' });
+
+  webpush
+    .sendNotification(subscription, payload)
+    .then(() => {
+      console.log('sendNotification success');
+    })
+    .catch((error) => {
+      console.error('sendNotification ERROR', error.stack);
+    });
+});
+
 app.use('/', index);
 app.use('/', users);
 app.use('/', internships);
 app.use('/', testimonial);
 app.use('/', teamMember);
-
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
