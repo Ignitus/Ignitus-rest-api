@@ -45,6 +45,7 @@
     "cors": "^2.8.4",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
+    "dotenv": "^6.1.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.0",
     "mocha": "^5.2.0",
@@ -55,7 +56,8 @@
     "nodemailer": "^4.6.5",
     "nyc": "^13.0.1",
     "pug": "2.0.0-beta11",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "web-push": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
