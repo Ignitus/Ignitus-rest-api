@@ -53,13 +53,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes middleware
 app.post('/subscribe', (req, res) => {
   const subscription = req.body;
-  res.status(201).json({});
-  const payload = JSON.stringify({ title: 'Hello from Backend' });
-
+  res.status(200).json({});
+  const payload = JSON.stringify({ title: 'Greetings by Igntius!' });
   webpush
     .sendNotification(subscription, payload)
     .then(() => {
-      console.log('sendNotification success');
+      console.log('sendNotification success', JSON.stringify({ title: 'Greetings by Igntius!' }));
     })
     .catch((error) => {
       console.error('sendNotification ERROR', error.stack);
