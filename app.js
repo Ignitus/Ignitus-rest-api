@@ -12,12 +12,13 @@ const users = require('./routes/users');
 const internships = require('./routes/internships');
 const testimonial = require('./routes/testimonial');
 const teamMember = require('./routes/teamMember');
+const vapidKeys = webpush.generateVAPIDKeys();
 
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 // Replace with your email
-webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
+webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', vapidKeys.publicKey, vapidKeys.privateKey);
 
 const app = express();
 
