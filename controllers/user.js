@@ -300,3 +300,29 @@ exports.professorlinkedlogin = function (req, res) {
 exports.professorlinkedlogincallback = function (req, res) {
   linkedinlogin(req, res, 'professor');
 };
+
+exports.getUserInfoFromToken = function (req, res) {
+  if ((req.headers && req.headers.authorization) || req.body.token) {
+    const authorization = req.headers.authorization || req.body.token;
+    try {
+      const decodedToken = jwt.verify(authorization, secret);
+      Users.findOne({
+        _id: decodedToken.userId,
+      }).then((user) => {
+        const {
+          email,
+          user_role,
+        } = user;
+        return responseHandler.success(res, {
+          email,
+          user_role,
+        });
+      })
+      .catch(err => responseHandler.error(res, 'User not found', 404));
+    } catch (e) {
+      return responseHandler.error(res, 'Unauthorized', 401);
+    }
+  } else {
+    return responseHandler.error(res, 'Unauthorized', 401);
+  }
+};

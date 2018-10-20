@@ -24,4 +24,5 @@ router.get('/professor/oauth/linkedin/callback', Users.professorlinkedlogincallb
 // email verification route same for both the users
 router.get('/verify', Users.verify);
 
+router.post('/userinfofromtoken', Users.getUserInfoFromToken);
 module.exports = router;
