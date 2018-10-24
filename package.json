@@ -47,6 +47,7 @@
     "debug": "~2.6.9",
     "dotenv": "^6.1.0",
     "express": "^4.16.3",
+    "graphql-simple-cache": "0.0.12",
     "jsonwebtoken": "^8.2.0",
     "mocha": "^5.2.0",
     "mongoose": "^5.0.12",
@@ -56,6 +57,7 @@
     "nodemailer": "^4.6.5",
     "nyc": "^13.0.1",
     "pug": "2.0.0-beta11",
+    "redis": "^2.8.0",
     "serve-favicon": "~2.4.5",
     "web-push": "^3.3.3"
   },

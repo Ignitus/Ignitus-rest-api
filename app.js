@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
+const { GraphQLSimpleCache } = require('graphql-simple-cache');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -12,6 +13,8 @@ const users = require('./routes/users');
 const internships = require('./routes/internships');
 const testimonial = require('./routes/testimonial');
 const teamMember = require('./routes/teamMember');
+const redis = require('./helper/redisDb');
+
 const vapidKeys = webpush.generateVAPIDKeys();
 
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
@@ -23,6 +26,18 @@ console.log('keys',publicVapidKey,privateVapidKey )
 webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
+let cache = new GraphQLSimpleCache(redis);
+// setup cache
+app.use('/', (req, res, next) => 
+{
+  if (redis.connected === false)
+  {
+    cache = new GraphQLSimpleCache();
+    redis.connected = null;
+  }
+  req.cache = cache;
+  return next();
+});
 
 // db connection
 const db = require('./config/db');
