@@ -76,3 +76,7 @@ mongoose.connect(dev.dbURI);
 ## Fix Lint Warnings
 
  * ``` npm run lint:fix ```
+
+ ## Redis
+
+ * Redis is implemented a caching database to enhance performance.  No configuration is needed other than to start Redis locally.

@@ -149,8 +149,10 @@ exports.professorRegister = function (req, res) {
 // normal login controller
 
 exports.login = function (req, res) {
-  Users.find({ email: req.body.email })
-    .exec()
+  req.cache.load({
+    options: { email: req.body.email },
+    loader: (opts) => { return Users.find(opts).exec(); }
+  })
     .then((data) => {
       // user account does not exists
       if (data.length < 1) {
@@ -237,8 +239,10 @@ function linkedinlogin(req, res, user_role) {
       const access_token = results.access_token;
 
       // finding if the user already exists
-      Users.find({ email: user_email })
-        .exec()
+      req.cache.load({
+        options: { email: user_email },
+        loader: (opts) => { return Users.find(opts).exec(); }
+      })
         .then((result) => {
           if (result.length > 0) {
             const token = jwt.sign({
@@ -267,8 +271,10 @@ function linkedinlogin(req, res, user_role) {
         .then((result) => {
           profileDataInsertion(req.body.email, user_role);
           // logging in the new user
-          Users.find({ email: user_email })
-            .exec()
+          req.cache.load({
+            options: { email: user_email },
+            loader: (opts) => { return Users.find(opts).exec(); }
+          })
             .then((result) => {
               if (result.length > 0) {
                 const token = jwt.sign({
