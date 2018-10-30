@@ -71,7 +71,7 @@ mongoose.connect(dev.dbURI);
  
 ## Linting
 
- * ``` npm run lint ```	* ``` npm run lint ```
+ * ``` npm run lint ```	
  
 ## Fix Lint Warnings
 
