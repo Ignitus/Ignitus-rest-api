@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
 
 const teamMemberProfileSchema = mongoose.Schema({
-  designation: {
+  description: {
     type: String,
   },
-  name: {
+  title: {
     type: String,
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
   },
   social_links: {
-    facebook: { type: String },
-    github: { type: String },
+    angellist: { type: String },
     linkedin: { type: String },
   },
-  profile_pic: {
+  img: {
     type: String,
   },
 });
