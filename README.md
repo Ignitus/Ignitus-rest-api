@@ -44,6 +44,8 @@ Written in universal JavaScript
 * MongoDB
 * Docker
 * TRAVIS CI
+* GraphQL Caching
+* TypeScript
 
 ## About Ignitus
 
