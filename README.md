@@ -1,4 +1,5 @@
-![alt tag](https://avatars0.githubusercontent.com/u/39058097?s=200&v=4)
+
+<img src="https://imgur.com/b0y65se.gif" width="300">
 
 
 <a href="https://www.patreon.com/teamignitus">
@@ -11,7 +12,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
 
 
-[![Ignitus TechStack](https://imgur.com/1pa8uwS.png)](https://github.com/Ignitus/Tools)
+<a href="https://github.com/Ignitus/Tools"><img src="https://imgur.com/1pa8uwS.png" width="500"></a>
 
 
 ## About Ignitus
@@ -90,11 +91,12 @@ Ignitus Quora -
 ![alt tag](http://i1.wp.com/seanshadmand.com/wp-content/uploads/2015/02/heroku-logo.jpg?resize=248%2C225)
 
 ## Contributing
-Please check the contribution guide. [contributionGuide](https://github.com/Ignitus/Ignitus-rest-api/blob/master/CONTRIBUTION.md)
+Please check the contribution guide. [contributionGuide](https://github.com/Ignitus/Ignitus-Client-Side-Development/blob/master/.github/CONTRIBUTION/CONTRIBUTION.md)
 
 
 ## Contributors
+<a href="http://www.ignitus.org/aboutus"><img src="https://imgur.com/uDEb2rY.png" width="500"></a>
 
-[![Contributors](https://imgur.com/uDEb2rY.png)](http://www.ignitus.org/aboutus)
+##
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FIgnitus%2FIgnitus-Client-Side-Development.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FIgnitus%2FIgnitus-Client-Side-Development?ref=badge_large)
