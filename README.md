@@ -1,51 +1,18 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/39058097?s=200&v=4)
 
-# Ignitus-client-side
 
-Client side development Ignitus.
+<a href="https://www.patreon.com/teamignitus">
+	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
+</a>
 
 [![forthebadge](https://forthebadge.com/images/badges/built-by-developers.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/powered-by-responsibility.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/check-it-out.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
 
-## Client-Side
-Written in universal JavaScript
 
-* react
-* redux
-* travis-ci
-* heroku
-* prop-types
-* redux-thunk
-* docker-container
-* redux-sagas
-* flow
-* reselect
-* jest-tests
-* istanbul
-* ignitus-rest-api
-* heroku-pipeline
-* airbnb-eslint
-* react-router-v4
-* bootstrap4
-* enzyme-testing
-* service-worker-precache
-* sass
+[![Ignitus TechStack](https://imgur.com/1pa8uwS.png)](https://github.com/Ignitus/Tools)
 
-## Server-Side
-* Node.js
-* JWT
-* Mocha
-* Mongoose
-* MongoDB
-* Docker
-* TRAVIS CI
-* GraphQL Caching
-* TypeScript
 
 ## About Ignitus
 
@@ -59,6 +26,7 @@ We are honored to have among us more than admirable leaders in the fight for equ
 You can check out this [YouTube Channel](https://www.youtube.com/channel/UCW2BmTcaghAmhELP4_RdRrw) to get an overview of what we are all about. 
 
 We are organizing the following programs on a global scale where students can participate remotely to improve their skills and get real-world software development experience-
+
 
 ## Ignitus Scholar
 
@@ -96,6 +64,7 @@ If you want to help Ignitus as an Intern please follow the [Link](https://angel.
 
 And the best part is that Ignitus is Non-Profit Everyone is welcome to the community.
 
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-responsibility.svg)](https://forthebadge.com)
 
 Few Blogs Posts on Ignitus that can help you better Understand it's Mission :
 * [Ignitus — Connecting Students with Opportunities](https://medium.com/ignitus/ignitus-connecting-students-with-opportunities-61f08e19861c)
@@ -109,21 +78,23 @@ Ignitus YouTube -
 * [Ignitus Scholar Presentation](https://www.youtube.com/watch?v=P_01fzigkPs&t=270s)
 * [Ignitus (A Non-Profit Organization)](https://www.youtube.com/watch?v=2IU_Paf2nF0)
 * [Culture At Ignitus](https://www.youtube.com/watch?v=NhU-9cNM1h0)
+* [Introducing Ignitus](https://www.youtube.com/watch?v=Q6s7pQcFmMc)
 
 Ignitus Quora - 
 * [What are Ignitus and WooTech about?](https://www.quora.com/What-are-Ignitus-and-WooTech-about)
 * [What is Ignitus and Ignitus Scholars?](https://www.quora.com/What-is-Ignitus-and-Ignitus-Scholars)
 
-This Repository is powered by 
+##
 
-![alt tag](https://travis-ci.com/images/logos/TravisCI-Full-Color-light.png
-)
+![alt tag](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcKBXCpPP1MBgHqU5ClSorPUrpWZ_MhhjqVhk2QRonTWba8zWi)
+![alt tag](http://i1.wp.com/seanshadmand.com/wp-content/uploads/2015/02/heroku-logo.jpg?resize=248%2C225)
 
-![alt tag](http://i1.wp.com/seanshadmand.com/wp-content/uploads/2015/02/heroku-logo.jpg?resize=248%2C225
-)
+## Contributing
+Please check the contribution guide. [contributionGuide](https://github.com/Ignitus/Ignitus-rest-api/blob/master/CONTRIBUTION.md)
 
-![alt tag](https://cdn-images-1.medium.com/max/788/1*lUNmBw_oyS2ADWqZs4DLOA.png)
 
-### For Installation kindly refer [this](https://github.com/Ignitus/Ignitus-rest-api/blob/master/CONTRIBUTION.md).
+## Contributors
 
-### Thank You!
+[![Contributors](https://imgur.com/uDEb2rY.png)](http://www.ignitus.org/aboutus)
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FIgnitus%2FIgnitus-Client-Side-Development.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FIgnitus%2FIgnitus-Client-Side-Development?ref=badge_large)
