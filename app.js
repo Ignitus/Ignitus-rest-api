@@ -47,7 +47,7 @@ const db = require('./config/db');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(cors());
+// app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,16 +55,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS protection (Cross origin request serve)
-// app.use(function (req,res,next) {
-//     res.header('Access-Control-Allow-Origin','*');
-//     res.header('Access-Control-Allow-Origin','Origin, X-Requested-With, Content_Type,Accept,Authorization');
+app.use(function (req,res,next) {
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Origin','Origin, X-Requested-With, Content_Type,Accept,Authorization');
 
-//     if(req.method==='OPTIONS'){
-//         req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
-//         return res.status(200).json({});
-//     }
-//     next();
-// });
+    if(req.method==='OPTIONS'){
+        req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
+        return res.status(200).json({});
+    }
+    next();
+});
 
 // Routes middleware
 app.post('/subscribe', (req, res) => {
