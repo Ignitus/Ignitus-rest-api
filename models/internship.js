@@ -11,4 +11,3 @@ const internships = mongoose.model('internships', internshipSchema);
 module.exports = {
   Internships: internships,
 };
-
