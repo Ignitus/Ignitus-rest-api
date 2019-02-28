@@ -12,12 +12,12 @@
       const statusCode = 200;
       const data = { statusCode: 200 };
       data.data = response;
-      data.userInfo = information
+      data.userInfo = information;
       data.message = 'Success';
       data.success = true;
       res.status(statusCode).json(data);
     },
-    error(res, message, statusCode) {
+    error(res, messages, statusCode) {
       /*
                     A handler for error responses.
 
@@ -27,9 +27,9 @@
                     statusCode - The return status
              */
 
-      var message = message != undefined && message.length > 0 ? message : 'Something went wrong!';
+      const message = messages !== undefined && messages.length > 0 ? messages : 'Something went wrong!';
       const data = { message };
-      data.statusCode = statusCode == undefined ? 500 : statusCode;
+      data.statusCode = statusCode === undefined ? 500 : statusCode;
       data.success = false;
       res.status(data.statusCode).json(data);
     },

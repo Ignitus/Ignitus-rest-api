@@ -27,8 +27,7 @@ webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, pri
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
 // setup cache
-app.use('/', (req, res, next) => 
-{
+app.use('/', (req, res, next) => {
   if (redis.connected === false)
   {
     cache = new GraphQLSimpleCache();
@@ -55,15 +54,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS protection (Cross origin request serve)
-app.use(function (req,res,next) {
-    res.header('Access-Control-Allow-Origin','*');
-    res.header('Access-Control-Allow-Origin','Origin, X-Requested-With, Content_Type,Accept,Authorization');
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'Origin, X-Requested-With, Content_Type,Accept,Authorization');
 
-    if(req.method==='OPTIONS'){
-        req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
-        return res.status(200).json({});
-    }
-    next();
+  if (req.method === 'OPTIONS') {
+    req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
+    return res.status(200).json({});
+  }
+  next();
 });
 
 // Routes middleware

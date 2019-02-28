@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
 const responseHandler = require('../helper/responseHandler');
 // mailing credentials
 const smtpTransport = nodemailer.createTransport({
@@ -15,7 +16,7 @@ const smtpTransport = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
 });
-const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
+
 const professorProfile = require('../models/professor_profile').professorProfile;
 const studentProfile = require('../models/student_profile').studentProfile;
 const Users = require('../models/user').Users;
@@ -26,8 +27,11 @@ const secret = 'secret';
 
 // check if a registering user is already registered using social login
 function socialLoginCheck(req, res, user_role, data) {
-  if (data.length >= 1 && data[0].verified == 1 && (user_role == data[0].user_role) && !(data[0].password)
-        && data[0].linkedin.profile_url && data[0].linkedin.access_token) {
+  if (data.length >= 1 && data[0].verified === 1
+    && (user_role === data[0].user_role)
+    && !(data[0].password)
+    && data[0].linkedin.profile_url
+    && data[0].linkedin.access_token) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
         return responseHandler.error(res);
@@ -44,12 +48,12 @@ function socialLoginCheck(req, res, user_role, data) {
 // inserting data into student profile or professor profile
 function profileDataInsertion(email, user_role) {
   let profile;
-  if (user_role == 'student') {
+  if (user_role === 'student') {
     profile = new studentProfile({
       _id: new mongoose.Types.ObjectId(),
       email,
     });
-  } else if (user_role == 'professor') {
+  } else if (user_role === 'professor') {
     profile = new professorProfile({
       _id: new mongoose.Types.ObjectId(),
       email,
@@ -63,16 +67,19 @@ function register(req, res, user_role) {
   Users.find({ email: req.body.email })
     .exec()
     .then((data) => {
-      if (data.length >= 1 && data[0].verified == 1 && (user_role == data[0].user_role) && !(data[0].password)
-                && data[0].linkedin.profile_url && data[0].linkedin.access_token) {
+      if (data.length >= 1 && data[0].verified === 1
+        && (user_role === data[0].user_role)
+        && !(data[0].password)
+        && data[0].linkedin.profile_url
+        && data[0].linkedin.access_token) {
         // if the user is registered via social login and the trying to register via normal login
         socialLoginCheck(req, res, user_role, data);
-      } else if (data.length >= 1 && data[0].verified == 1) {
+      } else if (data.length >= 1 && data[0].verified === 1) {
         // user already exists
         return responseHandler.error(res, 'User already exists', 409);
       }
       // user has not verified mail
-      else if (data.length >= 1 && data[0].verified == 0) {
+      else if (data.length >= 1 && data[0].verified === 0) {
         return responseHandler.error(res, 'Email ID not verified', 401);
       }
       // register the user
@@ -104,7 +111,7 @@ function register(req, res, user_role) {
               mailOptions = {
                 to: req.body.email,
                 subject: 'Please confirm your Email account',
-                html: `<h3>Welcome to Ignitus!</h3> 
+                html: `<h3>Welcome to Ignitus!</h3>
                        <p>We're glad to have you here.</p>
                        <p>Next, please verify your email address using the following link <a href=${link}>verify</a>,
                        then log in using your email and the password
@@ -114,7 +121,7 @@ function register(req, res, user_role) {
 
                        <p>Sincerely</p>
                        <p>Team Ignitus</p>
-                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`
+                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`,
               };
 
               smtpTransport.sendMail(mailOptions, (error, response) => {
@@ -151,7 +158,7 @@ exports.professorRegister = function (req, res) {
 exports.login = function (req, res) {
   req.cache.load({
     options: { email: req.body.email },
-    loader: (opts) => { return Users.find(opts).exec(); }
+    loader: (opts) => { return Users.find(opts).exec(); },
   })
     .then((data) => {
       // user account does not exists
@@ -159,7 +166,7 @@ exports.login = function (req, res) {
         return responseHandler.error(res, 'Invalid user', 401);
       }
       // email not verfied
-      if (data.length == 1 && data[0].verified == 0) {
+      if (data.length === 1 && data[0].verified === 0) {
         return responseHandler.error(res, 'Email ID not verified', 401);
       }
       // allow user to log in and send the jwt token
@@ -180,7 +187,7 @@ exports.login = function (req, res) {
           const clientData = {
             email: data[0].email,
             user_role: data[0].user_role,
-          }
+          };
 
           return responseHandler.success(res, { token }, { clientData });
         }
@@ -192,7 +199,7 @@ exports.login = function (req, res) {
 
 // email verification
 exports.verify = function (req, res) {
-  if ((`${req.protocol}://${req.get('host')}`) == (`http://${host}`)) {
+  if ((`${req.protocol}://${req.get('host')}`) === (`http://${host}`)) {
     console.log('Domain is matched. Information is from Authentic email');
     Users.find({ email: req.body.email, verifytoken: req.body.id }, (err, data) => {
       if (!err) {
@@ -241,7 +248,7 @@ function linkedinlogin(req, res, user_role) {
       // finding if the user already exists
       req.cache.load({
         options: { email: user_email },
-        loader: (opts) => { return Users.find(opts).exec(); }
+        loader: (opts) => { return Users.find(opts).exec(); },
       })
         .then((result) => {
           if (result.length > 0) {
@@ -273,7 +280,7 @@ function linkedinlogin(req, res, user_role) {
           // logging in the new user
           req.cache.load({
             options: { email: user_email },
-            loader: (opts) => { return Users.find(opts).exec(); }
+            loader: (opts) => { return Users.find(opts).exec(); },
           })
             .then((result) => {
               if (result.length > 0) {
@@ -324,7 +331,7 @@ exports.getUserInfoFromToken = function (req, res) {
           user_role,
         });
       })
-      .catch(err => responseHandler.error(res, 'User not found', 404));
+        .catch(err => responseHandler.error(res, 'User not found', 404));
     } catch (e) {
       return responseHandler.error(res, 'Unauthorized', 401);
     }
