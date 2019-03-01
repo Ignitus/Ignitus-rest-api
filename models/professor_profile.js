@@ -11,9 +11,10 @@ const professorProfileSchema = mongoose.Schema({
   },
 
   name: {
-  type: String,
-  required: true,
-  match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/ },
+    type: String,
+    required: true,
+    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
+  },
 
   bio: { type: String },
 
@@ -26,21 +27,34 @@ const professorProfileSchema = mongoose.Schema({
     google_plus: { type: String },
   },
 
-  about: { type: String },
+  about: {
+    type: String,
+  },
 
-  profile_pic: { type: String },
+  profile_pic: {
+    type: String,
+  },
 
   education: {
-    college_name: { type: String, required: true,},
-    position: { type: String, required: true,},
-    year_passed: {type: Number, required: true, },
+    college_name: {
+      type: String,
+      required: true,
     },
+    position: {
+      type: String,
+      required: true,
+    },
+    year_passed: {
+      type: Number,
+      required: true,
+    },
+  },
 
 
   research_fields: {
     type: String,
     required: true,
-},
+  },
 
   publications: [{
     paper_name: { type: String },

@@ -1,17 +1,8 @@
 
-const expect = require('chai').expect;
+const expect = require('chai');
 const assert = require('assert');
 
 const studentModel = require('../models/student_profile');
-
-describe('Student Model', () => {
-  it('should be invalid if email is empty', (done) => {
-    const s = new studentModel.studentProfile();
-    s.validate((err) => {
-      expect(err.errors.email).to.exist;
-      done();
-    });
-  });
 
 describe('Student Model', () => {
   it('should be invalid if email is empty', (done) => {
@@ -33,7 +24,7 @@ describe('Student Model', () => {
   it('should be invalid if year_passed is empty', (done) => {
     const p = new studentModel.studentProfile();
     p.validate((err) => {
-      assert.equal("2000".length,4);
+      assert.equal('2000'.length, 4);
       done();
     });
   });
@@ -46,5 +37,4 @@ describe('Student Model', () => {
       done();
     });
   });
-
 });
