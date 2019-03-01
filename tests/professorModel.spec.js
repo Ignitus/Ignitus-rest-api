@@ -31,12 +31,12 @@ describe('Professor Model', function() {
         });
     });
 
-    it('should be invalid if properties are empty', function(done) {
+    it('should be invalid if research_fields property is empty', function(done) {
         var p =  new professorModel.professorProfile();
 
         p.validate(function(err) {
-            expect(err.errors.email).to.exist;
-            expect(err.errors.name).to.exist;
+            // expect(err.errors.email).to.exist;
+            // expect(err.errors.name).to.exist;
             expect(err.errors.research_fields).to.exist;
           done();
         });
