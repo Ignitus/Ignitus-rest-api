@@ -1,45 +1,44 @@
-var expect = require('chai').expect;
-var assert = require('assert');
+const { expect } = require('chai');
+const assert = require('assert');
 
-var professorModel = require('../models/professor_profile');
+const professorModel = require('../models/professor_profile');
 
-describe('Professor Model', function() {
-    it('should be invalid if email is empty', function(done) {
-        var p =  new professorModel.professorProfile();
+describe('Professor Model', () => {
+  it('should be invalid if email is empty', (done) => {
+    const p = new professorModel.professorProfile();
 
-        p.validate(function(err) {
-            expect(err.errors.email).to.exist;
-            done();
-        });
+    p.validate((err) => {
+      expect(err.errors.email).to.exist;
+      done();
     });
+  });
 
-    it('should be invalid if name is empty', function(done) {
-        var p =  new professorModel.professorProfile();
+  it('should be invalid if name is empty', (done) => {
+    const p = new professorModel.professorProfile();
 
-        p.validate(function(err) {
-            expect(err.errors.name).to.exist;
-            done();
-        });
+    p.validate((err) => {
+      expect(err.errors.name).to.exist;
+      done();
     });
+  });
 
-    it('should be invalid if year_passed is empty', function(done) {
-        var p =  new professorModel.professorProfile();
+  it('should be invalid if year_passed is empty', (done) => {
+    const p = new professorModel.professorProfile();
 
-        p.validate(function(err) {
-            assert.equal("2000".length,4);
-            done();
-        });
+    p.validate((err) => {
+      assert.equal('2000'.length, 4);
+      done();
     });
+  });
 
-    it('should be invalid if research_fields property is empty', function(done) {
-        var p =  new professorModel.professorProfile();
+  it('should be invalid if research_fields property is empty', (done) => {
+    const p = new professorModel.professorProfile();
 
-        p.validate(function(err) {
-            // expect(err.errors.email).to.exist;
-            // expect(err.errors.name).to.exist;
-            expect(err.errors.research_fields).to.exist;
-          done();
-        });
+    p.validate((err) => {
+      // expect(err.errors.email).to.exist;
+      // expect(err.errors.name).to.exist;
+      expect(err.errors.research_fields).to.exist;
+      done();
     });
-
+  });
 });

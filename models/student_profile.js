@@ -32,12 +32,12 @@ const studentProfileSchema = mongoose.Schema({
 
   profile_pic: { type: String },
 
-  resume: { type: String, required: true, },
+  resume: { type: String, required: true },
 
   education: {
-    college_name: { type: String, required: true,},
-    position: { type: String, required: true,},
-    year_passed: { type: Number, required: true, }
+    college_name: { type: String, required: true },
+    position: { type: String, required: true },
+    year_passed: { type: Number, required: true },
   },
 
 
