@@ -16,9 +16,9 @@ const smtpTransport = nodemailer.createTransport({
   },
 });
 const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
-const professorProfile = require('../models/professor_profile').professorProfile;
-const studentProfile = require('../models/student_profile').studentProfile;
-const Users = require('../models/user').Users;
+const { professorProfile } = require('../models/professor_profile');
+const { studentProfile } = require('../models/student_profile');
+const { Users } = require('../models/user');
 
 const scope = ['r_basicprofile', 'r_emailaddress'];
 let rand; let mailOptions; let host; let link;
@@ -114,7 +114,7 @@ function register(req, res, user_role) {
 
                        <p>Sincerely</p>
                        <p>Team Ignitus</p>
-                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`
+                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`,
               };
 
               smtpTransport.sendMail(mailOptions, (error, response) => {
@@ -151,7 +151,7 @@ exports.professorRegister = function (req, res) {
 exports.login = function (req, res) {
   req.cache.load({
     options: { email: req.body.email },
-    loader: (opts) => { return Users.find(opts).exec(); }
+    loader: opts => Users.find(opts).exec(),
   })
     .then((data) => {
       // user account does not exists
@@ -180,7 +180,7 @@ exports.login = function (req, res) {
           const clientData = {
             email: data[0].email,
             user_role: data[0].user_role,
-          }
+          };
 
           return responseHandler.success(res, { token }, { clientData });
         }
@@ -203,7 +203,7 @@ exports.verify = function (req, res) {
         // console.log(newvalues);
         // console.log(req.query.email);
         const query = { email: req.query.email };
-        Users.update(query, newvalues, (err, result) => {
+        Users.updateOne(query, newvalues, (err, result) => {
           if (err) {
             return responseHandler.error(res);
           }
@@ -236,12 +236,12 @@ function linkedinlogin(req, res, user_role) {
     linkedin_user.people.me((err, data) => {
       const user_email = data.emailAddress;
       const user_linked_profile = data.publicProfileUrl;
-      const access_token = results.access_token;
+      const { access_token } = results;
 
       // finding if the user already exists
       req.cache.load({
         options: { email: user_email },
-        loader: (opts) => { return Users.find(opts).exec(); }
+        loader: opts => Users.find(opts).exec(),
       })
         .then((result) => {
           if (result.length > 0) {
@@ -273,7 +273,7 @@ function linkedinlogin(req, res, user_role) {
           // logging in the new user
           req.cache.load({
             options: { email: user_email },
-            loader: (opts) => { return Users.find(opts).exec(); }
+            loader: opts => Users.find(opts).exec(),
           })
             .then((result) => {
               if (result.length > 0) {
@@ -324,11 +324,113 @@ exports.getUserInfoFromToken = function (req, res) {
           user_role,
         });
       })
-      .catch(err => responseHandler.error(res, 'User not found', 404));
+        .catch(err => responseHandler.error(res, 'User not found', 404));
     } catch (e) {
       return responseHandler.error(res, 'Unauthorized', 401);
     }
   } else {
     return responseHandler.error(res, 'Unauthorized', 401);
   }
+};
+
+// Forgot password handler
+exports.forgotPassword = function (req, res) {
+  if (req.body.email === '') {
+    res.status(400).send('email required');
+  }
+  // console.error(req.body.email);
+  Users.findOne({ email: req.body.email })
+    .exec()
+    .then((user) => {
+      if (user === null) {
+        // console.error('email not in database');
+        res.status(403).send('email not in db');
+      } else {
+        const token = crypto.randomBytes(20).toString('hex');
+        user.update({
+          resetPasswordToken: token,
+          resetPasswordExpires: Date.now() + 360000,
+        })
+          .exec();
+        // sending the mail to user's mail id
+        host = req.get('host');
+        link = `http://${req.get('host')}/reset?token=${token}`;
+        mailOptions = {
+          to: req.body.email,
+          subject: 'Link To Reset Password',
+          html: '<h3>Welcome to Ignitus!</h3>'
+              + '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>'
+              + '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>'
+              + `<a href=${link}>Reset password</a>`
+              + '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>'
+              + '<p>Sincerely</p>'
+              + '<p>Team Ignitus</p>'
+              + '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>',
+        };
+
+        // console.log('sending mail');
+        smtpTransport.sendMail(mailOptions, (error, response) => {
+          if (error) {
+            // console.error('there was an error: ', err);
+            return responseHandler.error(res, error.message, 500);
+          }
+          //  console.log('here is the res: ', response);
+          return responseHandler.success(res, response);
+        });
+      }
+    });
+};
+
+// Password reset handler
+exports.resetPassword = function (req, res) {
+  Users.findOne({
+    resetPasswordToken: req.query.token,
+    resetPasswordExpires: {
+      $gt: Date.now(),
+    },
+  })
+    .exec()
+    .then((user) => {
+      if (user == null) {
+        //console.error('password reset link is invalid or has expired');
+        return res.status(403).send(`<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>`);
+      } 
+       else return res.redirect(`http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`);
+    })
+    .catch(err => {
+      console.log(err);
+      responseHandler.error(res, 'Invalid token')});
+};
+
+// Password update handler
+exports.updatePassword = function (req, res) {
+  Users.findOne({
+    email: req.body.email,
+    resetPasswordToken: req.body.token,
+    resetPasswordExpires: {
+      $gt: Date.now(),
+    },
+  })
+    .exec()
+    .then((user) => {
+      if (user == null) {
+        return responseHandler.error(res, 'User does not exist', 403);
+      }
+
+      bcrypt
+        .hash(req.body.password, 10)
+        .then(
+          (hash) => {
+            user
+              .update({
+                password: hash,
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+              }).exec();
+          },
+        )
+        .then(responseHandler.success(res, { message: 'Password updated' }))
+        .catch(err => responseHandler.error(res, 'Password could not be updated'));
+    })
+    .catch(err => responseHandler.error(res));
 };

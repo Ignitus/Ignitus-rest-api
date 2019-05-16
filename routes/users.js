@@ -24,5 +24,12 @@ router.get('/professor/oauth/linkedin/callback', Users.professorlinkedlogincallb
 // email verification route same for both the users
 router.get('/verify', Users.verify);
 
+// forgot password route
+router.post('/forgotPassword', Users.forgotPassword);
+// Password reset route
+router.get('/reset', Users.resetPassword);
+// Update Password route
+router.put('/updatePasswordViaMail', Users.updatePassword);
+
 router.post('/userinfofromtoken', Users.getUserInfoFromToken);
 module.exports = router;
