@@ -16,6 +16,8 @@ const userSchema = mongoose.Schema({
     profile_url: { type: String },
     access_token: { type: String },
   },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
 });
 
 const users = mongoose.model('users', userSchema);
