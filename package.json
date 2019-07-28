@@ -55,7 +55,7 @@
     "node-linkedin": "^0.5.6",
     "nodemailer": "^4.6.5",
     "nyc": "^13.0.1",
-    "pug": "2.0.0-beta11",
+    "pug": "2.0.4",
     "redis": "^2.8.0",
     "serve-favicon": "~2.4.5",
     "web-push": "^3.3.3"
