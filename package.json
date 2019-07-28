@@ -57,7 +57,7 @@
     "nyc": "^13.0.1",
     "pug": "2.0.4",
     "redis": "^2.8.0",
-    "serve-favicon": "~2.4.5",
+    "serve-favicon": "~2.5.0",
     "web-push": "^3.3.3"
   },
   "devDependencies": {
