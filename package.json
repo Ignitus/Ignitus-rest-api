@@ -45,7 +45,7 @@
     "cors": "^2.8.4",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
-    "dotenv": "^6.1.0",
+    "dotenv": "^8.2.0",
     "express": "^4.16.3",
     "graphql-simple-cache": "0.0.12",
     "jsonwebtoken": "^8.2.0",
