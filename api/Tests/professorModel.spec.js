@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable new-cap */
 const { expect } = require('chai');
 const assert = require('assert');
 
-const professorModel = require('../models/professorProfile');
+const professorModel = require('../Models/professorProfile');
 
 describe('Professor Model', () => {
   it('should be invalid if email is empty', (done) => {
@@ -25,7 +27,7 @@ describe('Professor Model', () => {
   it('should be invalid if year_passed is empty', (done) => {
     const p = new professorModel.professorProfile();
 
-    p.validate((err) => {
+    p.validate(() => {
       assert.equal('2000'.length, 4);
       done();
     });

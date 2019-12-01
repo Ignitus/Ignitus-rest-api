@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-expressions */
 const { expect } = require('chai');
 
-const testimonial = require('../models/testimonial');
+const testimonial = require('../Models/testimonial');
 
 describe('Testimonial Model', () => {
   it('should be invalid if all fields is empty', (done) => {

@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable new-cap */
 const { expect } = require('chai');
 const assert = require('assert');
 
-const studentModel = require('../models/studentProfile');
+const studentModel = require('../Models/studentProfile');
 
 describe('Student Model', () => {
   it('should be invalid if email is empty', (done) => {
@@ -25,12 +27,11 @@ describe('Student Model', () => {
   it('should be invalid if year_passed is empty', (done) => {
     const p = new studentModel.studentProfile();
 
-    p.validate((err) => {
+    p.validate(() => {
       assert.equal('2000'.length, 4);
       done();
     });
   });
-
 
   it('should be invalid if resume property is empty', (done) => {
     const p = new studentModel.studentProfile();
