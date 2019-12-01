@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "start-dev": "nodemon --watch index.js --watch config --watch Controllers --watch Utils --watch Middlewares --watch Models --watch Routes --watch Views -e js,json index.js",
+    "start-dev": "nodemon --watch index.js --watch api -e js,json",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix",
     "test": "nyc mocha **/*.spec.js"

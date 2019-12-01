@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const TeamMember = require('../Controllers/team_member');
+const TeamMember = require('../Controllers/teamMember');
 
 // TeamMember routes:
 
