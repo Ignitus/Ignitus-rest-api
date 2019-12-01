@@ -5,21 +5,24 @@ const verify = require('../Middlewares/check-auth');
 
 const Testimonial = require('../Controllers/testimonial');
 
-// Routes handling testimonial pages:
-
-// add testimonial
 router.post('/testimonial/add', Testimonial.addTestimonial);
+router.put(
+  '/testimonial/:id/',
+  verify.checkStudentAuth,
+  Testimonial.updateTestimonial,
+);
 
-// update testimonial
-router.put('/testimonial/:id/', verify.checkStudentAuth, Testimonial.updateTestimonial);
-
-// View all testimonials...for carousel to display testimonial on front-end
 router.get('/testimonials', Testimonial.viewAllTestimonial);
+router.get(
+  '/testimonial/:id',
+  verify.checkStudentAuth,
+  Testimonial.viewTestimonialByID,
+);
 
-// view testimonial by id
-router.get('/testimonial/:id', verify.checkStudentAuth, Testimonial.viewTestimonialByID);
-
-// delete testimonial (using id)
-router.delete('/testimonial/:id', verify.checkStudentAuth, Testimonial.deleteTestimonial);
+router.delete(
+  '/testimonial/:id',
+  verify.checkStudentAuth,
+  Testimonial.deleteTestimonial,
+);
 
 module.exports = router;
