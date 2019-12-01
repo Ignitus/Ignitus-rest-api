@@ -1,13 +1,12 @@
-require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
+
 const logger = require('morgan');
 const { GraphQLSimpleCache } = require('graphql-simple-cache');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const webpush = require('web-push');
+const mongoose = require('mongoose');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const internships = require('./routes/internships');
@@ -15,22 +14,19 @@ const testimonial = require('./routes/testimonial');
 const teamMember = require('./routes/teamMember');
 const redis = require('./helper/redisDb');
 
-const vapidKeys = webpush.generateVAPIDKeys();
+// const config = require('./config');
 
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
-
-// Replace with your email
-webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
+// // Replace with your email
+// webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
 // setup cache
-app.use('/', (req, res, next) => 
-{
-  if (redis.connected === false)
-  {
+app.use('/', (req, res, next) => { 
+  if (redis.connected === false) {
     cache = new GraphQLSimpleCache();
     redis.connected = null;
   }
@@ -39,7 +35,14 @@ app.use('/', (req, res, next) =>
 });
 
 // db connection
-const db = require('./config/db');
+
+const db = mongoose.connection;
+mongoose.connect('');
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('Connected correctly to db');
+});
 
 // view engine not required so commented it
 // app.set('views', path.join(__dirname, 'views'));
@@ -55,15 +58,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS protection (Cross origin request serve)
-app.use(function (req,res,next) {
-    res.header('Access-Control-Allow-Origin','*');
-    res.header('Access-Control-Allow-Origin','Origin, X-Requested-With, Content_Type,Accept,Authorization');
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'Origin, X-Requested-With, Content_Type,Accept,Authorization');
 
-    if(req.method==='OPTIONS'){
-        req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
-        return res.status(200).json({});
-    }
-    next();
+  if (req.method === 'OPTIONS') {
+    req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
+    return res.status(200).json({});
+  }
+  next();
 });
 
 // Routes middleware
@@ -82,17 +85,21 @@ app.post('/subscribe', (req, res) => {
 });
 
 app.use('/', index);
+console.log('ssss')
 app.use('/', users);
 app.use('/', internships);
 app.use('/', testimonial);
 app.use('/', teamMember);
 
+app.listen(4000);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
+
+
 
 // error handler
 app.use((err, req, res, next) => {
