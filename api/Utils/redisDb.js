@@ -2,13 +2,6 @@ const redisDb = require('redis');
 
 const client = redisDb.createClient();
 
-client.on('error', (msg) => {
-  if (msg.errno == 'ECONNREFUSED') {
-    redis.connected = false;
-  }
-  client.quit();
-});
-
 const redis = {
   connected: true,
   get: key => new Promise((resolve, reject) => {
@@ -29,12 +22,19 @@ const redis = {
       else resolve(reply);
     });
   }),
-  flush: key => new Promise((resolve, reject) => {
+  flush: () => new Promise((resolve, reject) => {
     client.flushdb((err, reply) => {
       if (err != null) reject(err);
       else resolve(reply);
     });
   }),
 };
+
+client.on('error', (msg) => {
+  if (msg.errno === 'ECONNREFUSED') {
+    redis.connected = false;
+  }
+  client.quit();
+});
 
 module.exports = redis;
