@@ -7,13 +7,16 @@ const studentProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
   },
 
-  name: { type: String, required: true, match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/ },
+  name: {
+    type: String,
+    required: true,
+    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
+  },
 
   bio: { type: String },
-
   address: { type: String },
 
   social_links: {
@@ -31,7 +34,6 @@ const studentProfileSchema = mongoose.Schema({
   },
 
   profile_pic: { type: String },
-
   resume: { type: String, required: true },
 
   education: {
@@ -40,18 +42,17 @@ const studentProfileSchema = mongoose.Schema({
     year_passed: { type: Number, required: true },
   },
 
-
-  experience: [{
-    company_name: { type: String },
-    position: { type: String },
-    year_start: { type: Number },
-    year_end: { type: Number },
-    description: { type: String },
-  }],
+  experience: [
+    {
+      company_name: { type: String },
+      position: { type: String },
+      year_start: { type: Number },
+      year_end: { type: Number },
+      description: { type: String },
+    },
+  ],
 });
 
-const studentProfile = mongoose.model('studentProfile', studentProfileSchema);
-
 module.exports = {
-  studentProfile,
+  studentProfile: mongoose.model('studentProfile', studentProfileSchema),
 };

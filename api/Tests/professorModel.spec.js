@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const assert = require('assert');
 
-const professorModel = require('../models/professor_profile');
+const professorModel = require('../models/professorProfile');
 
 describe('Professor Model', () => {
   it('should be invalid if email is empty', (done) => {

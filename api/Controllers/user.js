@@ -16,8 +16,8 @@ const smtpTransport = nodemailer.createTransport({
   },
 });
 const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
-const { professorProfile } = require('../Models/professor_profile');
-const { studentProfile } = require('../Models/student_profile');
+const { professorProfile } = require('../Models/professorProfile');
+const { studentProfile } = require('../Models/studentProfile');
 const { Users } = require('../Models/user');
 
 const scope = ['r_basicprofile', 'r_emailaddress'];

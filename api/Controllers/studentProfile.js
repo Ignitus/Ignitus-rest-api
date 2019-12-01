@@ -1,4 +1,4 @@
-const { studentProfile } = require('../Models/student_profile');
+const { studentProfile } = require('../Models/studentProfile');
 const responseHandler = require('../Utils/responseHandler');
 
 exports.viewProfile = (req, res) => {

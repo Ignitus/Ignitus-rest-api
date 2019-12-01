@@ -1,4 +1,4 @@
-const { teamMemberProfile } = require('../Models/team_member');
+const { teamMemberProfile } = require('../Models/teamMember');
 const responseHandler = require('../Utils/responseHandler');
 
 exports.getAllTeamMembers = (req, res) => {

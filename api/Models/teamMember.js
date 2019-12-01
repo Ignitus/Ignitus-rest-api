@@ -17,8 +17,9 @@ const teamMemberProfileSchema = mongoose.Schema({
   },
 });
 
-const teamMemberProfile = mongoose.model('teamMemberProfile', teamMemberProfileSchema);
-
 module.exports = {
-  teamMemberProfile,
+  teamMemberProfile: mongoose.model(
+    'teamMemberProfile',
+    teamMemberProfileSchema,
+  ),
 };

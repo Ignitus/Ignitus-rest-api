@@ -7,7 +7,7 @@ const professorProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
   },
 
   name: {
@@ -17,7 +17,6 @@ const professorProfileSchema = mongoose.Schema({
   },
 
   bio: { type: String },
-
   address: { type: String },
 
   social_links: {
@@ -28,7 +27,6 @@ const professorProfileSchema = mongoose.Schema({
   },
 
   about: { type: String },
-
   profile_pic: { type: String },
 
   education: {
@@ -37,23 +35,21 @@ const professorProfileSchema = mongoose.Schema({
     year_passed: { type: Number, required: true },
   },
 
-
   research_fields: {
     type: String,
     required: true,
   },
 
-  publications: [{
-    paper_name: { type: String },
-    year_start: { type: Number },
-    year_end: { type: Number },
-    description: { type: String },
-  }],
-
+  publications: [
+    {
+      paper_name: { type: String },
+      year_start: { type: Number },
+      year_end: { type: Number },
+      description: { type: String },
+    },
+  ],
 });
 
-const professorProfile = mongoose.model('professorProfile', professorProfileSchema);
-
 module.exports = {
-  professorProfile,
+  professorProfile: mongoose.model('professorProfile', professorProfileSchema),
 };

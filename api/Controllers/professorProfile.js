@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const { professorProfile } = require('../Models/professor_profile');
+const { professorProfile } = require('../Models/professorProfile');
 const responseHandler = require('../Utils/responseHandler');
 
 exports.viewProfile = (req, res) => {
