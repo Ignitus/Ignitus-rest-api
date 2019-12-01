@@ -12,7 +12,7 @@
       const statusCode = 200;
       const data = { statusCode: 200 };
       data.data = response;
-      data.userInfo = information
+      data.userInfo = information;
       data.message = 'Success';
       data.success = true;
       res.status(statusCode).json(data);

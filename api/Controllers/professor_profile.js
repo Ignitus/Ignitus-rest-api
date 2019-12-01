@@ -1,8 +1,8 @@
 
 const mongoose = require('mongoose');
 
-const {studentProfile} = require('../Models/student_profile');
-const {professorProfile} = require('../Models/professor_profile');
+const { studentProfile } = require('../Models/student_profile');
+const { professorProfile } = require('../Models/professor_profile');
 const responseHandler = require('../Utils/responseHandler');
 
 

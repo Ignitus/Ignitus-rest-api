@@ -392,14 +392,15 @@ exports.resetPassword = function (req, res) {
     .exec()
     .then((user) => {
       if (user == null) {
-        //console.error('password reset link is invalid or has expired');
-        return res.status(403).send(`<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>`);
-      } 
-       else return res.redirect(`http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`);
+        // console.error('password reset link is invalid or has expired');
+        return res.status(403).send('<p>Password reset link is invalid or has expired.</p><p><a href=\'http://www.ignitus.org/forgotPassword\'>Click here</a> to recover your account</p>');
+      }
+      return res.redirect(`http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
-      responseHandler.error(res, 'Invalid token')});
+      responseHandler.error(res, 'Invalid token');
+    });
 };
 
 // Password update handler

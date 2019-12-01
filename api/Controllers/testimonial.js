@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 
-const Testimonial = require('../models/testimonial').Testimonial;
+const { Testimonial } = require('../models/testimonial');
 const responseHandler = require('../Utils/responseHandler');
 
 // adding a new testimonial

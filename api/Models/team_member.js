@@ -21,4 +21,4 @@ const teamMemberProfile = mongoose.model('teamMemberProfile', teamMemberProfileS
 
 module.exports = {
   teamMemberProfile,
-}
+};

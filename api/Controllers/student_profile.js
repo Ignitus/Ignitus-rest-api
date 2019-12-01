@@ -1,8 +1,8 @@
 
 const mongoose = require('mongoose');
 
-const studentProfile = require('../Models/student_profile').studentProfile;
-const professorProfile = require('../Models/professor_profile').professorProfile;
+const { studentProfile } = require('../Models/student_profile');
+const { professorProfile } = require('../Models/professor_profile');
 const responseHandler = require('../Utils/responseHandler');
 
 exports.viewProfile = function (req, res) {

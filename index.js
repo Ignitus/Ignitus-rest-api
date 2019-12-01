@@ -26,7 +26,7 @@ const redis = require('./api/Utils/redisDb');
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
 // setup cache
-app.use('/', (req, res, next) => { 
+app.use('/', (req, res, next) => {
   if (redis.connected === false) {
     cache = new GraphQLSimpleCache();
     redis.connected = null;
@@ -38,7 +38,7 @@ app.use('/', (req, res, next) => {
 // db connection
 
 const db = mongoose.connection;
-mongoose.connect('');
+mongoose.connect('mongodb://ignitus:ignitus001@ds046037.mlab.com:46037/ignitus');
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -86,7 +86,7 @@ app.post('/subscribe', (req, res) => {
 });
 
 app.use('/', index);
-console.log('ssss')
+console.log('ssss');
 app.use('/', users);
 app.use('/', internships);
 app.use('/', testimonial);
@@ -99,7 +99,6 @@ app.use((req, res, next) => {
   err.status = 404;
   next(err);
 });
-
 
 
 // error handler
