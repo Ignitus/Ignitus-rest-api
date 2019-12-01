@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 
@@ -7,12 +8,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const webpush = require('web-push');
 const mongoose = require('mongoose');
-const index = require('./routes/index');
-const users = require('./routes/users');
-const internships = require('./routes/internships');
-const testimonial = require('./routes/testimonial');
-const teamMember = require('./routes/teamMember');
-const redis = require('./helper/redisDb');
+const index = require('./api/Routes/index');
+const users = require('./api/Routes/users');
+const internships = require('./api/Routes/internships');
+const testimonial = require('./api/Routes/testimonial');
+const teamMember = require('./api/Routes/teamMember');
+const redis = require('./api/Utils/redisDb');
 
 // const config = require('./config');
 

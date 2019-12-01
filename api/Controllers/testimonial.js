@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const Testimonial = require('../models/testimonial').Testimonial;
-const responseHandler = require('../helper/responseHandler');
+const responseHandler = require('../Utils/responseHandler');
 
 // adding a new testimonial
 exports.addTestimonial = function (req, res) {

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const responseHandler = require('../helper/responseHandler');
+const responseHandler = require('../Utils/responseHandler');
 // mailing credentials
 const smtpTransport = nodemailer.createTransport({
   service: 'Gmail',
@@ -16,9 +16,9 @@ const smtpTransport = nodemailer.createTransport({
   },
 });
 const Linkedin = require('node-linkedin')('81akrst1faj5nl', 'HVgpZ5vjF5gM1A3N');
-const { professorProfile } = require('../models/professor_profile');
-const { studentProfile } = require('../models/student_profile');
-const { Users } = require('../models/user');
+const { professorProfile } = require('../Models/professor_profile');
+const { studentProfile } = require('../Models/student_profile');
+const { Users } = require('../Models/user');
 
 const scope = ['r_basicprofile', 'r_emailaddress'];
 let rand; let mailOptions; let host; let link;

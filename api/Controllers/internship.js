@@ -1,8 +1,8 @@
 
 const mongoose = require('mongoose');
 
-const Internships = require('../models/internship').Internships;
-const responseHandler = require('../helper/responseHandler');
+const Internships = require('../Models/internship').Internships;
+const responseHandler = require('../Utils/responseHandler');
 
 // adding a new intership
 exports.addInternship = function (req, res) {

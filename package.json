@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "start-dev": "nodemon --watch app.js --watch bin --watch config --watch controllers --watch helper --watch middlewares --watch models --watch routes --watch views -e js,json ./bin/www",
+    "start": "node index.js",
+    "start-dev": "nodemon --watch index.js --watch config --watch Controllers --watch Utils --watch Middlewares --watch Models --watch Routes --watch Views -e js,json index.js",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix",
     "test": "nyc mocha **/*.spec.js"

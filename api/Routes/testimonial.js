@@ -1,9 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const verify = require('../middlewares/check-auth');
+const verify = require('../Middlewares/check-auth');
 
-const Testimonial = require('../controllers/testimonial');
+const Testimonial = require('../Controllers/testimonial');
 
 // Routes handling testimonial pages:
 

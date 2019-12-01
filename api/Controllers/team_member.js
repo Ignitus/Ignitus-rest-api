@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'); // eslint-disable-line 
 
-const { teamMemberProfile } = require('../models/team_member');
-const responseHandler = require('../helper/responseHandler');
+const { teamMemberProfile } = require('../Models/team_member');
+const responseHandler = require('../Utils/responseHandler');
 
 // fetch all TeamMembers
 

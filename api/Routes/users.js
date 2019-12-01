@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const Users = require('../controllers/user');
+const Users = require('../Controllers/user');
 
 // routes dealing with user collection
 // used different routes for student and professor

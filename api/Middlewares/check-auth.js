@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const responseHandler = require('../helper/responseHandler');
+const responseHandler = require('../Utils/responseHandler');
 
 exports.checkStudentAuth = function (req, res, next) {
   try {

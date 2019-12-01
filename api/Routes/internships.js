@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const Internships = require('../controllers/internship');
+const Internships = require('../Controllers/internship');
 
 // Routes handling internship pages:
 
