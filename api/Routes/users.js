@@ -19,7 +19,10 @@ router.get(
   Users.professorlinkedlogincallback,
 );
 
-router.get('/verify', Users.verify);
+/**
+ * User verification disabled for now.
+ * router.get('/verify', Users.verify);
+ */
 
 router.post('/forgotPassword', Users.forgotPassword);
 router.get('/reset', Users.resetPassword);

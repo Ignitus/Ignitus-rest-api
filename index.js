@@ -1,4 +1,4 @@
-
+/* eslint-disable no-console */
 const express = require('express');
 const path = require('path');
 
@@ -7,7 +7,8 @@ const { GraphQLSimpleCache } = require('graphql-simple-cache');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const webpush = require('web-push');
-const mongoose = require('mongoose');
+
+const connectDB = require('./api/Configuration/db');
 const index = require('./api/Routes/index');
 const users = require('./api/Routes/users');
 const internships = require('./api/Routes/internships');
@@ -16,7 +17,6 @@ const teamMember = require('./api/Routes/teamMember');
 const redis = require('./api/Utils/redisDb');
 
 // const config = require('./config');
-
 // const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 // const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
@@ -25,7 +25,6 @@ const redis = require('./api/Utils/redisDb');
 
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
-// setup cache
 app.use('/', (req, res, next) => {
   if (redis.connected === false) {
     cache = new GraphQLSimpleCache();
@@ -35,33 +34,19 @@ app.use('/', (req, res, next) => {
   return next();
 });
 
-// db connection
-
-const db = mongoose.connection;
-mongoose.connect('mongodb://ignitus:ignitus001@ds046037.mlab.com:46037/ignitus');
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('Connected correctly to db');
-});
-
-// view engine not required so commented it
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
-
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-// app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// CORS protection (Cross origin request serve)
+// eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Origin', 'Origin, X-Requested-With, Content_Type,Accept,Authorization');
+  res.header(
+    'Access-Control-Allow-Origin',
+    'Origin, X-Requested-With, Content_Type,Accept,Authorization',
+  );
 
   if (req.method === 'OPTIONS') {
     req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
@@ -70,7 +55,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes middleware
 app.post('/subscribe', (req, res) => {
   const subscription = req.body;
   res.status(200).json({});
@@ -78,7 +62,10 @@ app.post('/subscribe', (req, res) => {
   webpush
     .sendNotification(subscription, payload)
     .then(() => {
-      console.log('sendNotification success', JSON.stringify({ title: 'Greetings by Igntius!' }));
+      console.log(
+        'sendNotification success',
+        JSON.stringify({ title: 'Greetings by Igntius!' }),
+      );
     })
     .catch((error) => {
       console.error('sendNotification ERROR', error.stack);
@@ -86,30 +73,31 @@ app.post('/subscribe', (req, res) => {
 });
 
 app.use('/', index);
-console.log('ssss');
 app.use('/', users);
 app.use('/', internships);
 app.use('/', testimonial);
 app.use('/', teamMember);
 
-app.listen(4000);
-// catch 404 and forward to error handler
+const PORT = 4000;
+connectDB()
+  .then(() => {
+    app.listen(4000, () => console.log(`app is listening to ${PORT}`));
+  })
+  .catch((err) => {
+    console.error('App starting error:', err.stack);
+    process.exit(1);
+  });
+
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
+app.use((err, req, res) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
-  // res.render('error');
 });
 
 module.exports = app;

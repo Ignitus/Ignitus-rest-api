@@ -1,0 +1,9 @@
+{
+  "watch": ["api"],
+  "ext": "js,json",
+  "ignore": ["*.test.js"],
+  "delay": "3",
+  "execMap": {
+    "ts": "ts-node"
+  }
+}
