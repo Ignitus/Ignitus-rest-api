@@ -12,7 +12,6 @@ const studentProfileSchema = mongoose.Schema({
 
   name: {
     type: String,
-    required: true,
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
   },
 
@@ -34,12 +33,12 @@ const studentProfileSchema = mongoose.Schema({
   },
 
   profile_pic: { type: String },
-  resume: { type: String, required: true },
+  resume: { type: String },
 
   education: {
-    college_name: { type: String, required: true },
-    position: { type: String, required: true },
-    year_passed: { type: Number, required: true },
+    college_name: { type: String },
+    position: { type: String },
+    year_passed: { type: Number },
   },
 
   experience: [

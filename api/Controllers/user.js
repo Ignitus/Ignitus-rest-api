@@ -56,16 +56,16 @@ function socialLoginCheck(req, res, user_role, data) {
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
-        return responseHandler.error(res);
+        return responseHandler.error(res, err);
       }
       Users.update(
         { email: req.body.email },
         { $set: { password: hash } },
         (error, result) => {
           if (error) {
-            return responseHandler.error(error);
+            return responseHandler.error(res, error);
           }
-          return responseHandler.success(result);
+          return responseHandler.success(res, result);
         },
       );
     });
@@ -85,7 +85,7 @@ function profileDataInsertion(email, user_role) {
       email,
     });
   }
-  profile.save();
+  return profile.save();
 }
 
 function register(req, res, user_role) {
@@ -94,7 +94,6 @@ function register(req, res, user_role) {
     .then((data) => {
       if (
         data.length >= 1
-        /* && data[0].verified === 1 */
         && user_role === data[0].user_role
         && !data[0].password
         && data[0].linkedin.profile_url
@@ -105,14 +104,14 @@ function register(req, res, user_role) {
       } else if (data.length >= 1 /* && data[0].verified === 1 */) {
         return responseHandler.error(res, 'User already exists!.', 409);
       } else {
-      /* Email verification disabled.
+        /* Email verification disabled.
       else if (data.length >= 1 && data[0].verified === 0) {
         return responseHandler.error(res, 'Email ID not verified', 401);
       }
       */
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
-            return responseHandler.error(res);
+            return responseHandler.error(res, err);
           }
           let rand = Math.floor(Math.random() * 100 + 54);
           rand = rand.toString();
@@ -132,8 +131,7 @@ function register(req, res, user_role) {
           user
             .save()
             .then((response) => {
-              profileDataInsertion(req.body.email, user_role);
-              return responseHandler.success(response);
+              profileDataInsertion(req.body.email, user_role).then(() => responseHandler.success(res, response));
 
               /* Email verification disabled durning registration.
               rand = Math.floor(Math.random() * 100 + 54);
@@ -173,7 +171,7 @@ function register(req, res, user_role) {
                 }
               }); */
             })
-            .catch(error => responseHandler.error(error));
+            .catch(error => responseHandler.error(res, error));
         });
       }
     });
@@ -204,7 +202,7 @@ exports.login = (req, res) => {
       */
       bcrypt.compare(req.body.password, data[0].password, (err, result) => {
         if (err) {
-          return responseHandler.error(res);
+          return responseHandler.error(res, err);
         }
         if (result) {
           const token = jwt.sign(
@@ -227,7 +225,7 @@ exports.login = (req, res) => {
         return responseHandler.error(res, 'Wrong password.', 401);
       });
     })
-    .catch(err => responseHandler.error(err));
+    .catch(err => responseHandler.error(res, err));
 };
 
 /* User verification disabled for now.
@@ -372,19 +370,19 @@ exports.getUserInfoFromToken = (req, res) => {
             user_role,
           });
         })
-        .catch(err => responseHandler.error(err, 'User not found.', 404));
+        .catch(err => responseHandler.error(res, err, 404));
     } catch (e) {
-      return responseHandler.error(e, 'Unauthorized.', 401);
+      return responseHandler.error(res, e, 401);
     }
   } else {
-    return responseHandler.error('Unauthorized.', 401);
+    return responseHandler.error(res, 'Unauthorized.', 401);
   }
 };
 
 // Forgot password-handler.
 exports.forgotPassword = (req, res) => {
   if (req.body.email === '') {
-    responseHandler.error('Email required.', 400);
+    responseHandler.error(res, 'Email required.', 400);
   }
   Users.findOne({ email: req.body.email })
     .exec()
@@ -420,7 +418,7 @@ exports.forgotPassword = (req, res) => {
           return responseHandler.success(res, response);
         });
       } else {
-        responseHandler.error('Email not found.', 400);
+        responseHandler.error(res, 'Email not found.', 400);
       }
     });
 };
@@ -447,7 +445,7 @@ exports.resetPassword = (req, res) => {
         );
     })
     .catch((err) => {
-      responseHandler.error(err, 'Invalid token.');
+      responseHandler.error(res, err, 'Invalid token.');
     });
 };
 
@@ -477,7 +475,7 @@ exports.updatePassword = (req, res) => {
             .exec();
         })
         .then(responseHandler.success(res, { message: 'Password updated.' }))
-        .catch(err => responseHandler.error(err, 'Password could not be updated.'));
+        .catch(err => responseHandler.error(res, err));
     })
-    .catch(error => responseHandler.error(error));
+    .catch(error => responseHandler.error(res, error));
 };

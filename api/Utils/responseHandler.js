@@ -2,13 +2,13 @@
 (function () {
   const responseHandler = {
     success(res, response, information) {
-      const statusCode = 200;
       const data = { statusCode: 200 };
       data.data = response;
       data.userInfo = information;
       data.message = 'Success';
       data.success = true;
-      res.status(statusCode).json(data);
+      data.statusCode = 200;
+      res.json(data);
     },
     error(res, message, statusCode) {
       const msg = message !== undefined && message.length > 0
