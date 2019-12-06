@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 const express = require('express');
 const path = require('path');
@@ -16,14 +17,15 @@ const testimonial = require('./api/Routes/testimonial');
 const teamMember = require('./api/Routes/teamMember');
 const redis = require('./api/Utils/redisDb');
 
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+// const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 // // Replace with your email
-webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
+// webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
+
 app.use('/', (req, res, next) => {
   if (redis.connected === false) {
     cache = new GraphQLSimpleCache();
@@ -41,16 +43,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
   res.header(
-    'Access-Control-Allow-Origin',
-    'Origin, X-Requested-With, Content_Type,Accept,Authorization',
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
-
-  if (req.method === 'OPTIONS') {
-    req.header('Access-Control-Allow-Origin', 'PUT,POST,PATCH,GET,DELETE');
-    return res.status(200).json({});
-  }
   next();
 });
 
