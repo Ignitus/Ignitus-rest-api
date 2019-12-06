@@ -74,10 +74,10 @@ app.use('/', internships);
 app.use('/', testimonial);
 app.use('/', teamMember);
 
-const PORT = 4000;
+const PORT = process.env.PORT || 3000;
 connectDB()
   .then(() => {
-    app.listen(4000, () => console.log(`app is listening to ${PORT}`));
+    app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('App starting error:', err.stack);
