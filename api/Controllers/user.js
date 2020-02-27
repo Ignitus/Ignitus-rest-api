@@ -72,17 +72,19 @@ function socialLoginCheck(req, res, user_role, data) {
   }
 }
 // inserting data into student profile or professor profile
-function profileDataInsertion(email, user_role) {
+function profileDataInsertion(email, username, user_role) {
   let profile;
   if (user_role === 'student') {
     profile = new studentProfile({
       _id: new mongoose.Types.ObjectId(),
       email,
+      username,
     });
   } else if (user_role === 'professor') {
     profile = new professorProfile({
       _id: new mongoose.Types.ObjectId(),
       email,
+      username,
     });
   }
   return profile.save();
@@ -92,89 +94,100 @@ function register(req, res, user_role) {
   Users.find({ email: req.body.email })
     .exec()
     .then((data) => {
-      if (
-        data.length >= 1
-        && user_role === data[0].user_role
-        && !data[0].password
-        && data[0].linkedin.profile_url
-        && data[0].linkedin.access_token
-      ) {
-        /* If the user is registered via socialMediaLogin and is trying to register via Email login. */
-        socialLoginCheck(req, res, user_role, data);
-      } else if (data.length >= 1 /* && data[0].verified === 1 */) {
-        return responseHandler.error(res, 'User already exists!.', 409);
-      } else {
-        /* Email verification disabled.
-      else if (data.length >= 1 && data[0].verified === 0) {
-        return responseHandler.error(res, 'Email ID not verified', 401);
-      }
-      */
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-            return responseHandler.error(res, err);
+        if (
+          data.length >= 1
+          && user_role === data[0].user_role
+          && !data[0].password
+          && data[0].linkedin.profile_url
+          && data[0].linkedin.access_token
+        ) {
+          /* If the user is registered via socialMediaLogin and is trying to register via Email login. */
+          socialLoginCheck(req, res, user_role, data);
+        } else if (data.length >= 1 /* && data[0].verified === 1 */) {
+          return responseHandler.error(res, 'User already exists!.', 409);
+        } else {
+            /* Email verification disabled.
+          else if (data.length >= 1 && data[0].verified === 0) {
+            return responseHandler.error(res, 'Email ID not verified', 401);
           }
-          let rand = Math.floor(Math.random() * 100 + 54);
-          rand = rand.toString();
-          const token = crypto
-            .createHash('md5')
-            .update(rand)
-            .digest('hex');
-
-          const user = new Users({
-            _id: new mongoose.Types.ObjectId(),
-            email: req.body.email,
-            password: hash,
-            user_role,
-            verified: 0,
-            verifytoken: token,
-          });
-          user
-            .save()
-            .then((response) => {
-              profileDataInsertion(req.body.email, user_role).then(() => responseHandler.success(res, response));
-
-              /* Email verification disabled durning registration.
-              rand = Math.floor(Math.random() * 100 + 54);
-              host = req.get('host');
-              link = `http://${req.get('host')}/verify?id=${val}&email=${
-                req.body.email
-              }`;
-              mailOptions = {
-                to: req.body.email,
-                subject: 'Please confirm your Email account',
-                html: `<h3>Welcome to Ignitus!</h3>
-                       <p>We're glad to have you here.</p>
-                       <p>Next, please verify your email address using the following link <a href=${link}>verify</a>,
-                       then log in using your email and the password
-                       that you set.<p>
-
-                       If you did not request an account at www.ignitus.org, you can safely ignore this email.
-
-                       <p>Sincerely</p>
-                       <p>Team Ignitus</p>
-                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`,
-              };
-
-              smtpTransport.sendMail(mailOptions, (error, response) => {
-                if (error) {
-                  // removing the in case mail is not send
-                  Users.findOneAndRemove({ email: req.body.email })
-                    .exec()
-                    .then((result) => {
-                      console.log(error);
-                      // res.end("error unable to send verification email.");
-                      return responseHandler.error(res, 'Unable to send mail');
-                    });
-                } else {
-                  profileDataInsertion(req.body.email, user_role);
-                  return responseHandler.success(res);
+          */
+          Users.find({ username: req.body.username })
+            .exec()
+            .then((data) => {
+                if(data.length) {
+                  return responseHandler.error(res, 'Username is taken!', 409)
                 }
-              }); */
+                else {
+                  bcrypt.hash(req.body.password, 10, (err, hash) => {
+                    if (err) {
+                      return responseHandler.error(res, err);
+                    }
+                    let rand = Math.floor(Math.random() * 100 + 54);
+                    rand = rand.toString();
+                    const token = crypto
+                      .createHash('md5')
+                      .update(rand)
+                      .digest('hex');
+
+                    const user = new Users({
+                      _id: new mongoose.Types.ObjectId(),
+                      username: req.body.username,
+                      email: req.body.email,
+                      password: hash,
+                      user_role,
+                      verified: 0,
+                      verifytoken: token,
+                    });
+                    user
+                      .save()
+                      .then((response) => {
+                        profileDataInsertion(req.body.email, req.body.username, user_role).then(() => responseHandler.success(res, response));
+
+                        /* Email verification disabled durning registration.
+                        rand = Math.floor(Math.random() * 100 + 54);
+                        host = req.get('host');
+                        link = `http://${req.get('host')}/verify?id=${val}&email=${
+                          req.body.email
+                        }`;
+                        mailOptions = {
+                          to: req.body.email,
+                          subject: 'Please confirm your Email account',
+                          html: `<h3>Welcome to Ignitus!</h3>
+                                 <p>We're glad to have you here.</p>
+                                 <p>Next, please verify your email address using the following link <a href=${link}>verify</a>,
+                                 then log in using your email and the password
+                                 that you set.<p>
+
+                                 If you did not request an account at www.ignitus.org, you can safely ignore this email.
+
+                                 <p>Sincerely</p>
+                                 <p>Team Ignitus</p>
+                                 <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`,
+                        };
+
+                        smtpTransport.sendMail(mailOptions, (error, response) => {
+                          if (error) {
+                            // removing the in case mail is not send
+                            Users.findOneAndRemove({ email: req.body.email })
+                              .exec()
+                              .then((result) => {
+                                console.log(error);
+                                // res.end("error unable to send verification email.");
+                                return responseHandler.error(res, 'Unable to send mail');
+                              });
+                          } else {
+                            profileDataInsertion(req.body.email, user_role);
+                            return responseHandler.success(res);
+                          }
+                        }); */
+                })
+              })
+            }
             })
             .catch(error => responseHandler.error(res, error));
-        });
-      }
-    });
+          }
+      })
+    .catch(error => responseHandler.error(res, error));
 }
 
 exports.studentRegister = (req, res) => {
