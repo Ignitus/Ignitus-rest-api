@@ -17,11 +17,11 @@ const testimonial = require('./api/Routes/testimonial');
 const teamMember = require('./api/Routes/teamMember');
 const redis = require('./api/Utils/redisDb');
 
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+// const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+// const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
-// // Replace with your email
-webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
+// // // Replace with your email
+// webpush.setVapidDetails('mailto:divyanshu.r46956@gmail.com', publicVapidKey, privateVapidKey);
 
 const app = express();
 let cache = new GraphQLSimpleCache(redis);
