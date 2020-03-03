@@ -9,13 +9,12 @@ const studentProfile = require('../Controllers/studentProfile');
 
 router.get(
   '/student/profile',
-  checkAuth.checkStudentAuth,
+  checkAuth.verifyStudent,
   studentProfile.viewProfile,
 );
 
 router.get(
   '/professor/profile',
-  checkAuth.checkProfessorAuth,
   professorProfile.viewProfile,
 );
 
