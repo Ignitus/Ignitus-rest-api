@@ -9,7 +9,6 @@ describe('User Model', () => {
 
     u.validate((err) => {
       expect(err.errors.email).to.exist;
-      expect(err.errors.verified).to.exist;
       done();
     });
   });
