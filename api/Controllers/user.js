@@ -163,7 +163,7 @@ exports.login = (req, res) => {
             user_role: data[0].user_role,
           };
 
-          return responseHandler.success(res, { token }, { clientData });
+          return responseHandler.success(res, { token, clientData });
         }
         return responseHandler.error(res, 'Wrong password.', 401);
       });
