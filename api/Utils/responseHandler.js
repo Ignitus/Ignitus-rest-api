@@ -1,14 +1,10 @@
 // eslint-disable-next-line func-names
 (function () {
   const responseHandler = {
-    success(res, response, information) {
-      const data = { statusCode: 200 };
-      data.data = response;
-      data.userInfo = information;
-      data.message = 'Success';
-      data.success = true;
-      data.statusCode = 200;
-      res.json(data);
+    success(res, response) {
+      res.json({
+        statusCode: 200, success: true, message: 'Success', data: response,
+      });
     },
     error(res, message, statusCode) {
       const msg = message !== undefined && message.length > 0
