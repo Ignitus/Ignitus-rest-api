@@ -14,20 +14,13 @@ const Linkedin = require('node-linkedin')(
   process.env.LINKEDIN_APP_ID,
   process.env.LINKEDIN_SECRET,
 );
-const nodemailer = require('nodemailer');
-const responseHandler = require('../Utils/responseHandler');
 
-const smtpTransport = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const responseHandler = require('../Utils/responseHandler');
+const config = require('../Configuration/config');
 
 /*
- * Feature Reuest Update, Not Neede atm.
-
+ * Feature Reuest Update, Not Needed atm.
+ * Snippet was a part of email verification after registration.
 const nodemailer = require('nodemailer');
 const smtpTransport = nodemailer.createTransport({
   service: 'Gmail',
@@ -36,14 +29,12 @@ const smtpTransport = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
 });
-
 */
 const { professorProfile } = require('../Models/professorProfile');
 const { studentProfile } = require('../Models/studentProfile');
 const { Users } = require('../Models/user');
 
 const scope = ['r_basicprofile', 'r_emailaddress'];
-const secret = 'secret';
 
 function socialLoginCheck(req, res, user_role, data) {
   if (
@@ -71,7 +62,7 @@ function socialLoginCheck(req, res, user_role, data) {
     });
   }
 }
-// inserting data into student profile or professor profile
+
 function profileDataInsertion(email, user_role) {
   let profile;
   if (user_role === 'student') {
@@ -99,79 +90,35 @@ function register(req, res, user_role) {
         && data[0].linkedin.profile_url
         && data[0].linkedin.access_token
       ) {
-        /* If the user is registered via socialMediaLogin and is trying to register via Email login. */
+        /* If the user is already registered through LinkedIn & trying to register through email. */
         socialLoginCheck(req, res, user_role, data);
-      } else if (data.length >= 1 /* && data[0].verified === 1 */) {
+      } else if (data.length >= 1) {
         return responseHandler.error(res, 'User already exists!.', 409);
       } else {
-        /* Email verification disabled.
-      else if (data.length >= 1 && data[0].verified === 0) {
-        return responseHandler.error(res, 'Email ID not verified', 401);
-      }
-      */
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
+        bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
           if (err) {
             return responseHandler.error(res, err);
           }
-          let rand = Math.floor(Math.random() * 100 + 54);
-          rand = rand.toString();
-          const token = crypto
-            .createHash('md5')
-            .update(rand)
-            .digest('hex');
+          const randomNumberGeneration = Math.floor(
+            Math.random() * 100 + 54,
+          ).toString();
+          const accessToken = crypto
+            .createHash(config.hashingType)
+            .update(randomNumberGeneration)
+            .digest(config.hashingDigest);
 
           const user = new Users({
             _id: new mongoose.Types.ObjectId(),
             email: req.body.email,
-            password: hash,
+            password: hashedPassword,
             user_role,
-            verified: 0,
-            verifytoken: token,
+            verifytoken: accessToken,
           });
           user
             .save()
             .then((response) => {
               profileDataInsertion(req.body.email, user_role).then(() => responseHandler.success(res, response));
-
-              /* Email verification disabled durning registration.
-              rand = Math.floor(Math.random() * 100 + 54);
-              host = req.get('host');
-              link = `http://${req.get('host')}/verify?id=${val}&email=${
-                req.body.email
-              }`;
-              mailOptions = {
-                to: req.body.email,
-                subject: 'Please confirm your Email account',
-                html: `<h3>Welcome to Ignitus!</h3>
-                       <p>We're glad to have you here.</p>
-                       <p>Next, please verify your email address using the following link <a href=${link}>verify</a>,
-                       then log in using your email and the password
-                       that you set.<p>
-
-                       If you did not request an account at www.ignitus.org, you can safely ignore this email.
-
-                       <p>Sincerely</p>
-                       <p>Team Ignitus</p>
-                       <p><a href='https://www.ignitus.org/'>https://www.ignitus.org/</a></p>`,
-              };
-
-              smtpTransport.sendMail(mailOptions, (error, response) => {
-                if (error) {
-                  // removing the in case mail is not send
-                  Users.findOneAndRemove({ email: req.body.email })
-                    .exec()
-                    .then((result) => {
-                      console.log(error);
-                      // res.end("error unable to send verification email.");
-                      return responseHandler.error(res, 'Unable to send mail');
-                    });
-                } else {
-                  profileDataInsertion(req.body.email, user_role);
-                  return responseHandler.success(res);
-                }
-              }); */
-            })
-            .catch(error => responseHandler.error(res, error));
+            });
         });
       }
     });
@@ -193,13 +140,8 @@ exports.login = (req, res) => {
     })
     .then((data) => {
       if (data.length < 1) {
-        return responseHandler.error(res, 'Invalid user!.', 401);
+        return responseHandler.error(res, 'Invalid user!', 401);
       }
-      /* Email verification disabled.
-        if (data.length === 1 && data[0].verified === 0) {
-          return responseHandler.error(res, 'Email ID not verified', 401);
-        }
-      */
       bcrypt.compare(req.body.password, data[0].password, (err, result) => {
         if (err) {
           return responseHandler.error(res, err);
@@ -210,8 +152,9 @@ exports.login = (req, res) => {
               email: data[0].email,
               user_role: data[0].user_role,
               userId: data[0]._id,
+              admin: data[0].admin || false,
             },
-            secret,
+            config.secretKey,
             { expiresIn: '1h' },
           );
 
@@ -293,7 +236,7 @@ function linkedinlogin(req, res, user_role) {
                   user_role: data[0].user_role,
                   userId: response[0]._id,
                 },
-                secret,
+                config.secretKey,
                 { expiresIn: '1h' },
               );
               return responseHandler.success(res, { token });
@@ -328,7 +271,7 @@ function linkedinlogin(req, res, user_role) {
                     user_role: data[0].user_role,
                     userId: result[0]._id,
                   },
-                  secret,
+                  config.secretKey,
                   { expiresIn: '1h' },
                 );
                 return responseHandler.success(res, { token });
@@ -359,7 +302,7 @@ exports.getUserInfoFromToken = (req, res) => {
   if ((req.headers && req.headers.authorization) || req.body.token) {
     const authorization = req.headers.authorization || req.body.token;
     try {
-      const decodedToken = jwt.verify(authorization, secret);
+      const decodedToken = jwt.verify(authorization, config.secretKey);
       Users.findOne({
         _id: decodedToken.userId,
       })

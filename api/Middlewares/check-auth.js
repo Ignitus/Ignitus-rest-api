@@ -1,32 +1,63 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
-const responseHandler = require('../Utils/responseHandler');
+const config = require('../Configuration/config');
 
-// eslint-disable-next-line consistent-return
-exports.checkStudentAuth = (req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, 'secret');
-    if (decoded.user_role === 'student') {
-      req.userData = decoded;
+exports.verifyOrdinaryUser = (req, res, next) => {
+  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (token) {
+    jwt.verify(token, config.secretKey, (err, decoded) => {
+      if (err) {
+        return next(err);
+      }
+      req.decoded = decoded;
       next();
-    } else {
-      return responseHandler.error(res, 'Unauthorized', 401);
-    }
-  } catch (error) {
-    return responseHandler.error(res, 'Unauthorized', 401);
+    });
+  } else {
+    res.json({
+      statusCode: 500,
+      success: false,
+      message: 'No token provided!',
+    });
   }
 };
-exports.checkProfessorAuth = (req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, 'secret');
-    if (decoded.user_role === 'professor') {
-      req.userData = decoded;
-      next();
-    } else {
-      responseHandler.error(res, 'Unauthorized', 401);
-    }
-  } catch (error) {
-    responseHandler.error(res, 'Unauthorized', 401);
+
+exports.verifyStudent = (req, res, next) => {
+  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (token) {
+    jwt.verify(token, config.secretKey, (err, decoded) => {
+      if (err) {
+        return next(err);
+      }
+      if (decoded.user_role === 'student') {
+        req.decoded = decoded;
+        next();
+      } else {
+        res.json({
+          statusCode: 403,
+          success: false,
+          message: 'You are not authorized to perform this operation !',
+        });
+      }
+    });
+  } else {
+    res.json({
+      statusCode: 500,
+      success: false,
+      message: 'No token provided!',
+    });
+  }
+};
+
+/* Next middleware to-hop-in :) */
+exports.verifyAdmin = (req, res, next) => {
+  if (req.decoded.admin) {
+    next();
+  } else {
+    res.json({
+      statusCode: 500,
+      success: false,
+      message: 'You are not authorized to perform this operation, Only admins are authorized!',
+    });
   }
 };
