@@ -6,18 +6,22 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
   },
-  password: { type: String },
+  admin: {
+    type: Boolean,
+    default: false,
+  },
+  password: { type: String, required: true },
   user_role: { type: String, required: true },
-  verified: { type: Number, required: true },
-  verifytoken: { type: String },
+  verified: { type: Number, default: false },
+  verifytoken: { type: String, default: null },
   linkedin: {
-    profile_url: { type: String },
-    access_token: { type: String },
+    profile_url: { type: String, default: null },
+    access_token: { type: String, default: null },
   },
-  resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date },
+  resetPasswordToken: { type: String, default: null },
+  resetPasswordExpires: { type: Date, default: null },
 });
 
 const users = mongoose.model('users', userSchema);
