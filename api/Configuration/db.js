@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const config = require('./config.js');
 
 module.exports = function connectDB() {
   return mongoose.connect(
-    'mongodb://ignitus:ignitus001@ds046037.mlab.com:46037/ignitus',
+    config.mongoUrl,
   );
 };
