@@ -11,27 +11,26 @@
 
 5. **Enjoy!**
 
-## Setup locally
+## Setup locally.
 
-* Clone or download the repo. into any fresh temporary folder.
+* Fork the repo ```https://github.com/Ignitus/Ignitus-rest-api```
+
+* Clone the repository.
 
     ``` git clone https://github.com/Ignitus/Ignitus-rest-api```
 
-* Cd into that root folder you just cloned locally.
+* Navigate into cloned repository.
 
     ``` cd Ignitus-rest-api ```
 
-* Open terminal in the current folder and to install all dependencies type.
+* Open terminal execute following commands.
 
-    ``` npm install ```
+    ``` npm install && npm run start-dev ```
 
-* Now typing
+* Navigate to http://localhost:3000
 
-    ``` npm start ```
 
-* will start a server ! on http://localhost:3000
-
-## Setup Via Docker
+## Setup Via Docker.
 
 * Run ```docker-compose up```
 
@@ -39,44 +38,38 @@ Add the mongoURL in db.js and then recreate the docker image.
  
  * ```docker-compose up -d --force-recreate --build```
 
- ## Running locally via `start-dev` or `start` script and mLab
 
- * create `dev.js` in `/config`
+ ## Database Setup.
 
-```javascript
-const username = '';
+This is our .env config file.
 
-const password = '';
-
+```js
 module.exports = {
-  dbURI: `mongodb://${username}:${password}@dsxxxxxx.mlab.com:xxxx/name`,
+  secretKey: '', /* In dev. replace with any secret key that you have in find. */
+  mongoUrl: '', /* You can either run the mongoDB cluster locally or create an mlab account. */
+  hashingType: 'md5', /* In dev. you can use md5 hashing. */
+  hashingDigest: 'hex', /* In dev. you can use hex as a digest. */
+  
+  /* If you will comment out his line you won't need below-mentioned keys https://github.com/Ignitus/Ignitus-rest-api/blob/master/index.js#L21 */
+  
+  privateVapidEmail: '',  
+  publicVapidKey: '',
+  privateVapidKey: ',
 };
- ```
 
- > You will need to create an mLab account, database for this project and a user within that database. After doing so, you will copy the database user creds and the database URI to `/config/dev.js`
+```
 
- * In `/config/db.js`, uncomment lines 3 and 5 and comment line 7 so that it appears like this:
+As mentioned to setup mongoDB you can either run the mongoDB cluster locally or use mlab, I found this blog post helpful to set it up. https://medium.com/@umarmagaji/connecting-mongodb-using-mlab-with-node-js-application-fd3de5b94a7a 
 
- ```javascript
- const dev = require('./dev');
-
-mongoose.connect(dev.dbURI);
-
-// mongoose.connect(process.env.DATABASE_URI);
- ```
+Moreover, We are also using redis as a caching database to enhance performance.
+Fortunately, No configuration is needed other than to start Redis locally.
  
- * Now you can run `start-dev` or `start` scripts and have it connect to your mLab instance
+## Tools
 
- > Note: `/config/dev.js` is gitignored so it will not bbe pushed. Regardless, please ensure you aren't exposing your personal credentials.
+A pluggable and configurable linter tool for identifying and reporting on patterns in JavaScript.
+
+ ``` npm run lint ```
  
-## Linting
+ ``` npm run lint:fix ```
 
- * ``` npm run lint ```
- 
-## Fix Lint Warnings
 
- * ``` npm run lint:fix ```
-
- ## Redis
-
- * Redis is implemented a caching database to enhance performance.  No configuration is needed other than to start Redis locally.
