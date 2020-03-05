@@ -13,7 +13,7 @@
 
 ## Setup locally.
 
-* Fork the repo ```https://github.com/Ignitus/Ignitus-rest-api```
+* Fork the repository ```https://github.com/Ignitus/Ignitus-rest-api```
 
 * Clone the repository.
 
