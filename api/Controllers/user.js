@@ -14,20 +14,13 @@ const Linkedin = require('node-linkedin')(
   process.env.LINKEDIN_APP_ID,
   process.env.LINKEDIN_SECRET,
 );
-const nodemailer = require('nodemailer');
-const responseHandler = require('../Utils/responseHandler');
 
-const smtpTransport = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const responseHandler = require('../Utils/responseHandler');
+const config = require('../Configuration/config');
 
 /*
- * Feature Reuest Update, Not Neede atm.
-
+ * Feature Reuest Update, Not Needed atm.
+ * Snippet was a part of email verification after registration.
 const nodemailer = require('nodemailer');
 const smtpTransport = nodemailer.createTransport({
   service: 'Gmail',
@@ -36,14 +29,12 @@ const smtpTransport = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
 });
-
 */
 const { professorProfile } = require('../Models/professorProfile');
 const { studentProfile } = require('../Models/studentProfile');
 const { Users } = require('../Models/user');
 
 const scope = ['r_basicprofile', 'r_emailaddress'];
-const secret = 'secret';
 
 function socialLoginCheck(req, res, user_role, data) {
   if (
@@ -71,8 +62,10 @@ function socialLoginCheck(req, res, user_role, data) {
     });
   }
 }
+
 // inserting data into student profile or professor profile
 function profileDataInsertion(email, username, user_role) {
+
   let profile;
   if (user_role === 'student') {
     profile = new studentProfile({
@@ -206,13 +199,8 @@ exports.login = (req, res) => {
     })
     .then((data) => {
       if (data.length < 1) {
-        return responseHandler.error(res, 'Invalid user!.', 401);
+        return responseHandler.error(res, 'Invalid user!', 401);
       }
-      /* Email verification disabled.
-        if (data.length === 1 && data[0].verified === 0) {
-          return responseHandler.error(res, 'Email ID not verified', 401);
-        }
-      */
       bcrypt.compare(req.body.password, data[0].password, (err, result) => {
         if (err) {
           return responseHandler.error(res, err);
@@ -223,8 +211,9 @@ exports.login = (req, res) => {
               email: data[0].email,
               user_role: data[0].user_role,
               userId: data[0]._id,
+              admin: data[0].admin || false,
             },
-            secret,
+            config.secretKey,
             { expiresIn: '1h' },
           );
 
@@ -233,7 +222,7 @@ exports.login = (req, res) => {
             user_role: data[0].user_role,
           };
 
-          return responseHandler.success(res, { token }, { clientData });
+          return responseHandler.success(res, { token, clientData });
         }
         return responseHandler.error(res, 'Wrong password.', 401);
       });
@@ -306,7 +295,7 @@ function linkedinlogin(req, res, user_role) {
                   user_role: data[0].user_role,
                   userId: response[0]._id,
                 },
-                secret,
+                config.secretKey,
                 { expiresIn: '1h' },
               );
               return responseHandler.success(res, { token });
@@ -341,7 +330,7 @@ function linkedinlogin(req, res, user_role) {
                     user_role: data[0].user_role,
                     userId: result[0]._id,
                   },
-                  secret,
+                  config.secretKey,
                   { expiresIn: '1h' },
                 );
                 return responseHandler.success(res, { token });
@@ -372,7 +361,7 @@ exports.getUserInfoFromToken = (req, res) => {
   if ((req.headers && req.headers.authorization) || req.body.token) {
     const authorization = req.headers.authorization || req.body.token;
     try {
-      const decodedToken = jwt.verify(authorization, secret);
+      const decodedToken = jwt.verify(authorization, config.secretKey);
       Users.findOne({
         _id: decodedToken.userId,
       })
