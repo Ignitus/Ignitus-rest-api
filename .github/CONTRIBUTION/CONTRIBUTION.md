@@ -1,5 +1,5 @@
 
-# Contributing
+### Contributing
 
 1. Create your **branch**: ```git checkout -b my-new-feature```
 
@@ -11,26 +11,27 @@
 
 5. **Enjoy!**
 
-## Setup locally.
+### Setup locally.
 
-* Fork the repository ```https://github.com/Ignitus/Ignitus-rest-api```
+1. Fork the repository.
+    ```https://github.com/Ignitus/Ignitus-rest-api```
 
-* Clone the repository.
+2. Clone the repository.
 
     ``` git clone https://github.com/Ignitus/Ignitus-rest-api```
 
-* Navigate into cloned repository.
+3. Navigate into cloned repository.
 
     ``` cd Ignitus-rest-api ```
 
-* Open terminal execute following commands.
+4. Open terminal execute following commands.
 
     ``` npm install && npm run start-dev ```
 
-* Navigate to http://localhost:3000
+5. Navigate to http://localhost:3000
 
 
-## Setup Via Docker.
+### Setup Via Docker.
 
 * Run ```docker-compose up```
 
@@ -39,7 +40,7 @@ Add the mongoURL in db.js and then recreate the docker image.
  * ```docker-compose up -d --force-recreate --build```
 
 
- ## Database Setup.
+ ### Database Setup.
 
 This is our .env config file.
 
@@ -64,7 +65,7 @@ As mentioned to setup mongoDB you can either run the mongoDB cluster locally or 
 Moreover, We are also using redis as a caching database to enhance performance.
 Fortunately, No configuration is needed other than to start Redis locally.
  
-## Tools
+### Tools
 
 A pluggable and configurable linter tool for identifying and reporting on patterns in JavaScript.
 
