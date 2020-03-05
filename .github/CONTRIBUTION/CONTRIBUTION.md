@@ -1,5 +1,5 @@
 
-### Contributing
+### Contributing.
 
 1. Create your **branch**: ```git checkout -b my-new-feature```
 
@@ -65,7 +65,7 @@ As mentioned to setup mongoDB you can either run the mongoDB cluster locally or 
 Moreover, We are also using redis as a caching database to enhance performance.
 Fortunately, No configuration is needed other than to start Redis locally.
  
-### Tools
+### Tools.
 
 A pluggable and configurable linter tool for identifying and reporting on patterns in JavaScript.
 
