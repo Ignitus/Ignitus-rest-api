@@ -1,21 +1,19 @@
-const express = require('express');
-
+import express from 'express';
 const router = express.Router();
 
-const checkAuth = require('../Middlewares/check-auth');
-const professorProfile = require('../Controllers/professorProfile');
-const studentProfile = require('../Controllers/studentProfile');
-
+import { verifyStudent } from '../Middlewares/check-auth.js';
+import { viewProfessorProfile } from '../Controllers/professorProfile.js';
+import { viewStudentProfile } from '../Controllers/studentProfile.js';
 
 router.get(
   '/student/profile',
-  checkAuth.verifyStudent,
-  studentProfile.viewProfile,
+  verifyStudent,
+  viewStudentProfile,
 );
 
 router.get(
   '/professor/profile',
-  professorProfile.viewProfile,
+  viewProfessorProfile,
 );
 
-module.exports = router;
+export default router;
