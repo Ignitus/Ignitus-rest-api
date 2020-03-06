@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-const jwt = require('jsonwebtoken');
-const config = require('../Configuration/config');
+import jwt from 'jsonwebtoken';
+import { config } from '../Configuration/config.js';
 
 exports.verifyOrdinaryUser = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
