@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../Configuration/config.js';
 
-exports.verifyOrdinaryUser = (req, res, next) => {
+export const verifyOrdinaryUser = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
@@ -22,7 +22,7 @@ exports.verifyOrdinaryUser = (req, res, next) => {
   }
 };
 
-exports.verifyStudent = (req, res, next) => {
+export const verifyStudent = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
@@ -50,7 +50,7 @@ exports.verifyStudent = (req, res, next) => {
 };
 
 /* Next middleware to-hop-in :) */
-exports.verifyAdmin = (req, res, next) => {
+export const verifyAdmin = (req, res, next) => {
   if (req.decoded.admin) {
     next();
   } else {
