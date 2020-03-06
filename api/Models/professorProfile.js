@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const professorProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -50,6 +50,5 @@ const professorProfileSchema = mongoose.Schema({
   ],
 });
 
-module.exports = {
-  professorProfile: mongoose.model('professorProfile', professorProfileSchema),
-};
+const professorProfile = mongoose.model('professorProfile', professorProfileSchema);
+export default professorProfile;
