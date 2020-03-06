@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import logger from 'morgan'; 
+import { GraphQLSimpleCache } from 'graphql-simple-cache';
 
-const logger = require('morgan');
-const { GraphQLSimpleCache } = require('graphql-simple-cache');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const webpush = require('web-push');

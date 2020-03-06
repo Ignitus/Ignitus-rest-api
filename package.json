@@ -2,6 +2,7 @@
   "name": "loginregister",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "start-dev": "nodemon --watch index.js --watch api",
@@ -44,12 +45,12 @@
     "cookie-parser": "~1.4.3",
     "crypto": "^1.0.1",
     "express": "^4.16.3",
-    "graphql-simple-cache": "0.0.12",
+    "graphql-simple-cache": "0.0.13",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.12",
     "morgan": "~1.9.0",
     "node-linkedin": "^0.5.6",
-    "nyc": "^13.0.1",
+    "nyc": "^15.0.0",
     "redis": "^2.8.0",
     "web-push": "^3.3.3"
   },
