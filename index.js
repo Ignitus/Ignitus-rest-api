@@ -3,10 +3,8 @@
 import express from 'express';
 import path from 'path';
 import logger from 'morgan'; 
-import { GraphQLSimpleCache } from 'graphql-simple-cache';
-
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 const webpush = require('web-push');
 
 const connectDB = require('./api/Configuration/db');
@@ -15,22 +13,11 @@ const users = require('./api/Routes/users');
 const internships = require('./api/Routes/internships');
 const testimonial = require('./api/Routes/testimonial');
 const teamMember = require('./api/Routes/teamMember');
-const redis = require('./api/Utils/redisDb');
 const config = require('./api/Configuration/config');
 
 webpush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
 
 const app = express();
-let cache = new GraphQLSimpleCache(redis);
-
-app.use('/', (req, res, next) => {
-  if (redis.connected === false) {
-    cache = new GraphQLSimpleCache();
-    redis.connected = null;
-  }
-  req.cache = cache;
-  return next();
-});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
