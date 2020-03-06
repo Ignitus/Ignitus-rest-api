@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const studentProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -52,6 +52,5 @@ const studentProfileSchema = mongoose.Schema({
   ],
 });
 
-module.exports = {
-  studentProfile: mongoose.model('studentProfile', studentProfileSchema),
-};
+const studentProfile = mongoose.model('studentProfile', studentProfileSchema);
+export default studentProfile;

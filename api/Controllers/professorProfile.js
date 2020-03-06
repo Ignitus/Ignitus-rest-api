@@ -2,7 +2,7 @@
 import professorProfile from '../Models/professorProfile.js';
 import responseHandler from '../Utils/responseHandler.js';
 
-export const viewProfile = (req, res) => {
+export const viewProfessorProfile = (req, res) => {
   professorProfile
     .find({ email: req.userData.email })
     .exec()

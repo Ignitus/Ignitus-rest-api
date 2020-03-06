@@ -1,7 +1,7 @@
-const { studentProfile } = require('../Models/studentProfile');
-const responseHandler = require('../Utils/responseHandler');
+import studentProfile from '../Models/studentProfile.js';
+import responseHandler from '../Utils/responseHandler.js';
 
-exports.viewProfile = (req, res) => {
+export const viewStudentProfile = (req, res) => {
   studentProfile
     .find({ email: req.userData.email })
     .exec()
