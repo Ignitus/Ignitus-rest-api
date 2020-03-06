@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
-const config = require('./config.js');
+import mongoose from 'mongoose';
+import { config } from './config.js';
 
-module.exports = function connectDB() {
-  return mongoose.connect(
-    config.mongoUrl,
-  );
-};
+const connectDB = () => mongoose.connect(config.mongoUrl);
+export default connectDB;
