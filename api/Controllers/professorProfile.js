@@ -1,13 +1,15 @@
 /* eslint-disable max-len */
-const { professorProfile } = require('../Models/professorProfile');
-const responseHandler = require('../Utils/responseHandler');
+import professorProfile from '../Models/professorProfile.js';
+import responseHandler from '../Utils/responseHandler.js';
 
-exports.viewProfile = (req, res) => {
+export const viewProfile = (req, res) => {
   professorProfile
     .find({ email: req.userData.email })
     .exec()
-    .then(result => (result.length > 0
-      ? responseHandler.success(res, result)
-      : responseHandler.success(res, {})))
+    .then(result =>
+      result.length > 0
+        ? responseHandler.success(res, result)
+        : responseHandler.success(res, {})
+    )
     .catch(err => responseHandler.error(err, 'Profile not found', 404));
 };
