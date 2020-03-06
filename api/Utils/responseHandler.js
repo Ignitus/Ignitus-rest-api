@@ -17,5 +17,5 @@
     },
   };
 
-  module.exports = responseHandler;
+  export default responseHandler;
 }());
