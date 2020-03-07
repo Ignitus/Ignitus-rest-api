@@ -2,32 +2,41 @@
 /* eslint-disable no-console */
 import express from 'express';
 import path from 'path';
+
+/* for additional logging. */
 import logger from 'morgan'; 
+
+/* for push notification. */
+import webPush from 'web-push';
+
+/* parsing middlewares. */
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-const webpush = require('web-push');
 
-const connectDB = require('./api/Configuration/db');
-const index = require('./api/Routes/index');
-const users = require('./api/Routes/users');
-const internships = require('./api/Routes/internships');
-const testimonial = require('./api/Routes/testimonial');
-const teamMember = require('./api/Routes/teamMember');
-const config = require('./api/Configuration/config');
+/* db connection/envs. */
+import connectDB from './api/Configuration/db.js';
+import { config } from './api/Configuration/config.js';
 
-webpush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
+/* application routes. */
+import userRouter from './api/Routes/usersRouter.js';
+import opportunityRouter from './api/Routes/opportunityRouter.js';
+import studentRouter from './api/Routes/studentRouter.js';
+import professorRouter from './api/Routes/professorRouter.js';
+import testimonialRouter from './api/Routes/testimonialRouter.js';
+import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+
+webPush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
 
 const app = express();
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(path.resolve(), 'public')));
 
 // eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept',
@@ -52,11 +61,12 @@ app.post('/subscribe', (req, res) => {
     });
 });
 
-app.use('/', index);
-app.use('/', users);
-app.use('/', internships);
-app.use('/', testimonial);
-app.use('/', teamMember);
+app.use('/', studentRouter);
+app.use('/', professorRouter);
+app.use('/', userRouter);
+app.use('/', opportunityRouter);
+app.use('/', testimonialRouter);
+app.use('/', teamMembersrouter);
 
 const PORT = process.env.PORT || 3000;
 connectDB()
@@ -80,4 +90,4 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
 });
 
-module.exports = app;
+export default app;
