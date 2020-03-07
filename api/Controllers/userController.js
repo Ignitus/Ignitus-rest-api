@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-/* eslint-disable brace-style */
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
@@ -40,12 +39,12 @@ import Users from '../Models/userModel.js';
 
 function socialLoginCheck(req, res, user_role, data) {
   if (
-    data.length >= 1
-    /* && data[0].verified === 1 */
-    && user_role === data[0].user_role
-    && !data[0].password
-    && data[0].linkedin.profile_url
-    && data[0].linkedin.access_token
+    data.length >= 1 &&
+    /* && data[0].isUserVerified === 1 */
+    user_role === data[0].user_role &&
+    !data[0].password &&
+    data[0].linkedin.profileUrl &&
+    data[0].linkedin.accessToken
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
@@ -59,7 +58,7 @@ function socialLoginCheck(req, res, user_role, data) {
             return responseHandler.error(res, error);
           }
           return responseHandler.success(res, result);
-        },
+        }
       );
     });
   }
@@ -70,12 +69,12 @@ function profileDataInsertion(email, user_role) {
   if (user_role === 'student') {
     profile = new Student({
       _id: new mongoose.Types.ObjectId(),
-      email,
+      email
     });
   } else if (user_role === 'professor') {
     profile = new Professor({
       _id: new mongoose.Types.ObjectId(),
-      email,
+      email
     });
   }
   return profile.save();
@@ -84,13 +83,13 @@ function profileDataInsertion(email, user_role) {
 function register(req, res, user_role) {
   Users.find({ email: req.body.email })
     .exec()
-    .then((data) => {
+    .then(data => {
       if (
-        data.length >= 1
-        && user_role === data[0].user_role
-        && !data[0].password
-        && data[0].linkedin.profile_url
-        && data[0].linkedin.access_token
+        data.length >= 1 &&
+        user_role === data[0].user_role &&
+        !data[0].password &&
+        data[0].linkedin.profileUrl &&
+        data[0].linkedin.accessToken
       ) {
         /* If the user is already registered through LinkedIn & trying to register through email. */
         socialLoginCheck(req, res, user_role, data);
@@ -102,7 +101,7 @@ function register(req, res, user_role) {
             return responseHandler.error(res, err);
           }
           const randomNumberGeneration = Math.floor(
-            Math.random() * 100 + 54,
+            Math.random() * 100 + 54
           ).toString();
           const accessToken = crypto
             .createHash(config.hashingType)
@@ -114,13 +113,17 @@ function register(req, res, user_role) {
             email: req.body.email,
             password: hashedPassword,
             user_role,
-            verifytoken: accessToken,
+            verifytoken: accessToken
           });
-          user
-            .save()
-            .then((response) => {
-              profileDataInsertion(req.body.email, user_role).then(() => responseHandler.success(res, response));
+          user.save().then(response => {
+            profileDataInsertion(req.body.email, user_role).then(() => {
+              res.json({
+                statusCode: 200,
+                success: true,
+                message: 'Success',
+              });
             });
+          });
         });
       }
     });
@@ -138,9 +141,10 @@ export const login = (req, res) => {
   req.cache
     .load({
       options: { email: req.body.email },
-      loader: opts => Users.find(opts).exec(),
+      loader: opts => Users.find(opts).exec()
     })
-    .then((data) => {
+    .then(data => {
+      console.log('data', data);
       if (data.length < 1) {
         return responseHandler.error(res, 'Invalid user!', 401);
       }
@@ -154,15 +158,15 @@ export const login = (req, res) => {
               email: data[0].email,
               user_role: data[0].user_role,
               userId: data[0]._id,
-              admin: data[0].admin || false,
+              admin: data[0].admin || false
             },
             config.secretKey,
-            { expiresIn: '1h' },
+            { expiresIn: '1h' }
           );
 
           const clientData = {
             email: data[0].email,
-            user_role: data[0].user_role,
+            user_role: data[0].user_role
           };
 
           return responseHandler.success(res, { token, clientData });
@@ -179,13 +183,13 @@ export const getUserInfoFromToken = (req, res) => {
     try {
       const decodedToken = jwt.verify(authorization, config.secretKey);
       Users.findOne({
-        _id: decodedToken.userId,
+        _id: decodedToken.userId
       })
-        .then((user) => {
+        .then(user => {
           const { email, user_role } = user;
           return responseHandler.success(res, {
             email,
-            user_role,
+            user_role
           });
         })
         .catch(err => responseHandler.error(res, err, 404));
@@ -203,13 +207,13 @@ export const forgotPassword = (req, res) => {
   }
   Users.findOne({ email: req.body.email })
     .exec()
-    .then((user) => {
+    .then(user => {
       if (user) {
         const token = crypto.randomBytes(20).toString('hex');
         user
           .update({
             resetPasswordToken: token,
-            resetPasswordExpires: Date.now() + 360000,
+            resetPasswordExpires: Date.now() + 360000
           })
           .exec();
         // Send the mail to user's e-mail id.
@@ -219,14 +223,14 @@ export const forgotPassword = (req, res) => {
           to: req.body.email,
           subject: 'Link To Reset Password',
           html:
-            '<h3>Welcome to Ignitus!</h3>'
-            + '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>'
-            + '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>'
-            + `<a href=${link}>Reset password</a>`
-            + '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>'
-            + '<p>Sincerely</p>'
-            + '<p>Team Ignitus</p>'
-            + '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>',
+            '<h3>Welcome to Ignitus!</h3>' +
+            '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>' +
+            '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>' +
+            `<a href=${link}>Reset password</a>` +
+            '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>' +
+            '<p>Sincerely</p>' +
+            '<p>Team Ignitus</p>' +
+            '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>'
         };
         smtpTransport.sendMail(mailOptions, (error, response) => {
           if (error) {
@@ -244,23 +248,23 @@ export const resetPassword = (req, res) => {
   Users.findOne({
     resetPasswordToken: req.query.token,
     resetPasswordExpires: {
-      $gt: Date.now(),
-    },
+      $gt: Date.now()
+    }
   })
     .exec()
-    .then((user) => {
+    .then(user => {
       if (user) {
         return res.redirect(
-          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`,
+          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`
         );
       }
       return res
         .status(403)
         .send(
-          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>",
+          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>"
         );
     })
-    .catch((err) => {
+    .catch(err => {
       responseHandler.error(res, err, 'Invalid token.');
     });
 };
@@ -270,22 +274,22 @@ export const updatePassword = (req, res) => {
     email: req.body.email,
     resetPasswordToken: req.body.token,
     resetPasswordExpires: {
-      $gt: Date.now(),
-    },
+      $gt: Date.now()
+    }
   })
     .exec()
-    .then((user) => {
+    .then(user => {
       if (user == null) {
         return responseHandler.error(res, 'User does not exist.', 403);
       }
       bcrypt
         .hash(req.body.password, 10)
-        .then((hash) => {
+        .then(hash => {
           user
             .update({
               password: hash,
               resetPasswordToken: null,
-              resetPasswordExpires: null,
+              resetPasswordExpires: null
             })
             .exec();
         })
@@ -303,8 +307,8 @@ exports.verify = (req, res) => {
       { email: req.body.email, verifytoken: req.body.id },
       (err) => {
         if (!err) {
-          console.log('email is verified and token verified');
-          const newvalues = { $set: { verified: 1 } };
+          console.log('email is isUserVerified and token isUserVerified');
+          const newvalues = { $set: { isUserVerified: 1 } };
           const query = { email: req.query.email };
           Users.updateOne(query, newvalues, (error, result) => {
             if (error) {
@@ -339,8 +343,8 @@ function linkedinlogin(req, res, user_role) {
     (err, result) => {
       if (err) throw err;
 
-      const { access_token } = result;
-      const linkedin_user = Linkedin.init(access_token);
+      const { accessToken } = result;
+      const linkedin_user = Linkedin.init(accessToken);
       linkedin_user.people.me((error, data) => {
         if (error) throw error;
 
@@ -372,10 +376,10 @@ function linkedinlogin(req, res, user_role) {
           _id: new mongoose.Types.ObjectId(),
           email: user_email,
           user_role,
-          verified: 1,
+          isUserVerified: 1,
           linkedin: {
-            profile_url: user_linked_profile,
-            access_token,
+            profileUrl: user_linked_profile,
+            accessToken,
           },
         });
         // Save user.
@@ -403,7 +407,7 @@ function linkedinlogin(req, res, user_role) {
             });
         });
       });
-      // console.log(results.access_token);
+      // console.log(results.accessToken);
     },
   );
 }

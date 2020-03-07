@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { config } from '../Configuration/config.js';
+const { regularExpressionEmail } = config;
 
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -6,22 +8,22 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
-  },
-  admin: {
-    type: Boolean,
-    default: false,
+    match: regularExpressionEmail
   },
   password: { type: String, required: true },
   user_role: { type: String, required: true },
-  verified: { type: Number, default: false },
-  verifytoken: { type: String, default: null },
+  verifyToken: { type: String, default: null },
+  isUserVerified: { type: Number, default: false },
+  admin: {
+    type: Boolean,
+    default: false
+  },
   linkedin: {
-    profile_url: { type: String, default: null },
-    access_token: { type: String, default: null },
+    profileUrl: { type: String, default: null },
+    accessToken: { type: String, default: null }
   },
   resetPasswordToken: { type: String, default: null },
-  resetPasswordExpires: { type: Date, default: null },
+  resetPasswordExpiration: { type: Date, default: null }
 });
 
 const Users = mongoose.model('users', userSchema);
