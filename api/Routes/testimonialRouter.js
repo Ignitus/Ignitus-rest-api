@@ -4,17 +4,17 @@ import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth.js';
 const testimonialRouter = express.Router();
 
 import {
-  viewAllTestimonial,
-  viewTestimonialByID,
+  fetchAllTestimonial,
+  fetchTestimonialByID,
   addTestimonial,
   updateTestimonial,
   deleteTestimonial
 } from '../Controllers/testimonialController.js';
 
-testimonialRouter.get('/testimonials', viewAllTestimonial);
+testimonialRouter.get('/testimonials', fetchAllTestimonial);
 testimonialRouter.get(
   '/testimonial/:id',
-  viewTestimonialByID,
+  fetchTestimonialByID,
 );
 
 testimonialRouter.post(

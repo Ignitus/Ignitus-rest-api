@@ -7,12 +7,12 @@ export const addTestimonial = (req, res) => {
     err ? responseHandler.error(res) : responseHandler.success(res)
   );
 };
-export const viewAllTestimonial = (req, res) => {
+export const fetchAllTestimonial = (req, res) => {
   Testimonial.find({}, (err, docs) =>
     err ? responseHandler.error(res) : responseHandler.success(res, docs)
   );
 };
-export const viewTestimonialByID = (req, res) => {
+export const fetchTestimonialByID = (req, res) => {
   Testimonial.findById(req.params.id, (err, docs) =>
     !err && docs
       ? responseHandler.success(res, docs)
