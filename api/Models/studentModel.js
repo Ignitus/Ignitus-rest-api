@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { config } from '../Configuration/config.js';
 const { regularExpressionEmail, regularExpressionUserName } = config;
 
 const studentProfileSchema = mongoose.Schema({

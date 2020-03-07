@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
+import { config } from '../Configuration/config.js';
 const { regularExpressionUserName } = config;
 const teamMembersSchema = mongoose.Schema({
   username: {
-    type: regularExpressionUserName
+    type: String,
+    match: regularExpressionUserName
   },
   description: {
     type: String
