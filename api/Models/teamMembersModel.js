@@ -1,18 +1,18 @@
 import mongoose from 'mongoose';
 
 const teamMembersSchema = mongoose.Schema({
-  description: {
-    type: String
-  },
   title: {
     type: String,
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
   },
-  social_links: {
+  description: {
+    type: String
+  },
+  socialNetworkLinks: {
     angellist: { type: String },
     linkedin: { type: String }
   },
-  img: {
+  picture: {
     type: String
   }
 });

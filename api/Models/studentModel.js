@@ -2,54 +2,46 @@ import mongoose from 'mongoose';
 
 const studentProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-
   email: {
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
   },
-
-  name: {
+  username: {
     type: String,
-    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
+    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
   },
 
-  bio: { type: String },
+  description: { type: String },
   address: { type: String },
+  skills: [String],
+  profilePicture: { type: String },
+  curriculumVitae: { type: String },
 
-  social_links: {
+  socialNetworkLinks: {
     facebook: { type: String },
     github: { type: String },
-    linkedin: { type: String },
-    google_plus: { type: String },
+    linkedin: { type: String }
   },
-
-  skill: [String],
-
-  about: {
-    current_job: { type: String },
-    looking_for: { type: String },
+  employment: {
+    currentEmployment: { type: String },
+    openForOpportunities: { type: Boolean }
   },
-
-  profile_pic: { type: String },
-  resume: { type: String },
-
   education: {
-    college_name: { type: String },
+    universityName: { type: String },
     position: { type: String },
-    year_passed: { type: Number },
+    year_passed: { type: Number }
   },
-
   experience: [
     {
-      company_name: { type: String },
+      companyName: { type: String },
       position: { type: String },
-      year_start: { type: Number },
-      year_end: { type: Number },
-      description: { type: String },
-    },
-  ],
+      startDate: { type: Number },
+      endDate: { type: Number },
+      description: { type: String }
+    }
+  ]
 });
 
 const Student = mongoose.model('student', studentProfileSchema);
