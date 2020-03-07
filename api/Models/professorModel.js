@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { config } from '../Configuration/config';
+const { regularExpressionEmail, regularExpressionUserName } = config;
 
 const professorProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -7,47 +9,70 @@ const professorProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
+    match: regularExpressionEmail
   },
-
-  name: {
+  username: {
     type: String,
     required: true,
-    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
-  },
-
-  bio: { type: String },
-  address: { type: String },
-
-  social_links: {
-    facebook: { type: String },
-    github: { type: String },
-    linkedin: { type: String },
-    google_plus: { type: String },
+    match: regularExpressionUserName
   },
 
   about: { type: String },
-  profile_pic: { type: String },
+  address: { type: String },
+  profilePicture: { type: String },
+  curriculumVitae: { type: String },
+
+  socialNetworkLinks: {
+    facebook: { type: String },
+    github: { type: String },
+    linkedin: { type: String }
+  },
+
+  researchArea: {
+    type: String
+  },
 
   education: {
-    college_name: { type: String, required: true },
-    position: { type: String, required: true },
-    year_passed: { type: Number, required: true },
+    university: { type: String },
+    department: { type: String },
+    graduationYear: { type: Number }
   },
 
-  research_fields: {
-    type: String,
-    required: true,
-  },
+  experience: [
+    {
+      company: { type: String },
+      position: { type: String },
+      startDate: { type: Number },
+      endDate: { type: Number },
+      description: { type: String }
+    }
+  ],
 
   publications: [
     {
-      paper_name: { type: String },
-      year_start: { type: Number },
-      year_end: { type: Number },
-      description: { type: String },
-    },
+      name: { type: String },
+      startDate: { type: Number },
+      endDate: { type: Number },
+      description: { type: String }
+    }
   ],
+
+  recommendations: [
+    {
+      received: [
+        {
+          by: { type: String },
+          content: { type: String }
+        }
+      ],
+      given: [
+        {
+          to: { type: String },
+          content: { type: String }
+        }
+      ]
+    }
+  ]
 });
 
 const Professor = mongoose.model('Professor', professorProfileSchema);

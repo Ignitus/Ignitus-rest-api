@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const { regularExpressionEmail, regularExpressionUserName } = config;
 
 const studentProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -6,11 +7,11 @@ const studentProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
+    match: regularExpressionEmail
   },
   username: {
     type: String,
-    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
+    match: regularExpressionUserName
   },
 
   about: { type: String },
@@ -25,17 +26,17 @@ const studentProfileSchema = mongoose.Schema({
     linkedin: { type: String }
   },
   employment: {
-    currentEmployment: { type: String },
+    current: { type: String },
     openForOpportunities: { type: Boolean }
   },
   education: {
-    universityName: { type: String },
-    position: { type: String },
-    year_passed: { type: Number }
+    university: { type: String },
+    department: { type: String },
+    graduationYear: { type: Number }
   },
   experience: [
     {
-      companyName: { type: String },
+      company: { type: String },
       position: { type: String },
       startDate: { type: Number },
       endDate: { type: Number },
@@ -56,6 +57,14 @@ const studentProfileSchema = mongoose.Schema({
           content: { type: String }
         }
       ]
+    }
+  ],
+  publications: [
+    {
+      name: { type: String },
+      startDate: { type: Number },
+      endDate: { type: Number },
+      description: { type: String }
     }
   ]
 });

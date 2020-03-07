@@ -1,24 +1,21 @@
 import mongoose from 'mongoose';
-
+const { regularExpressionUserName } = config;
 const teamMembersSchema = mongoose.Schema({
-  title: {
-    type: String,
-    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
+  username: {
+    type: regularExpressionUserName
   },
   description: {
     type: String
   },
   socialNetworkLinks: {
-    angellist: { type: String },
+    facebook: { type: String },
+    github: { type: String },
     linkedin: { type: String }
   },
-  picture: {
+  profilePicture: {
     type: String
   }
 });
 
-const TeamMember = mongoose.model(
-  'teamMembers',
-  teamMembersSchema
-);
+const TeamMember = mongoose.model('teamMembers', teamMembersSchema);
 export default TeamMember;
