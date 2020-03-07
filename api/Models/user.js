@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -24,9 +24,5 @@ const userSchema = mongoose.Schema({
   resetPasswordExpires: { type: Date, default: null },
 });
 
-const users = mongoose.model('users', userSchema);
-
-module.exports = {
-  Users: users,
-};
-// module.exports=mongoose.model('Product',productSchema);
+const Users = mongoose.model('users', userSchema);
+export default Users;
