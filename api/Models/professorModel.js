@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const studentProfileSchema = mongoose.Schema({
+const professorProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
 
   email: {
@@ -12,6 +12,7 @@ const studentProfileSchema = mongoose.Schema({
 
   name: {
     type: String,
+    required: true,
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/,
   },
 
@@ -25,26 +26,23 @@ const studentProfileSchema = mongoose.Schema({
     google_plus: { type: String },
   },
 
-  skill: [String],
-
-  about: {
-    current_job: { type: String },
-    looking_for: { type: String },
-  },
-
+  about: { type: String },
   profile_pic: { type: String },
-  resume: { type: String },
 
   education: {
-    college_name: { type: String },
-    position: { type: String },
-    year_passed: { type: Number },
+    college_name: { type: String, required: true },
+    position: { type: String, required: true },
+    year_passed: { type: Number, required: true },
   },
 
-  experience: [
+  research_fields: {
+    type: String,
+    required: true,
+  },
+
+  publications: [
     {
-      company_name: { type: String },
-      position: { type: String },
+      paper_name: { type: String },
       year_start: { type: Number },
       year_end: { type: Number },
       description: { type: String },
@@ -52,5 +50,5 @@ const studentProfileSchema = mongoose.Schema({
   ],
 });
 
-const studentProfile = mongoose.model('studentProfile', studentProfileSchema);
-export default studentProfile;
+const Professor = mongoose.model('Professor', professorProfileSchema);
+export default Professor;

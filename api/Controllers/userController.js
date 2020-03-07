@@ -32,8 +32,8 @@ const smtpTransport = nodemailer.createTransport({
 });
 */
 
-import professorProfile from '../Models/professorProfile.js';
-import studentProfile from '../Models/studentProfile.js';
+import Professor from '../Models/professorModel.js';
+import Student from '../Models/studentModel.js';
 import Users from '../Models/user.js';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
@@ -68,12 +68,12 @@ function socialLoginCheck(req, res, user_role, data) {
 function profileDataInsertion(email, user_role) {
   let profile;
   if (user_role === 'student') {
-    profile = new studentProfile({
+    profile = new Student({
       _id: new mongoose.Types.ObjectId(),
       email,
     });
   } else if (user_role === 'professor') {
-    profile = new professorProfile({
+    profile = new Professor({
       _id: new mongoose.Types.ObjectId(),
       email,
     });

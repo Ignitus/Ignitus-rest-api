@@ -6,5 +6,5 @@ const testimonialSchema = mongoose.Schema({
   source: { type: String, required: true },
 });
 
-const testimonial = mongoose.model('testimonial', testimonialSchema)
-export default testimonial;
+const Testimonial = mongoose.model('Testimonial', testimonialSchema)
+export default Testimonial;

@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import professorProfile from '../Models/professorProfile.js';
+import Professor from '../Models/professorModel.js';
 import responseHandler from '../Utils/responseHandler.js';
 
 export const viewProfessorProfile = (req, res) => {
-  professorProfile
+  Professor
     .find({ email: req.userData.email })
     .exec()
     .then(result =>
