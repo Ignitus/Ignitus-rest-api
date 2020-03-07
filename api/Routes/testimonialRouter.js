@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth';
 
 const router = express.Router();
-const verify = require('../Middlewares/check-auth');
-const Testimonial = require('../Controllers/testimonial');
+const Testimonial = require('../Controllers/testimonialController');
 
 router.get('/testimonials', Testimonial.viewAllTestimonial);
 router.get(
@@ -12,22 +12,22 @@ router.get(
 
 router.post(
   '/testimonial/add',
-  verify.verifyOrdinaryUser,
-  verify.verifyAdmin,
+  verifyOrdinaryUser,
+  verifyAdmin,
   Testimonial.addTestimonial,
 );
 
 router.put(
   '/testimonial/:id/',
-  verify.verifyOrdinaryUser,
-  verify.verifyAdmin,
+  verifyOrdinaryUser,
+  verifyAdmin,
   Testimonial.updateTestimonial,
 );
 
 router.delete(
   '/testimonial/:id',
-  verify.verifyOrdinaryUser,
-  verify.verifyAdmin,
+  verifyOrdinaryUser,
+  verifyAdmin,
   Testimonial.deleteTestimonial,
 );
 

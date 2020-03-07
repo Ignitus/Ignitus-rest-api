@@ -6,7 +6,7 @@ import {
   professorRegister,
   getUserInfoFromToken,
   login
-} from '../Controllers/user.js';
+} from '../Controllers/userController.js';
 
 userRouter.post('/login', login);
 userRouter.post('/register/student', studentRegister);

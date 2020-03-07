@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 const { Testimonial } = require('../Models/testimonial');
-const responseHandler = require('../Utils/responseHandler');
+import testimonial from '../Models/studentProfile.js';
+import responseHandler from '../Utils/responseHandler.js';
 
 // adding a new testimonial
 exports.addTestimonial = (req, res) => {

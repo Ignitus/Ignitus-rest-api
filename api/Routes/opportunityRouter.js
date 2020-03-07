@@ -7,7 +7,7 @@ import {
   fetchAllOpportunities,
   fetchOppurtunityById,
   deleteOppurtunity
-} from '../Controllers/oppurtunity.js';
+} from '../Controllers/opportunityController.js';
 
 careerRouter.post('/oppurtunity/add', addOppurtunity);
 careerRouter.put('/oppurtunity/:id/', updateOppurtunity);

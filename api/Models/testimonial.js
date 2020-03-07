@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const testimonialSchema = mongoose.Schema({
   author: { type: String, required: true },
@@ -6,6 +6,5 @@ const testimonialSchema = mongoose.Schema({
   source: { type: String, required: true },
 });
 
-module.exports = {
-  Testimonial: mongoose.model('testimonial', testimonialSchema),
-};
+const testimonial = mongoose.model('testimonial', testimonialSchema)
+export default testimonial;

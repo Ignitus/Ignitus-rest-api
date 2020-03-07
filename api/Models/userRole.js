@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userRoleSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
