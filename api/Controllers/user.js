@@ -6,20 +6,21 @@
 /* eslint-disable new-cap */
 /* eslint-disable camelcase */
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+
+/* Temp. not using.
 const Linkedin = require('node-linkedin')(
   process.env.LINKEDIN_APP_ID,
   process.env.LINKEDIN_SECRET,
-);
-
-const responseHandler = require('../Utils/responseHandler');
-const config = require('../Configuration/config');
+);*/
+import responseHandler from '../Utils/responseHandler.js';
+import { config } from '../Configuration/config.js';
 
 /*
- * Feature Reuest Update, Not Needed atm.
+ * Feature Request Update, Not Needed atm.
  * Snippet was a part of email verification after registration.
 const nodemailer = require('nodemailer');
 const smtpTransport = nodemailer.createTransport({
@@ -30,11 +31,12 @@ const smtpTransport = nodemailer.createTransport({
   },
 });
 */
-const { professorProfile } = require('../Models/professorProfile');
-const { studentProfile } = require('../Models/studentProfile');
-const { Users } = require('../Models/user');
 
-const scope = ['r_basicprofile', 'r_emailaddress'];
+import professorProfile from '../Models/professorProfile.js';
+import studentProfile from '../Models/studentProfile.js';
+import Users from '../Models/user.js';
+
+// const scope = ['r_basicprofile', 'r_emailaddress'];
 
 function socialLoginCheck(req, res, user_role, data) {
   if (
@@ -124,15 +126,15 @@ function register(req, res, user_role) {
     });
 }
 
-exports.studentRegister = (req, res) => {
+export const studentRegister = (req, res) => {
   register(req, res, 'student');
 };
 
-exports.professorRegister = (req, res) => {
+export const professorRegister = (req, res) => {
   register(req, res, 'professor');
 };
 
-exports.login = (req, res) => {
+export const login = (req, res) => {
   req.cache
     .load({
       options: { email: req.body.email },
@@ -171,6 +173,128 @@ exports.login = (req, res) => {
     .catch(err => responseHandler.error(res, err));
 };
 
+export const getUserInfoFromToken = (req, res) => {
+  if ((req.headers && req.headers.authorization) || req.body.token) {
+    const authorization = req.headers.authorization || req.body.token;
+    try {
+      const decodedToken = jwt.verify(authorization, config.secretKey);
+      Users.findOne({
+        _id: decodedToken.userId,
+      })
+        .then((user) => {
+          const { email, user_role } = user;
+          return responseHandler.success(res, {
+            email,
+            user_role,
+          });
+        })
+        .catch(err => responseHandler.error(res, err, 404));
+    } catch (e) {
+      return responseHandler.error(res, e, 401);
+    }
+  } else {
+    return responseHandler.error(res, 'Unauthorized.', 401);
+  }
+};
+
+export const forgotPassword = (req, res) => {
+  if (req.body.email === '') {
+    responseHandler.error(res, 'Email required.', 400);
+  }
+  Users.findOne({ email: req.body.email })
+    .exec()
+    .then((user) => {
+      if (user) {
+        const token = crypto.randomBytes(20).toString('hex');
+        user
+          .update({
+            resetPasswordToken: token,
+            resetPasswordExpires: Date.now() + 360000,
+          })
+          .exec();
+        // Send the mail to user's e-mail id.
+        const host = req.get('host');
+        const link = `http://${host}/reset?token=${token}`;
+        const mailOptions = {
+          to: req.body.email,
+          subject: 'Link To Reset Password',
+          html:
+            '<h3>Welcome to Ignitus!</h3>'
+            + '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>'
+            + '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>'
+            + `<a href=${link}>Reset password</a>`
+            + '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>'
+            + '<p>Sincerely</p>'
+            + '<p>Team Ignitus</p>'
+            + '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>',
+        };
+        smtpTransport.sendMail(mailOptions, (error, response) => {
+          if (error) {
+            return responseHandler.error(res, error.message, 500);
+          }
+          return responseHandler.success(res, response);
+        });
+      } else {
+        responseHandler.error(res, 'Email not found.', 400);
+      }
+    });
+};
+
+export const resetPassword = (req, res) => {
+  Users.findOne({
+    resetPasswordToken: req.query.token,
+    resetPasswordExpires: {
+      $gt: Date.now(),
+    },
+  })
+    .exec()
+    .then((user) => {
+      if (user) {
+        return res.redirect(
+          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`,
+        );
+      }
+      return res
+        .status(403)
+        .send(
+          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>",
+        );
+    })
+    .catch((err) => {
+      responseHandler.error(res, err, 'Invalid token.');
+    });
+};
+
+export const updatePassword = (req, res) => {
+  Users.findOne({
+    email: req.body.email,
+    resetPasswordToken: req.body.token,
+    resetPasswordExpires: {
+      $gt: Date.now(),
+    },
+  })
+    .exec()
+    .then((user) => {
+      if (user == null) {
+        return responseHandler.error(res, 'User does not exist.', 403);
+      }
+      bcrypt
+        .hash(req.body.password, 10)
+        .then((hash) => {
+          user
+            .update({
+              password: hash,
+              resetPasswordToken: null,
+              resetPasswordExpires: null,
+            })
+            .exec();
+        })
+        .then(responseHandler.success(res, { message: 'Password updated.' }))
+        .catch(err => responseHandler.error(res, err));
+    })
+    .catch(error => responseHandler.error(res, error));
+};
+
 /* User verification disabled for now.
 exports.verify = (req, res) => {
   if (`${req.protocol}://${req.get('host')}` === `http://${host}`) {
@@ -200,7 +324,7 @@ exports.verify = (req, res) => {
 };
 */
 
-// Linkedin LogIn.
+/*
 exports.studentlinkedlogin = (req, res) => {
   Linkedin.setCallback('http://ignitus.org/student/oauth/linkedin/callback');
   Linkedin.auth.authorize(res, scope);
@@ -296,129 +420,4 @@ exports.professorlinkedlogin = (req, res) => {
 // Linkedin professor login-callback.
 exports.professorlinkedlogincallback = (req, res) => {
   linkedinlogin(req, res, 'professor');
-};
-
-exports.getUserInfoFromToken = (req, res) => {
-  if ((req.headers && req.headers.authorization) || req.body.token) {
-    const authorization = req.headers.authorization || req.body.token;
-    try {
-      const decodedToken = jwt.verify(authorization, config.secretKey);
-      Users.findOne({
-        _id: decodedToken.userId,
-      })
-        .then((user) => {
-          const { email, user_role } = user;
-          return responseHandler.success(res, {
-            email,
-            user_role,
-          });
-        })
-        .catch(err => responseHandler.error(res, err, 404));
-    } catch (e) {
-      return responseHandler.error(res, e, 401);
-    }
-  } else {
-    return responseHandler.error(res, 'Unauthorized.', 401);
-  }
-};
-
-// Forgot password-handler.
-exports.forgotPassword = (req, res) => {
-  if (req.body.email === '') {
-    responseHandler.error(res, 'Email required.', 400);
-  }
-  Users.findOne({ email: req.body.email })
-    .exec()
-    .then((user) => {
-      if (user) {
-        const token = crypto.randomBytes(20).toString('hex');
-        user
-          .update({
-            resetPasswordToken: token,
-            resetPasswordExpires: Date.now() + 360000,
-          })
-          .exec();
-        // Send the mail to user's e-mail id.
-        const host = req.get('host');
-        const link = `http://${host}/reset?token=${token}`;
-        const mailOptions = {
-          to: req.body.email,
-          subject: 'Link To Reset Password',
-          html:
-            '<h3>Welcome to Ignitus!</h3>'
-            + '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>'
-            + '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>'
-            + `<a href=${link}>Reset password</a>`
-            + '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>'
-            + '<p>Sincerely</p>'
-            + '<p>Team Ignitus</p>'
-            + '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>',
-        };
-        smtpTransport.sendMail(mailOptions, (error, response) => {
-          if (error) {
-            return responseHandler.error(res, error.message, 500);
-          }
-          return responseHandler.success(res, response);
-        });
-      } else {
-        responseHandler.error(res, 'Email not found.', 400);
-      }
-    });
-};
-
-// Password reset handler.
-exports.resetPassword = (req, res) => {
-  Users.findOne({
-    resetPasswordToken: req.query.token,
-    resetPasswordExpires: {
-      $gt: Date.now(),
-    },
-  })
-    .exec()
-    .then((user) => {
-      if (user) {
-        return res.redirect(
-          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`,
-        );
-      }
-      return res
-        .status(403)
-        .send(
-          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>",
-        );
-    })
-    .catch((err) => {
-      responseHandler.error(res, err, 'Invalid token.');
-    });
-};
-
-// Password update handler
-exports.updatePassword = (req, res) => {
-  Users.findOne({
-    email: req.body.email,
-    resetPasswordToken: req.body.token,
-    resetPasswordExpires: {
-      $gt: Date.now(),
-    },
-  })
-    .exec()
-    .then((user) => {
-      if (user == null) {
-        return responseHandler.error(res, 'User does not exist.', 403);
-      }
-      bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-          user
-            .update({
-              password: hash,
-              resetPasswordToken: null,
-              resetPasswordExpires: null,
-            })
-            .exec();
-        })
-        .then(responseHandler.success(res, { message: 'Password updated.' }))
-        .catch(err => responseHandler.error(res, err));
-    })
-    .catch(error => responseHandler.error(res, error));
-};
+}; */

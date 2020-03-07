@@ -1,7 +1,5 @@
 import express from 'express';
-
-const router = express.Router();
-const Users = require('../Controllers/user');
+const userRouter = express.Router();
 
 import {
   studentRegister,
@@ -10,10 +8,10 @@ import {
   login
 } from '../Controllers/user.js';
 
-router.post('/login', login);
-router.post('/register/student', studentRegister);
-router.post('/register/professor', professorRegister);
-router.post('/userinfofromtoken', getUserInfoFromToken);
+userRouter.post('/login', login);
+userRouter.post('/register/student', studentRegister);
+userRouter.post('/register/professor', professorRegister);
+userRouter.post('/userinfofromtoken', getUserInfoFromToken);
 
 /* Disabled atm.
     router.get('/student/oauth/linkedin', Users.studentlinkedlogin);
@@ -41,4 +39,4 @@ router.post('/userinfofromtoken', getUserInfoFromToken);
   router.put('/updatePasswordViaMail', Users.updatePassword);
 */
 
-module.exports = router;
+export default userRouter;
