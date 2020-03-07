@@ -13,7 +13,7 @@ const studentProfileSchema = mongoose.Schema({
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
   },
 
-  description: { type: String },
+  about: { type: String },
   address: { type: String },
   skills: [String],
   profilePicture: { type: String },
@@ -40,6 +40,22 @@ const studentProfileSchema = mongoose.Schema({
       startDate: { type: Number },
       endDate: { type: Number },
       description: { type: String }
+    }
+  ],
+  recommendations: [
+    {
+      received: [
+        {
+          by: { type: String },
+          content: { type: String }
+        }
+      ],
+      given: [
+        {
+          to: { type: String },
+          content: { type: String }
+        }
+      ]
     }
   ]
 });
