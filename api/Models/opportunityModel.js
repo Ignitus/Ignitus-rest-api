@@ -6,5 +6,5 @@ const opportunitySchema = mongoose.Schema({
   documentsRequired: { type: String, required: true }
 });
 
-const opportunity = mongoose.model('opportunity', opportunitySchema);
-export default opportunity;
+const Opportunity = mongoose.model('opportunity', opportunitySchema);
+export default Opportunity;

@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const internshipModel = require('../Models/internship');
 
-describe('Internship Model', () => {
+describe('Opportunity Model', () => {
   it('should be invalid if properties are empty', (done) => {
     const m = new internshipModel.Internships();
 

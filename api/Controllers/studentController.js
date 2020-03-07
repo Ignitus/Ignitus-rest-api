@@ -1,8 +1,8 @@
-import student from '../Models/studentModel.js';
+import Student from '../Models/studentModel.js';
 import responseHandler from '../Utils/responseHandler.js';
 
 export const viewStudentProfile = (req, res) => {
-  student
+  Student
     .find({ email: req.userData.email })
     .exec()
     .then(result => (result.length > 0
