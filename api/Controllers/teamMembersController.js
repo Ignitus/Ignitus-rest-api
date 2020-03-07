@@ -1,36 +1,36 @@
-const { teamMemberProfile } = require('../Models/teamMember');
+const { teamMembers } = require('../Models/teamMembersModel');
 const responseHandler = require('../Utils/responseHandler');
 
 exports.getAllTeamMembers = (req, res) => {
-  teamMemberProfile
+  teamMembers
     .find({})
-    .then(teamMembers => responseHandler.success(res, teamMembers))
+    .then(teamMember => responseHandler.success(res, teamMember))
     .catch(() => responseHandler.error(res, 'Failed to fetch all TeamMembers', 404));
 };
 
 exports.getTeamMember = (req, res) => {
-  teamMemberProfile
+  teamMembers
     .findById(req.params.id)
     .then(teamMember => responseHandler.success(res, teamMember))
     .catch(() => responseHandler.error(res, 'Failed to fetch TeamMember', 404));
 };
 
 exports.createTeamMember = (req, res) => {
-  teamMemberProfile
+  teamMembers
     .create(req.body)
     .then(teamMember => responseHandler.success(res, teamMember))
     .catch(() => responseHandler.error(res, 'Failed to create TeamMember', 400));
 };
 
 exports.updateTeamMember = (req, res) => {
-  teamMemberProfile
+  teamMembers
     .findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then(updatedTeamMember => responseHandler.success(res, updatedTeamMember))
     .catch(() => responseHandler.error(res, 'Failed to update TeamMember', 404));
 };
 
 exports.deleteTeamMember = (req, res) => {
-  teamMemberProfile
+  teamMembers
     .findByIdAndRemove(req.params.id)
     .then(responseFromDeleteQuery => responseHandler.success(res, responseFromDeleteQuery))
     .catch(() => responseHandler.error(res, 'Failed to delete TeamMember', 404));

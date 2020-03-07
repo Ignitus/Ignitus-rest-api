@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 
-import Oppurtunity from '../Models/opportunity.js'
+import Oppurtunity from '../Models/opportunityModel.js'
 import responseHandler from '../Utils/responseHandler.js';
 
 export const addOppurtunity = (req, res) => {

@@ -1,5 +1,5 @@
 import express from 'express';
-const careerRouter = express.Router();
+const opportunityRouter = express.Router();
 
 import {
   addOppurtunity,
@@ -9,11 +9,11 @@ import {
   deleteOppurtunity
 } from '../Controllers/opportunityController.js';
 
-careerRouter.post('/oppurtunity/add', addOppurtunity);
-careerRouter.put('/oppurtunity/:id/', updateOppurtunity);
+opportunityRouter.post('/oppurtunity/add', addOppurtunity);
+opportunityRouter.put('/oppurtunity/:id/', updateOppurtunity);
 
-careerRouter.get('/oppurtunity', fetchAllOpportunities);
-careerRouter.get('/oppurtunity/:id', fetchOppurtunityById);
+opportunityRouter.get('/oppurtunity', fetchAllOpportunities);
+opportunityRouter.get('/oppurtunity/:id', fetchOppurtunityById);
 
-careerRouter.delete('/oppurtunity/:id', deleteOppurtunity);
-export default careerRouter;
+opportunityRouter.delete('/oppurtunity/:id', deleteOppurtunity);
+export default opportunityRouter;
