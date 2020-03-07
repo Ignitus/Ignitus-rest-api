@@ -34,7 +34,7 @@ const smtpTransport = nodemailer.createTransport({
 
 import Professor from '../Models/professorModel.js';
 import Student from '../Models/studentModel.js';
-import Users from '../Models/user.js';
+import Users from '../Models/userModel.js';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
 

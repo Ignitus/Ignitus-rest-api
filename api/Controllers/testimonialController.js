@@ -1,27 +1,25 @@
 /* eslint-disable max-len */
-const { Testimonial } = require('../Models/testimonial');
-import testimonial from '../Models/studentProfile.js';
+import Testimonial from '../Models/testimonialModel.js';
 import responseHandler from '../Utils/responseHandler.js';
 
-// adding a new testimonial
-exports.addTestimonial = (req, res) => {
-  Testimonial.create(req.body, err => (err ? responseHandler.error(res) : responseHandler.success(res)));
+export const addTestimonial = (req, res) => {
+  Testimonial.create(req.body, err =>
+    err ? responseHandler.error(res) : responseHandler.success(res)
+  );
 };
-
-// displaying all testimonials
-exports.viewAllTestimonial = (req, res) => {
-  Testimonial.find({}, (err, docs) => (err ? responseHandler.error(res) : responseHandler.success(res, docs)));
+export const viewAllTestimonial = (req, res) => {
+  Testimonial.find({}, (err, docs) =>
+    err ? responseHandler.error(res) : responseHandler.success(res, docs)
+  );
 };
-
-// find testimonial by Id
-exports.viewTestimonialByID = (req, res) => {
-  Testimonial.findById(req.params.id, (err, docs) => (!err && docs
-    ? responseHandler.success(res, docs)
-    : responseHandler.error(res, 'Testimonial not found', 404)));
+export const viewTestimonialByID = (req, res) => {
+  Testimonial.findById(req.params.id, (err, docs) =>
+    !err && docs
+      ? responseHandler.success(res, docs)
+      : responseHandler.error(res, 'Testimonial not found', 404)
+  );
 };
-
-// update an testimonial
-exports.updateTestimonial = (req, res) => {
+export const updateTestimonial = (req, res) => {
   Testimonial.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -33,12 +31,10 @@ exports.updateTestimonial = (req, res) => {
           : responseHandler.error(res, 'Testimonial not found', 404);
       }
       return responseHandler.success(res, docs);
-    },
+    }
   );
 };
-
-// delete an testimonial
-exports.deleteTestimonial = (req, res) => {
+export const deleteTestimonial = (req, res) => {
   Testimonial.findByIdAndRemove(req.params.id, (err, doc) => {
     if (err || !doc) {
       return err
