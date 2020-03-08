@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import { config } from '../Configuration/config.js';
-const { regularExpressionEmail } = config;
 
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -8,7 +6,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: regularExpressionEmail
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
   },
   password: { type: String, required: true },
   userType: { type: String, required: true },

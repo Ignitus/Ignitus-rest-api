@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import { config } from '../Configuration/config.js';
-const { regularExpressionEmail, regularExpressionUserName } = config;
 
 const studentProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -8,11 +6,11 @@ const studentProfileSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: regularExpressionEmail
+    match: /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
   },
   username: {
     type: String,
-    match: regularExpressionUserName
+    match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
   },
 
   about: { type: String },
