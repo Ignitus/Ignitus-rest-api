@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "12.6.0"
+    "node": "13.2.0"
   },
   "scripts": {
     "start": "node --experimental-modules index.js",
