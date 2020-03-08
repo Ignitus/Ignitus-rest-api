@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "13.2.0"
+    "node": "12.6.0"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node --experimental-modules index.js",
     "start-dev": "nodemon --watch index.js --watch api",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix"
