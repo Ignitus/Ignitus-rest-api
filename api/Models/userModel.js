@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
     match: regularExpressionEmail
   },
   password: { type: String, required: true },
-  user_role: { type: String, required: true },
+  userType: { type: String, required: true },
   verifyToken: { type: String, default: null },
   isUserVerified: { type: Number, default: false },
   admin: {

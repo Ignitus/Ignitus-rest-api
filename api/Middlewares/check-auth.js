@@ -29,7 +29,7 @@ export const verifyStudent = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      if (decoded.user_role === 'student') {
+      if (decoded.userType === 'student') {
         req.decoded = decoded;
         next();
       } else {

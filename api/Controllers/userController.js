@@ -36,15 +36,14 @@ import Student from '../Models/studentModel.js';
 import Users from '../Models/userModel.js';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
-
-function socialLoginCheck(req, res, user_role, data) {
+/* If the user is already registered through LinkedIn & trying to register through email. */
+function socialLoginCheck(req, res, userType, user) {
   if (
-    data.length >= 1 &&
-    /* && data[0].isUserVerified === 1 */
-    user_role === data[0].user_role &&
-    !data[0].password &&
-    data[0].linkedin.profileUrl &&
-    data[0].linkedin.accessToken
+    /* && user.isUserVerified === 1 */
+    userType === user.userType &&
+    !user.password &&
+    user.linkedin.profileUrl &&
+    user.linkedin.accessToken
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
@@ -64,14 +63,14 @@ function socialLoginCheck(req, res, user_role, data) {
   }
 }
 
-function profileDataInsertion(email, user_role) {
+function profileDataInsertion(email, userType) {
   let profile;
-  if (user_role === 'student') {
+  if (userType === 'student') {
     profile = new Student({
       _id: new mongoose.Types.ObjectId(),
       email
     });
-  } else if (user_role === 'professor') {
+  } else if (userType === 'professor') {
     profile = new Professor({
       _id: new mongoose.Types.ObjectId(),
       email
@@ -80,20 +79,13 @@ function profileDataInsertion(email, user_role) {
   return profile.save();
 }
 
-function register(req, res, user_role) {
-  Users.find({ email: req.body.email })
+function register(req, res, userType) {
+  Users.findOne({ email: req.body.email })
     .exec()
-    .then(data => {
-      if (
-        data.length >= 1 &&
-        user_role === data[0].user_role &&
-        !data[0].password &&
-        data[0].linkedin.profileUrl &&
-        data[0].linkedin.accessToken
-      ) {
-        /* If the user is already registered through LinkedIn & trying to register through email. */
-        socialLoginCheck(req, res, user_role, data);
-      } else if (data.length >= 1) {
+    .then(user => {
+      if (user && user.linkedin.profileUrl) {
+        socialLoginCheck(req, res, userType, user);
+      } else if (user) {
         return responseHandler.error(res, 'User already exists!.', 409);
       } else {
         bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
@@ -112,15 +104,15 @@ function register(req, res, user_role) {
             _id: new mongoose.Types.ObjectId(),
             email: req.body.email,
             password: hashedPassword,
-            user_role,
+            userType,
             verifytoken: accessToken
           });
           user.save().then(response => {
-            profileDataInsertion(req.body.email, user_role).then(() => {
+            profileDataInsertion(req.body.email, userType).then(() => {
               res.json({
                 statusCode: 200,
                 success: true,
-                message: 'Success',
+                message: 'Success'
               });
             });
           });
@@ -138,43 +130,34 @@ export const professorRegister = (req, res) => {
 };
 
 export const login = (req, res) => {
-  req.cache
-    .load({
-      options: { email: req.body.email },
-      loader: opts => Users.find(opts).exec()
-    })
-    .then(data => {
-      console.log('data', data);
-      if (data.length < 1) {
-        return responseHandler.error(res, 'Invalid user!', 401);
-      }
-      bcrypt.compare(req.body.password, data[0].password, (err, result) => {
+  Users.findOne({ email: req.body.email })
+    .exec()
+    .then(user => {
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return responseHandler.error(res, err);
         }
         if (result) {
+          const { email, userType, _id, admin } = user;
           const token = jwt.sign(
             {
-              email: data[0].email,
-              user_role: data[0].user_role,
-              userId: data[0]._id,
-              admin: data[0].admin || false
+              email,
+              userType,
+              userId: _id,
+              admin: admin || false
             },
             config.secretKey,
             { expiresIn: '1h' }
           );
-
           const clientData = {
-            email: data[0].email,
-            user_role: data[0].user_role
+            email,
+            userType
           };
-
           return responseHandler.success(res, { token, clientData });
         }
         return responseHandler.error(res, 'Wrong password.', 401);
       });
-    })
-    .catch(err => responseHandler.error(res, err));
+    });
 };
 
 export const getUserInfoFromToken = (req, res) => {
@@ -186,10 +169,10 @@ export const getUserInfoFromToken = (req, res) => {
         _id: decodedToken.userId
       })
         .then(user => {
-          const { email, user_role } = user;
+          const { email, userType } = user;
           return responseHandler.success(res, {
             email,
-            user_role
+            userType
           });
         })
         .catch(err => responseHandler.error(res, err, 404));
@@ -335,7 +318,7 @@ exports.studentlinkedlogin = (req, res) => {
 };
 
 // LinkedIn login-callback.
-function linkedinlogin(req, res, user_role) {
+function linkedinlogin(req, res, userType) {
   Linkedin.auth.getAccessToken(
     res,
     req.query.code,
@@ -361,7 +344,7 @@ function linkedinlogin(req, res, user_role) {
               const token = jwt.sign(
                 {
                   email: response[0].email,
-                  user_role: data[0].user_role,
+                  userType: user.userType,
                   userId: response[0]._id,
                 },
                 config.secretKey,
@@ -375,7 +358,7 @@ function linkedinlogin(req, res, user_role) {
         const user = new Users({
           _id: new mongoose.Types.ObjectId(),
           email: user_email,
-          user_role,
+          userType,
           isUserVerified: 1,
           linkedin: {
             profileUrl: user_linked_profile,
@@ -384,7 +367,7 @@ function linkedinlogin(req, res, user_role) {
         });
         // Save user.
         user.save().then(() => {
-          profileDataInsertion(req.body.email, user_role);
+          profileDataInsertion(req.body.email, userType);
           req.cache
             .load({
               options: { email: user_email },
@@ -396,7 +379,7 @@ function linkedinlogin(req, res, user_role) {
                 const token = jwt.sign(
                   {
                     email: result[0].email,
-                    user_role: data[0].user_role,
+                    userType: user.userType,
                     userId: result[0]._id,
                   },
                   config.secretKey,
