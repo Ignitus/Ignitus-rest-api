@@ -1,4 +1,4 @@
-module.exports = {
+export const config = {
   secretKey: process.env.SECRET_KEY,
   mongoUrl: process.env.DATABASE_URI,
   hashingType: process.env.HASHING_TYPE,
@@ -7,5 +7,5 @@ module.exports = {
   publicVapidKey: process.env.PUBLIC_VAPID_KEY,
   privateVapidKey: process.env.PRIVATE_VAPID_KEY,
   regularExpressionEmail: process.env.REGEX_EMAIL,
-  regularExpressionUserName: process.env.REGEX_USERNAME,
+  regularExpressionUserName: process.env.REGEX_USERNAME
 };
