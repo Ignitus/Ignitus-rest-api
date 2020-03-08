@@ -23,7 +23,7 @@ import opportunityRouter from './api/Routes/opportunityRouter.js';
 import studentRouter from './api/Routes/studentRouter.js';
 import professorRouter from './api/Routes/professorRouter.js';
 import testimonialRouter from './api/Routes/testimonialRouter.js';
-import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+// import teamMembersrouter from './api/Routes/teamMembersrouter.js';
 
 webPush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
 
@@ -66,7 +66,7 @@ app.use('/', professorRouter);
 app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
-app.use('/', teamMembersrouter);
+// app.use('/', teamMembersrouter);
 
 const PORT = process.env.PORT || 3000;
 connectDB()
