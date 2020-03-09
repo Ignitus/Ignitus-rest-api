@@ -8,7 +8,7 @@ export const verifyOrdinaryUser = (req, res, next) => {
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
       if (err) {
-        return next(err);
+        throw new Error(err);
       }
       req.decoded = decoded;
       next();
@@ -27,7 +27,7 @@ export const verifyStudent = (req, res, next) => {
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
       if (err) {
-        return next(err);
+        throw new Error(err);
       }
       if (decoded.userType === 'student') {
         req.decoded = decoded;

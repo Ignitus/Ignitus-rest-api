@@ -3,11 +3,11 @@ import Testimonial from '../Models/testimonialModel.js';
 import responseHandler from '../Utils/responseHandler.js';
 
 export const addTestimonial = (req, res) => {
-  Testimonial.create(req.body, err => {
+  Testimonial.create(req.body, (err, docs) => {
     if (err) {
       throw new Error(err);
     }
-    return responseHandler.success(res);
+    return responseHandler.success(res, docs);
   });
 };
 

@@ -23,7 +23,7 @@ export const fetchTeamMemberByID = (req, res) => {
 };
 
 export const addTeamMember = (req, res) => {
-  TeamMember.create(req.body, err => {
+  TeamMember.create(req.body, (err, docs) => {
     if (err) {
       throw new Error(err);
     }
