@@ -10,6 +10,7 @@ export const addTestimonial = (req, res) => {
     return responseHandler.success(res);
   });
 };
+
 export const fetchAllTestimonial = (req, res) => {
   Testimonial.find({}, (err, docs) => {
     if (err) {
@@ -18,6 +19,7 @@ export const fetchAllTestimonial = (req, res) => {
     responseHandler.success(res, docs);
   });
 };
+
 export const fetchTestimonialByID = (req, res) => {
   Testimonial.findById(req.params.id, (err, docs) => {
     if (err) {
@@ -29,6 +31,7 @@ export const fetchTestimonialByID = (req, res) => {
     return responseHandler.success(res, docs);
   });
 };
+
 export const updateTestimonial = (req, res) => {
   Testimonial.findByIdAndUpdate(
     req.params.id,
@@ -45,8 +48,9 @@ export const updateTestimonial = (req, res) => {
     }
   );
 };
+
 export const deleteTestimonial = (req, res) => {
-  Testimonial.findByIdAndRemove(req.params.id, (err, doc) => {
+  Testimonial.findByIdAndRemove(req.params.id, (err, docs) => {
     if (err) {
       throw new Error(err);
     }
@@ -54,6 +58,6 @@ export const deleteTestimonial = (req, res) => {
       return responseHandler.error(res, 'Testimonial not found!', 404);
     }
     // eslint-disable-next-line no-underscore-dangle
-    return responseHandler.success(res, { _id: doc._id });
+    return responseHandler.success(res, { _id: docs._id });
   });
 };
