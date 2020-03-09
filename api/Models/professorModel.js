@@ -13,7 +13,6 @@ const professorProfileSchema = mongoose.Schema({
   },
   username: {
     type: String,
-    required: true,
     match: /^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/
   },
 
