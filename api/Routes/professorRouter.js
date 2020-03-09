@@ -1,6 +1,6 @@
 import express from 'express';
-import { viewProfessorProfile } from '../Controllers/professorController.js';
+import { professorProfile } from '../Controllers/professorController.js';
 
 const professorRouter = express.Router();
-professorRouter.get('/professor/profile', viewProfessorProfile);
+professorRouter.get('/professor/profile', professorProfile);
 export default professorRouter;

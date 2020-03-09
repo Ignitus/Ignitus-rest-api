@@ -54,7 +54,7 @@ function socialLoginCheck(req, res, userType, user) {
         { $set: { password: hash } },
         (error, result) => {
           if (error) {
-            return responseHandler.error(res, error);
+            throw new Error(err);
           }
           return responseHandler.success(res, result);
         }
@@ -83,7 +83,7 @@ export const register = (req, res) => {
   const {
     body: { email, userType, password }
   } = req;
-  Users.findOne({ email }).exec((err, user) => {
+  Users.findOne({ email }, (err, user) => {
     if (err) {
       throw new Error(err);
     } else {
@@ -126,35 +126,38 @@ export const register = (req, res) => {
 };
 
 export const login = (req, res) => {
-  Users.findOne({ email: req.body.email }).exec((err, user) => {
+  Users.findOne({ email: req.body.email }, (err, user) => {
+    const { email, userType, _id, admin } = user;
     if (err) {
       throw new Error(err);
+    } else {
+      if (req.body.userType === userType) {
+        bcrypt.compare(req.body.password, user.password, (err, result) => {
+          if (err) {
+            throw new Error(err);
+          }
+          if (result) {
+            const token = jwt.sign(
+              {
+                email,
+                userType,
+                userId: _id,
+                admin: admin || false
+              },
+              config.secretKey,
+              { expiresIn: '1h' }
+            );
+            const clientData = {
+              email,
+              userType
+            };
+            return responseHandler.success(res, { token, clientData });
+          }
+        });
+      } else {
+        return responseHandler.error(res, 'User not found!', 401);
+      }
     }
-    bcrypt.compare(req.body.password, user.password, (err, result) => {
-      if (err) {
-        return err
-          ? responseHandler.error(res)
-          : responseHandler.error(res, 'Wrong password.', 401);
-      }
-      if (result) {
-        const { email, userType, _id, admin } = user;
-        const token = jwt.sign(
-          {
-            email,
-            userType,
-            userId: _id,
-            admin: admin || false
-          },
-          config.secretKey,
-          { expiresIn: '1h' }
-        );
-        const clientData = {
-          email,
-          userType
-        };
-        return responseHandler.success(res, { token, clientData });
-      }
-    });
   });
 };
 
@@ -174,17 +177,17 @@ export const getUserInfoFromToken = (req, res) => {
           });
         })
         .catch(err => responseHandler.error(res, err, 404));
-    } catch (e) {
-      return responseHandler.error(res, e, 401);
+    } catch (err) {
+      throw new Error(err);
     }
   } else {
-    return responseHandler.error(res, 'Unauthorized.', 401);
+    return responseHandler.error(res, 'Unauthorized!', 401);
   }
 };
 
 export const forgotPassword = (req, res) => {
   if (req.body.email === '') {
-    responseHandler.error(res, 'Email required.', 400);
+    responseHandler.error(res, 'Email required!', 400);
   }
   Users.findOne({ email: req.body.email })
     .exec()

@@ -2,7 +2,7 @@
 import Professor from '../Models/professorModel.js';
 import responseHandler from '../Utils/responseHandler.js';
 
-export const studentProfile = (req, res) => {
+export const professorProfile = (req, res) => {
   Professor.find({ email: req.userData.email }, (err, docs) => {
     if (err) {
       throw new Error(err);
