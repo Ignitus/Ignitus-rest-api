@@ -63,7 +63,7 @@ function socialLoginCheck(req, res, userType, user) {
   }
 }
 
-function profileDataInsertion(email, userType) {
+const profileDataInsertion = (email, userType) => {
   let profile;
   if (userType === 'student') {
     profile = new Student({
@@ -77,10 +77,13 @@ function profileDataInsertion(email, userType) {
     });
   }
   return profile.save();
-}
+};
 
-function register(req, res, userType) {
-  Users.findOne({ email: req.body.email })
+export const register = (req, res) => {
+  const {
+    body: { email, userType, password }
+  } = req;
+  Users.findOne({ email })
     .exec()
     .then(user => {
       if (user && user.linkedin.profileUrl) {
@@ -88,7 +91,7 @@ function register(req, res, userType) {
       } else if (user) {
         return responseHandler.error(res, 'User already exists!.', 409);
       } else {
-        bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+        bcrypt.hash(password, 10, (err, hashedPassword) => {
           if (err) {
             return responseHandler.error(res, err);
           }
@@ -99,16 +102,15 @@ function register(req, res, userType) {
             .createHash(config.hashingType)
             .update(randomNumberGeneration)
             .digest(config.hashingDigest);
-
           const user = new Users({
             _id: new mongoose.Types.ObjectId(),
-            email: req.body.email,
+            email,
             password: hashedPassword,
             userType,
             verifytoken: accessToken
           });
-          user.save().then(response => {
-            profileDataInsertion(req.body.email, userType).then(() => {
+          user.save().then(_ => {
+            profileDataInsertion(email, userType).then(() => {
               res.json({
                 statusCode: 200,
                 success: true,
@@ -119,14 +121,6 @@ function register(req, res, userType) {
         });
       }
     });
-}
-
-export const studentRegister = (req, res) => {
-  register(req, res, 'student');
-};
-
-export const professorRegister = (req, res) => {
-  register(req, res, 'professor');
 };
 
 export const login = (req, res) => {

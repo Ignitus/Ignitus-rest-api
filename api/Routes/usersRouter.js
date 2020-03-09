@@ -2,15 +2,13 @@ import express from 'express';
 const userRouter = express.Router();
 
 import {
-  studentRegister,
-  professorRegister,
+  register,
   getUserInfoFromToken,
   login
 } from '../Controllers/userController.js';
 
 userRouter.post('/login', login);
-userRouter.post('/register/student', studentRegister);
-userRouter.post('/register/professor', professorRegister);
+userRouter.post('/register', register);
 userRouter.post('/userinfofromtoken', getUserInfoFromToken);
 
 /* Disabled atm.
