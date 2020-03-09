@@ -83,9 +83,10 @@ export const register = (req, res) => {
   const {
     body: { email, userType, password }
   } = req;
-  Users.findOne({ email })
-    .exec()
-    .then(user => {
+  Users.findOne({ email }).exec((err, user) => {
+    if (err) {
+      throw new Error(err);
+    } else {
       if (user && user.linkedin.profileUrl) {
         socialLoginCheck(req, res, userType, user);
       } else if (user) {
@@ -120,38 +121,41 @@ export const register = (req, res) => {
           });
         });
       }
-    });
+    }
+  });
 };
 
 export const login = (req, res) => {
-  Users.findOne({ email: req.body.email })
-    .exec()
-    .then(user => {
-      bcrypt.compare(req.body.password, user.password, (err, result) => {
-        if (err) {
-          return responseHandler.error(res, err);
-        }
-        if (result) {
-          const { email, userType, _id, admin } = user;
-          const token = jwt.sign(
-            {
-              email,
-              userType,
-              userId: _id,
-              admin: admin || false
-            },
-            config.secretKey,
-            { expiresIn: '1h' }
-          );
-          const clientData = {
+  Users.findOne({ email: req.body.email }).exec((err, user) => {
+    if (err) {
+      throw new Error(err);
+    }
+    bcrypt.compare(req.body.password, user.password, (err, result) => {
+      if (err) {
+        return err
+          ? responseHandler.error(res)
+          : responseHandler.error(res, 'Wrong password.', 401);
+      }
+      if (result) {
+        const { email, userType, _id, admin } = user;
+        const token = jwt.sign(
+          {
             email,
-            userType
-          };
-          return responseHandler.success(res, { token, clientData });
-        }
-        return responseHandler.error(res, 'Wrong password.', 401);
-      });
+            userType,
+            userId: _id,
+            admin: admin || false
+          },
+          config.secretKey,
+          { expiresIn: '1h' }
+        );
+        const clientData = {
+          email,
+          userType
+        };
+        return responseHandler.success(res, { token, clientData });
+      }
     });
+  });
 };
 
 export const getUserInfoFromToken = (req, res) => {
