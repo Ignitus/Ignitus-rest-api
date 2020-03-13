@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { config } from '../Configuration/config.js';
+const { regularExpressionEmail, regularExpressionUserName } = config;
 
 const professorProfileSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
