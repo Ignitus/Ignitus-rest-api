@@ -1,46 +1,42 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
 
-const logger = require('morgan');
-const { GraphQLSimpleCache } = require('graphql-simple-cache');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const webpush = require('web-push');
+/* for additional logging. */
+import logger from 'morgan'; 
 
-const connectDB = require('./api/Configuration/db');
-const index = require('./api/Routes/index');
-const users = require('./api/Routes/users');
-const internships = require('./api/Routes/internships');
-const testimonial = require('./api/Routes/testimonial');
-const teamMember = require('./api/Routes/teamMember');
-const redis = require('./api/Utils/redisDb');
-const config = require('./api/Configuration/config');
+/* for push notification. */
+import webPush from 'web-push';
 
-webpush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
+/* parsing middlewares. */
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+
+/* db connection/envs. */
+import connectDB from './api/Configuration/db.js';
+import { config } from './api/Configuration/config.js';
+
+/* application routes. */
+import userRouter from './api/Routes/usersRouter.js';
+import opportunityRouter from './api/Routes/opportunityRouter.js';
+import studentRouter from './api/Routes/studentRouter.js';
+import professorRouter from './api/Routes/professorRouter.js';
+import testimonialRouter from './api/Routes/testimonialRouter.js';
+// import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+
+webPush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
 
 const app = express();
-let cache = new GraphQLSimpleCache(redis);
-
-app.use('/', (req, res, next) => {
-  if (redis.connected === false) {
-    cache = new GraphQLSimpleCache();
-    redis.connected = null;
-  }
-  req.cache = cache;
-  return next();
-});
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(path.resolve(), 'public')));
 
 // eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept',
@@ -65,11 +61,12 @@ app.post('/subscribe', (req, res) => {
     });
 });
 
-app.use('/', index);
-app.use('/', users);
-app.use('/', internships);
-app.use('/', testimonial);
-app.use('/', teamMember);
+app.use('/', studentRouter);
+app.use('/', professorRouter);
+app.use('/', userRouter);
+app.use('/', opportunityRouter);
+app.use('/', testimonialRouter);
+// app.use('/', teamMembersrouter);
 
 const PORT = process.env.PORT || 3000;
 connectDB()
@@ -93,4 +90,4 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
 });
 
-module.exports = app;
+export default app;

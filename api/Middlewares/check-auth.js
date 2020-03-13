@@ -1,14 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-const jwt = require('jsonwebtoken');
-const config = require('../Configuration/config');
+import jwt from 'jsonwebtoken';
+import { config } from '../Configuration/config.js';
 
-exports.verifyOrdinaryUser = (req, res, next) => {
+export const verifyOrdinaryUser = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
       if (err) {
-        return next(err);
+        throw new Error(err);
       }
       req.decoded = decoded;
       next();
@@ -22,14 +22,14 @@ exports.verifyOrdinaryUser = (req, res, next) => {
   }
 };
 
-exports.verifyStudent = (req, res, next) => {
+export const verifyStudent = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
     jwt.verify(token, config.secretKey, (err, decoded) => {
       if (err) {
-        return next(err);
+        throw new Error(err);
       }
-      if (decoded.user_role === 'student') {
+      if (decoded.userType === 'student') {
         req.decoded = decoded;
         next();
       } else {
@@ -50,7 +50,7 @@ exports.verifyStudent = (req, res, next) => {
 };
 
 /* Next middleware to-hop-in :) */
-exports.verifyAdmin = (req, res, next) => {
+export const verifyAdmin = (req, res, next) => {
   if (req.decoded.admin) {
     next();
   } else {
