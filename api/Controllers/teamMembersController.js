@@ -22,7 +22,7 @@ export const fetchTeamMemberByID = (req, res) => {
   });
 };
 
-export const addTeamMember = (req, res) => {
+export const createTeamMember = (req, res) => {
   TeamMember.create(req.body, (err, docs) => {
     if (err) {
       throw new Error(err);
@@ -31,7 +31,7 @@ export const addTeamMember = (req, res) => {
   });
 };
 
-export const updateTestimonial = (req, res) => {
+export const updateTeamMember = (req, res) => {
   TeamMember.findByIdAndUpdate(
     req.params.id,
     req.body,
