@@ -127,10 +127,13 @@ export const register = (req, res) => {
 
 export const login = (req, res) => {
   Users.findOne({ email: req.body.email }, (err, user) => {
-    const { email, userType, _id, admin } = user;
-    if (err) {
-      throw new Error(err);
+    if (err || !user) {
+      if (err) throw new Error(err);
+      else {
+        return responseHandler.error(res, 'User not found!', 401);
+      }
     } else {
+      const { email, userType, _id, admin } = user;
       if (req.body.userType === userType) {
         bcrypt.compare(req.body.password, user.password, (err, result) => {
           if (err) {
@@ -152,10 +155,10 @@ export const login = (req, res) => {
               userType
             };
             return responseHandler.success(res, { token, clientData });
+          } else {
+            return responseHandler.error(res, 'Incorrect Password!', 401);
           }
         });
-      } else {
-        return responseHandler.error(res, 'User not found!', 401);
       }
     }
   });
