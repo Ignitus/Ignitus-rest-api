@@ -6,9 +6,9 @@
     "node": "13.2.0"
   },
   "scripts": {
-    "start": "node build/index.js",
     "build": "tsc",
     "postinstall": "npm run build",
+    "start": "ts-node build/index.js",
     "start-dev": "nodemon",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
