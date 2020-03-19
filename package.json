@@ -61,7 +61,7 @@
     "@types/express": "4.17.3",
     "@types/morgan": "1.9.0",
     "@types/node": "13.9.1",
-    "@types/web-push": "3.3.0",
+    "@types/web-push": "3.3.0"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
