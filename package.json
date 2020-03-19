@@ -54,7 +54,9 @@
     "node-linkedin": "^0.5.6",
     "nyc": "^15.0.0",
     "redis": "^2.8.0",
-    "web-push": "^3.3.3"
+    "web-push": "^3.3.3",
+    "typescript": "3.8.3",
+    "ts-node": "8.7.0",
   },
   "devDependencies": {
     "@types/cookie-parser": "1.4.2",
@@ -66,8 +68,6 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "nodemon": "1.19.4",
-    "ts-node": "8.7.0",
-    "tslint": "6.1.0",
-    "typescript": "3.8.3"
+    "tslint": "6.1.0"
   }
 }
