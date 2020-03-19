@@ -6,7 +6,6 @@
     "node": "13.2.0"
   },
   "scripts": {
-    "build": "tsc",
     "start": "ts-node index.ts",
     "start-dev": "nodemon",
     "lint": "eslint ./ --ext .js",
