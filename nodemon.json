@@ -1,6 +1,6 @@
 {
-  "watch": ["api"],
-  "ext": "ts",
-  "ignore": ["src/public"],
-  "exec": "NODE_ENV=development ts-node index.js"
+  "watch": ["api/", "index.ts"],
+  "ext": "ts, js",
+  "ignore": ["public"],
+  "exec": "NODE_ENV=development ts-node index.ts"
 }

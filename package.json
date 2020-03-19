@@ -2,14 +2,13 @@
   "name": "ignitus-server",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "engines": {
     "node": "13.2.0"
   },
   "scripts": {
     "build": "tsc",
     "start": "ts-node index.ts",
-    "start-dev": "nodemon --watch index.ts --watch api",
+    "start-dev": "nodemon",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix"
   },

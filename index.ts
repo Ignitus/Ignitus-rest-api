@@ -24,6 +24,7 @@ import studentRouter from './api/Routes/studentRouter.js';
 import professorRouter from './api/Routes/professorRouter.js';
 import testimonialRouter from './api/Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+import { CustomError } from './api/Types/customError';
 
 webPush.setVapidDetails(
   `mailto:${config.privateVapidEmail}`,
@@ -50,8 +51,8 @@ app.use((req, res, next) => {
 
 app.post('/subscribe', (req, res) => {
   const subscription = req.body;
+  const payload: string = JSON.stringify({ title: 'Greetings by Igntius!' });
   res.status(200).json({});
-  const payload = JSON.stringify({ title: 'Greetings by Igntius!' });
   webPush
     .sendNotification(subscription, payload)
     .then(() => {
@@ -60,7 +61,7 @@ app.post('/subscribe', (req, res) => {
         JSON.stringify({ title: 'Greetings by Igntius!' })
       );
     })
-    .catch(error => {
+    .catch((error: Error) => {
       console.error('sendNotification ERROR', error.stack);
     });
 });
@@ -70,25 +71,22 @@ app.use('/', professorRouter);
 app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
-// app.use('/', teamMembersrouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT: string | number = process.env.PORT ?? 3000;
 connectDB()
   .then(() => {
     app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
-  .catch(err => {
-    console.error('App starting error:', err.stack);
+  .catch((err: Error) => {
     process.exit(1);
   });
 
-app.use((req, res, next) => {
-  const err: any = new Error('Not Found');
-  err.status = 404;
+app.use((req, res, next): void => {
+  const err: CustomError = new CustomError('Not Found', 604);
   next(err);
 });
 
-app.use((err, req, res) => {
+app.use((err: any, req: any, res: any): void => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
