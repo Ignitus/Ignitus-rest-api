@@ -7,8 +7,9 @@
     "node": "13.2.0"
   },
   "scripts": {
-    "start": "node --experimental-modules index.js",
-    "start-dev": "nodemon --watch --experimental-modules index.js --watch api",
+    "build": "tsc",
+    "start": "ts-node index.ts",
+    "start-dev": "nodemon --watch index.ts --watch api",
     "lint": "eslint ./ --ext .js",
     "lint:fix": "eslint ./ --ext .js --fix"
   },
@@ -57,9 +58,17 @@
     "web-push": "^3.3.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "1.4.2",
+    "@types/express": "4.17.3",
+    "@types/morgan": "1.9.0",
+    "@types/node": "13.9.1",
+    "@types/web-push": "3.3.0",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "nodemon": "^1.18.3"
+    "nodemon": "1.19.4",
+    "ts-node": "8.7.0",
+    "tslint": "6.1.0",
+    "typescript": "3.8.3"
   }
 }

@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 
 /* for additional logging. */
-import logger from 'morgan'; 
+import logger from 'morgan';
 
 /* for push notification. */
 import webPush from 'web-push';
@@ -25,7 +25,11 @@ import professorRouter from './api/Routes/professorRouter.js';
 import testimonialRouter from './api/Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
 
-webPush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
+webPush.setVapidDetails(
+  `mailto:${config.privateVapidEmail}`,
+  config.publicVapidKey,
+  config.privateVapidKey
+);
 
 const app = express();
 app.use(logger('dev'));
@@ -39,7 +43,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   next();
 });
@@ -48,15 +52,15 @@ app.post('/subscribe', (req, res) => {
   const subscription = req.body;
   res.status(200).json({});
   const payload = JSON.stringify({ title: 'Greetings by Igntius!' });
-  webpush
+  webPush
     .sendNotification(subscription, payload)
     .then(() => {
       console.log(
         'sendNotification success',
-        JSON.stringify({ title: 'Greetings by Igntius!' }),
+        JSON.stringify({ title: 'Greetings by Igntius!' })
       );
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('sendNotification ERROR', error.stack);
     });
 });
@@ -73,13 +77,13 @@ connectDB()
   .then(() => {
     app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
-  .catch((err) => {
+  .catch(err => {
     console.error('App starting error:', err.stack);
     process.exit(1);
   });
 
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
+  const err: any = new Error('Not Found');
   err.status = 404;
   next(err);
 });
