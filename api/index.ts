@@ -28,8 +28,8 @@ import { CustomError } from './Types/customError';
 
 webPush.setVapidDetails(
   `mailto:${config.privateVapidEmail}`,
-  config.publicVapidKey!,
-  config.privateVapidKey!
+  config.publicVapidKey || '',
+  config.privateVapidKey || ''
 );
 
 const app = express();
