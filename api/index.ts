@@ -14,17 +14,17 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
 /* db connection/envs. */
-import connectDB from './api/Configuration/db.js';
-import { config } from './api/Configuration/config.js';
+import connectDB from './Configuration/db.js';
+import { config } from './Configuration/config.js';
 
 /* application routes. */
-import userRouter from './api/Routes/usersRouter.js';
-import opportunityRouter from './api/Routes/opportunityRouter.js';
-import studentRouter from './api/Routes/studentRouter.js';
-import professorRouter from './api/Routes/professorRouter.js';
-import testimonialRouter from './api/Routes/testimonialRouter.js';
+import userRouter from './Routes/usersRouter.js';
+import opportunityRouter from './Routes/opportunityRouter.js';
+import studentRouter from './Routes/studentRouter.js';
+import professorRouter from './Routes/professorRouter.js';
+import testimonialRouter from './Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
-import { CustomError } from './api/Types/customError';
+import { CustomError } from './Types/customError';
 
 webPush.setVapidDetails(
   `mailto:${config.privateVapidEmail}`,

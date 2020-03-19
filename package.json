@@ -6,10 +6,11 @@
     "node": "13.2.0"
   },
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "node build/index.js",
+    "build": "tsc",
+    "postinstall": "npm run build",
     "start-dev": "nodemon",
-    "lint": "eslint ./ --ext .js",
-    "lint:fix": "eslint ./ --ext .js --fix"
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "nyc": {
     "check-coverage": false,
