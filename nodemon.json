@@ -1,9 +1,6 @@
 {
-  "watch": ["api"],
-  "ext": "js,json",
-  "ignore": ["*.test.js"],
-  "delay": "3",
-  "execMap": {
-    "ts": "ts-node"
-  }
+  "watch": ["api/"],
+  "ext": "ts, js",
+  "ignore": ["public"],
+  "exec": "NODE_ENV=development ts-node api/index.ts"
 }

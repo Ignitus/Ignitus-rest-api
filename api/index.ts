@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 
 /* for additional logging. */
-import logger from 'morgan'; 
+import logger from 'morgan';
 
 /* for push notification. */
 import webPush from 'web-push';
@@ -14,18 +14,23 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
 /* db connection/envs. */
-import connectDB from './api/Configuration/db.js';
-import { config } from './api/Configuration/config.js';
+import connectDB from './Configuration/db.js';
+import { config } from './Configuration/config.js';
 
 /* application routes. */
-import userRouter from './api/Routes/usersRouter.js';
-import opportunityRouter from './api/Routes/opportunityRouter.js';
-import studentRouter from './api/Routes/studentRouter.js';
-import professorRouter from './api/Routes/professorRouter.js';
-import testimonialRouter from './api/Routes/testimonialRouter.js';
+import userRouter from './Routes/usersRouter.js';
+import opportunityRouter from './Routes/opportunityRouter.js';
+import studentRouter from './Routes/studentRouter.js';
+import professorRouter from './Routes/professorRouter.js';
+import testimonialRouter from './Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+import { CustomError } from './Types/customError';
 
-webPush.setVapidDetails(`mailto:${config.privateVapidEmail}`, config.publicVapidKey, config.privateVapidKey);
+webPush.setVapidDetails(
+  `mailto:${config.privateVapidEmail}`,
+  config.publicVapidKey || '',
+  config.privateVapidKey || ''
+);
 
 const app = express();
 app.use(logger('dev'));
@@ -39,24 +44,24 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   next();
 });
 
 app.post('/subscribe', (req, res) => {
   const subscription = req.body;
+  const payload: string = JSON.stringify({ title: 'Greetings by Igntius!' });
   res.status(200).json({});
-  const payload = JSON.stringify({ title: 'Greetings by Igntius!' });
-  webpush
+  webPush
     .sendNotification(subscription, payload)
     .then(() => {
       console.log(
         'sendNotification success',
-        JSON.stringify({ title: 'Greetings by Igntius!' }),
+        JSON.stringify({ title: 'Greetings by Igntius!' })
       );
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.error('sendNotification ERROR', error.stack);
     });
 });
@@ -66,25 +71,22 @@ app.use('/', professorRouter);
 app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
-// app.use('/', teamMembersrouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ?? 3000;
 connectDB()
   .then(() => {
     app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
-  .catch((err) => {
-    console.error('App starting error:', err.stack);
+  .catch((err: Error) => {
     process.exit(1);
   });
 
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
+app.use((req, res, next): void => {
+  const err: CustomError = new CustomError('Not Found', 604);
   next(err);
 });
 
-app.use((err, req, res) => {
+app.use((err: any, req: any, res: any): void => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
