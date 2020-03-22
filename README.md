@@ -93,7 +93,7 @@ We also plan to introduce some new technologies in the future such as.
 
 <div align="center">
   <br>
-  <a href="https://postwoman.io"><img src="https://media.giphy.com/media/l46ChKeGsmsfE3Un6/giphy.gif" alt="Postwoman.io" width="200"></a>
+  <img src="https://media.giphy.com/media/l46ChKeGsmsfE3Un6/giphy.gif" alt="Ignitus.org" width="200">
   <br>
   <h3>Happy Coding ☘️.</h3>
 </div>
