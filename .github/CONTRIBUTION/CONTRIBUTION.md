@@ -68,7 +68,9 @@ Since, mLab is now a part of MongoDB, follow the below given steps to configure 
 3. Click on Connect and add your IP address, username and password for the Cluster.
 4. Select Connect your Application.
 5. Add the URL mongodb+srv://username:<password>@cluster.mongodb.net/test?retryWrites=true&w=majority to 
-```api/Configuration/config.js```
+```
+api/Configuration/config.js
+```
 
 Moreover, We are also using redis as a caching database to enhance performance.
 Fortunately, No configuration is needed other than to start Redis locally.
