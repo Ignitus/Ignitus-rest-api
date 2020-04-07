@@ -62,6 +62,13 @@ module.exports = {
 
 As mentioned to setup mongoDB you can either run the mongoDB cluster locally or use mlab, I found this blog post helpful to set it up. https://medium.com/@umarmagaji/connecting-mongodb-using-mlab-with-node-js-application-fd3de5b94a7a 
 
+Since, mLab is now a part of MongoDB, follow the below given steps to configure cloud-hosted MongoDB server:
+1. Navigate to https://www.mongodb.com/atlas-signup-from-mlab?utm_source=mlab.com&utm_medium=referral&utm_campaign=mlab%20signup&utm_content=blue%20sign%20up%20button and sign up.
+2. Select Shared Clusters and create a Cluster.
+3. Click on Connect and add your IP address, username and password for the Cluster.
+4. Select Connect your Application.
+5. Add the URL mongodb+srv://username:<password>@cluster.mongodb.net/test?retryWrites=true&w=majority to 
+```api/Configuration/config.js```
 Moreover, We are also using redis as a caching database to enhance performance.
 Fortunately, No configuration is needed other than to start Redis locally.
  
