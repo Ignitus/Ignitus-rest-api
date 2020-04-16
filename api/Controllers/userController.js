@@ -90,7 +90,7 @@ export const register = (req, res) => {
       if (user && user.linkedin.profileUrl) {
         socialLoginCheck(req, res, userType, user);
       } else if (user) {
-        return responseHandler.error(res, 'User already exists!.', 409);
+        return responseHandler.error(res, 'User already exists!', 409);
       } else {
         bcrypt.hash(password, 10, (err, hashedPassword) => {
           if (err) {
@@ -156,9 +156,11 @@ export const login = (req, res) => {
             };
             return responseHandler.success(res, { token, clientData });
           } else {
-            return responseHandler.error(res, 'Incorrect Password!', 401);
+            return responseHandler.error(res, 'Incorrect password!', 401);
           }
         });
+      } else {
+        return responseHandler.error(res, 'Unauthorized access denied!', 403);
       }
     }
   });
