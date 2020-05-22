@@ -6,9 +6,6 @@ import path from 'path';
 /* for additional logging. */
 import logger from 'morgan';
 
-/* for push notification. */
-import webPush from 'web-push';
-
 /* parsing middlewares. */
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -26,11 +23,6 @@ import testimonialRouter from './Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
 import { CustomError } from './Types/customError';
 
-webPush.setVapidDetails(
-  `mailto:${config.privateVapidEmail}`,
-  config.publicVapidKey || '',
-  config.privateVapidKey || ''
-);
 
 const app = express();
 app.use(logger('dev'));
@@ -49,23 +41,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/subscribe', (req, res) => {
-  const subscription = req.body;
-  const payload: string = JSON.stringify({ title: 'Greetings by Igntius!' });
-  res.status(200).json({});
-  webPush
-    .sendNotification(subscription, payload)
-    .then(() => {
-      console.log(
-        'sendNotification success',
-        JSON.stringify({ title: 'Greetings by Igntius!' })
-      );
-    })
-    .catch((error: Error) => {
-      console.error('sendNotification ERROR', error.stack);
-    });
-});
-
 app.use('/', studentRouter);
 app.use('/', professorRouter);
 app.use('/', userRouter);
@@ -75,6 +50,7 @@ app.use('/', testimonialRouter);
 const PORT = process.env.PORT ?? 3000;
 connectDB()
   .then(() => {
+    // tslint:disable-next-line: no-console
     app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
   .catch((err: Error) => {

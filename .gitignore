@@ -9,3 +9,5 @@ package.json
 
 /config/dev.js
 .env
+
+.env.local
