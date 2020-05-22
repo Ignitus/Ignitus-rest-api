@@ -1,6 +1,8 @@
 // eslint-disable-next-line func-names
+import { Response } from 'express';
+
 const responseHandler = {
-  success(res, response) {
+  success(res: Response, response: any) {
     res.json({
       statusCode: 200,
       success: true,
@@ -8,7 +10,11 @@ const responseHandler = {
       data: response
     });
   },
-  error(res, message = 'Internal Server Error!', statusCode = 500) {
+  error(
+    res: Response,
+    message: string = 'Internal Server Error!',
+    statusCode: number = 500
+  ) {
     res.json({ message, statusCode, success: false });
   }
 };
