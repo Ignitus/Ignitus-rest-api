@@ -61,6 +61,7 @@
     "typescript": "3.8.3"
   },
   "devDependencies": {
+    "@types/mongoose": "5.7.21",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",

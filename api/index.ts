@@ -9,9 +9,6 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
-/* db connection/envs. */
-import connectDB from './Configuration/db.js';
-
 /* application routes. */
 import userRouter from './Routes/usersRouter.js';
 import opportunityRouter from './Routes/opportunityRouter.js';
@@ -19,6 +16,9 @@ import studentRouter from './Routes/studentRouter.js';
 import professorRouter from './Routes/professorRouter.js';
 import testimonialRouter from './Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+
+/* db connection/envs. */
+import { connectDB } from './Configuration/db.js';
 import { CustomError } from './Types/customError';
 
 const app = express();
@@ -45,7 +45,6 @@ app.use('/', professorRouter);
 app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
-
 
 connectDB()
   .then(() => {
