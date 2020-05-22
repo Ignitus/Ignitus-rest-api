@@ -12,7 +12,6 @@ import bodyParser from 'body-parser';
 
 /* db connection/envs. */
 import connectDB from './Configuration/db.js';
-import { config } from './Configuration/config.js';
 
 /* application routes. */
 import userRouter from './Routes/usersRouter.js';
