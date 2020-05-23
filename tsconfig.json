@@ -13,8 +13,8 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "types": ["node"],
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["api/@types", "node_modules/@types"]
   },
   "include": ["api/**/*"],
-  "exclude": ["./src/public/"]
+  "exclude": ["./public"]
 }
