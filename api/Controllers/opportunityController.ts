@@ -7,7 +7,7 @@ import responseHandler from '../Utils/responseHandler';
 export const addOppurtunity = (req: Request, res: Response) => {
   Oppurtunity.create(req.body, (err: any, docs: any) => {
     if (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 404);
     }
     return responseHandler.success(res, docs);
   });
@@ -16,7 +16,7 @@ export const addOppurtunity = (req: Request, res: Response) => {
 export const fetchAllOppurtunities = (req: Request, res: Response) => {
   Oppurtunity.find({}, (err, docs) => {
     if (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 400);
     }
     responseHandler.success(res, docs);
   });
@@ -25,7 +25,7 @@ export const fetchAllOppurtunities = (req: Request, res: Response) => {
 export const fetchOppurtunityByID = (req: Request, res: Response) => {
   Oppurtunity.findById(req.params.id, (err, docs) => {
     if (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 400);
     }
     if (!docs) {
       return responseHandler.error(res, 'Oppurtunity not found!', 404);
@@ -41,7 +41,7 @@ export const updateOppurtunity = (req: Request, res: Response) => {
     { new: true },
     (err, docs) => {
       if (err) {
-        throw new Error(err);
+        responseHandler.error(res, err.message, 400);
       }
       if (!docs) {
         return responseHandler.error(res, 'Oppurtunity not found!', 404);
@@ -54,7 +54,7 @@ export const updateOppurtunity = (req: Request, res: Response) => {
 export const deleteOppurtunity = (req: Request, res: Response) => {
   Oppurtunity.findByIdAndRemove(req.params.id, (err, docs) => {
     if (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 400);
     }
     if (!docs) {
       return responseHandler.error(res, 'Oppurtunity not found!', 404);

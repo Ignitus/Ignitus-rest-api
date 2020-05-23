@@ -37,6 +37,7 @@ import Professor from '../Models/professorModel.js';
 import Student from '../Models/studentModel.js';
 import { User } from '../Models/userModel';
 import { InterfaceUserModel } from 'api/Models/@modelTypes/interfaceUserModel';
+import { TokenType } from './@controllerTypes/interfaceToken';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
 /* If the user is already registered through LinkedIn & trying to register through email. */
@@ -106,7 +107,7 @@ export const register = (req: Request, res: Response) => {
         const randomNumberGeneration = Math.floor(
           Math.random() * 100 + 54,
         ).toString();
-        const accessToken = crypto
+        const accessToken: string = crypto
           .createHash(config.hashingType)
           .update(randomNumberGeneration)
           .digest(config.hashingDigest);
@@ -157,7 +158,7 @@ export const login = (req: Request, res: Response) => {
                   admin: admin || false,
                 },
                 config.secretKey,
-                { expiresIn: '1h' },
+                { expiresIn: '4h' },
               );
               const clientData = {
                 email,
@@ -175,11 +176,22 @@ export const login = (req: Request, res: Response) => {
   );
 };
 
-export const getUserInfoFromToken = (req: Request, res: Response) => {
-  if ((req.headers && req.headers.authorization) || req.body.token) {
-    const authorization = req.headers.authorization || req.body.token;
+export const getUserInformationFromToken = (req: Request, res: Response) => {
+  if (
+    (req.headers && req.headers.authorization) ||
+    req.body.token ||
+    req.headers['x-access-token']
+  ) {
+    const authorization: string =
+      req.headers.authorization ||
+      req.body.token ||
+      req.headers['x-access-token'];
     try {
-      const decodedToken: any = jwt.verify(authorization, config.secretKey);
+      const decodedToken = jwt.verify(
+        authorization,
+        config.secretKey,
+      ) as TokenType;
+
       User.findOne({
         _id: decodedToken.userId,
       })
@@ -190,9 +202,9 @@ export const getUserInfoFromToken = (req: Request, res: Response) => {
             userType,
           });
         })
-        .catch(err => responseHandler.error(res, err, 404));
+        .catch(err => responseHandler.error(res, err.message, 404));
     } catch (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 404);
     }
   } else {
     return responseHandler.error(res, 'Unauthorized!', 401);

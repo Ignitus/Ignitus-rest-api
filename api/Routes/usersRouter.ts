@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 
 import {
   register,
-  getUserInfoFromToken,
+  getUserInformationFromToken,
   login,
 } from '../Controllers/userController';
 
@@ -10,7 +10,7 @@ export const userRouter: Router = express.Router();
 
 userRouter.post('/login', login);
 userRouter.post('/register', register);
-userRouter.post('/userinfofromtoken', getUserInfoFromToken);
+userRouter.post('/getUserInformationFromToken', getUserInformationFromToken);
 
 /* Disabled atm.
     router.get('/student/oauth/linkedin', User.studentlinkedlogin);

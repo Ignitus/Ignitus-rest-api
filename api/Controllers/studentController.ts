@@ -3,9 +3,9 @@ import Student from '../Models/studentModel.js';
 import responseHandler from '../Utils/responseHandler';
 
 export const studentProfile = (req: Request, res: Response) => {
-  Student.find({ email: req.decoded.email }, (err, docs) => {
+  Student.find({ email: req.decoded.email }, (err: Error, docs) => {
     if (err) {
-      throw new Error(err);
+      responseHandler.error(res, err.message, 404);
     }
     if (!docs) {
       responseHandler.error(res, 'Profile not found', 404);
