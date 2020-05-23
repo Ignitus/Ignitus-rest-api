@@ -4,18 +4,16 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 /* for additional logging. */
 import logger from 'morgan';
-
 /* parsing middlewares. */
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
 /* application routes. */
-import userRouter from './Routes/usersRouter.js';
-import opportunityRouter from './Routes/opportunityRouter.js';
-import studentRouter from './Routes/studentRouter.js';
-import professorRouter from './Routes/professorRouter.js';
-import testimonialRouter from './Routes/testimonialRouter.js';
-// import teamMembersrouter from './api/Routes/teamMembersrouter.js';
+import { userRouter } from './Routes/usersRouter';
+import { opportunityRouter } from './Routes/opportunityRouter';
+import { studentRouter } from './Routes/studentRouter';
+import { professorRouter } from './Routes/professorRouter';
+import { testimonialRouter } from './Routes/testimonialRouter';
 
 /* db connection/envs. */
 import { connectDB } from './Configuration/db';
@@ -35,7 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction): void => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
+    'Origin, X-Requested-With, Content-Type, Accept',
   );
   next();
 });

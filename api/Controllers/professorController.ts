@@ -1,13 +1,13 @@
-/* eslint-disable max-len */
+import { Request, Response } from 'express';
 import Professor from '../Models/professorModel.js';
 import responseHandler from '../Utils/responseHandler';
 
-export const professorProfile = (req, res) => {
-  Professor.find({ email: req.userData.email }, (err, docs) => {
+export const professorProfile = (req: Request, res: Response) => {
+  Professor.find({ email: req.decoded.email }, (err, docs) => {
     if (err) {
       throw new Error(err);
     }
-    if(!docs) {
+    if (!docs) {
       responseHandler.error(res, 'Profile not found', 404);
     }
     return responseHandler.success(res, docs);

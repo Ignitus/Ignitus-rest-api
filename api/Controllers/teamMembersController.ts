@@ -1,19 +1,20 @@
+import { Request, Response } from 'express';
 import TeamMember from '../Models/teamMembersModel.js';
 import responseHandler from '../Utils/responseHandler';
 
-export const fetchAllTeamMembers = (req, res) => {
-  TeamMember.find({}, (err, docs) => {
+export const fetchAllTeamMembers = (req: Request, res: Response) => {
+  TeamMember.find({}, (err: Error, docs) => {
     if (err) {
-      throw new Error(err);
+      return responseHandler.error(res, err.message, 400);
     }
     return responseHandler.success(res, docs);
   });
 };
 
-export const fetchTeamMemberByID = (req, res) => {
+export const fetchTeamMemberByID = (req: Request, res: Response) => {
   TeamMember.findById(req.params.id, (err, docs) => {
     if (err) {
-      throw new Error(err);
+      return responseHandler.error(res, err.message, 400);
     }
     if (!docs) {
       return responseHandler.error(res, 'TeamMember not found!', 404);
@@ -22,36 +23,36 @@ export const fetchTeamMemberByID = (req, res) => {
   });
 };
 
-export const createTeamMember = (req, res) => {
-  TeamMember.create(req.body, (err, docs) => {
+export const createTeamMember = (req: Request, res: Response) => {
+  TeamMember.create(req.body, (err: any, docs: any) => {
     if (err) {
-      throw new Error(err);
+      return responseHandler.error(res, err.message, 400);
     }
     return responseHandler.success(res, docs);
   });
 };
 
-export const updateTeamMember = (req, res) => {
+export const updateTeamMember = (req: Request, res: Response) => {
   TeamMember.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true },
     (err, docs) => {
       if (err) {
-        throw new Error(err);
+        return responseHandler.error(res, err.message, 400);
       }
       if (!docs) {
         return responseHandler.error(res, 'TeamMember not found!', 404);
       }
       return responseHandler.success(res, docs);
-    }
+    },
   );
 };
 
-export const deleteTeamMember = (req, res) => {
+export const deleteTeamMember = (req: Request, res: Response) => {
   TeamMember.findByIdAndRemove(req.params.id, (err, docs) => {
     if (err) {
-      throw new Error(err);
+      return responseHandler.error(res, err.message, 400);
     }
     if (!docs) {
       return responseHandler.error(res, 'TeamMember not found!', 404);

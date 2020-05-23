@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
-
+import { Request, Response } from 'express';
 import Oppurtunity from '../Models/opportunityModel.js';
 import responseHandler from '../Utils/responseHandler';
 
-export const addOppurtunity = (req, res) => {
-  Oppurtunity.create(req.body, (err, docs) => {
+export const addOppurtunity = (req: Request, res: Response) => {
+  Oppurtunity.create(req.body, (err: any, docs: any) => {
     if (err) {
       throw new Error(err);
     }
@@ -13,7 +13,7 @@ export const addOppurtunity = (req, res) => {
   });
 };
 
-export const fetchAllOppurtunities = (req, res) => {
+export const fetchAllOppurtunities = (req: Request, res: Response) => {
   Oppurtunity.find({}, (err, docs) => {
     if (err) {
       throw new Error(err);
@@ -22,7 +22,7 @@ export const fetchAllOppurtunities = (req, res) => {
   });
 };
 
-export const fetchOppurtunityByID = (req, res) => {
+export const fetchOppurtunityByID = (req: Request, res: Response) => {
   Oppurtunity.findById(req.params.id, (err, docs) => {
     if (err) {
       throw new Error(err);
@@ -34,7 +34,7 @@ export const fetchOppurtunityByID = (req, res) => {
   });
 };
 
-export const updateOppurtunity = (req, res) => {
+export const updateOppurtunity = (req: Request, res: Response) => {
   Oppurtunity.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -47,11 +47,11 @@ export const updateOppurtunity = (req, res) => {
         return responseHandler.error(res, 'Oppurtunity not found!', 404);
       }
       return responseHandler.success(res, docs);
-    }
+    },
   );
 };
 
-export const deleteOppurtunity = (req, res) => {
+export const deleteOppurtunity = (req: Request, res: Response) => {
   Oppurtunity.findByIdAndRemove(req.params.id, (err, docs) => {
     if (err) {
       throw new Error(err);

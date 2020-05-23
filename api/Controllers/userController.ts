@@ -4,9 +4,9 @@
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-/* eslint-disable new-cap */
 /* eslint-disable camelcase */
 
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -35,23 +35,29 @@ const smtpTransport = nodemailer.createTransport({
 
 import Professor from '../Models/professorModel.js';
 import Student from '../Models/studentModel.js';
-import { Users } from '../Models/userModel';
+import { User } from '../Models/userModel';
+import { InterfaceUserModel } from 'api/Models/@modelTypes/interfaceUserModel';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
 /* If the user is already registered through LinkedIn & trying to register through email. */
-function socialLoginCheck(req, res, userType, user) {
+function socialLoginCheck(
+  req: Request,
+  res: Response,
+  userType: string,
+  user: InterfaceUserModel,
+) {
   if (
     /* && user.isUserVerified === 1 */
-    userType === user.userType
-    && !user.password
-    && user.linkedin.profileUrl
-    && user.linkedin.accessToken
+    userType === user.userType &&
+    !user.password &&
+    user.linkedin.profileUrl &&
+    user.linkedin.accessToken
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
-        return responseHandler.error(res, err);
+        return responseHandler.error(res, err.message, 400);
       }
-      Users.update(
+      User.update(
         { email: req.body.email },
         { $set: { password: hash } },
         (error, result) => {
@@ -65,7 +71,7 @@ function socialLoginCheck(req, res, userType, user) {
   }
 }
 
-const profileDataInsertion = (email, userType) => {
+const profileDataInsertion = (email: string, userType: string) => {
   let profile;
   if (userType === 'student') {
     profile = new Student({
@@ -78,16 +84,16 @@ const profileDataInsertion = (email, userType) => {
       email,
     });
   }
-  return profile.save();
+  return profile?.save();
 };
 
-export const register = (req, res) => {
+export const register = (req: Request, res: Response) => {
   const {
     body: { email, userType, password },
   } = req;
-  Users.findOne({ email }, (err, user) => {
+  User.findOne({ email }, (err: Error, user: InterfaceUserModel) => {
     if (err) {
-      throw new Error(err);
+      return responseHandler.error(res, err.message, 400);
     } else if (user && user.linkedin.profileUrl) {
       socialLoginCheck(req, res, userType, user);
     } else if (user) {
@@ -95,7 +101,7 @@ export const register = (req, res) => {
     } else {
       bcrypt.hash(password, 10, (err, hashedPassword) => {
         if (err) {
-          return responseHandler.error(res, err);
+          return responseHandler.error(res, err.message, 400);
         }
         const randomNumberGeneration = Math.floor(
           Math.random() * 100 + 54,
@@ -104,15 +110,15 @@ export const register = (req, res) => {
           .createHash(config.hashingType)
           .update(randomNumberGeneration)
           .digest(config.hashingDigest);
-        const user = new Users({
+        const user = new User({
           _id: new mongoose.Types.ObjectId(),
           email,
           password: hashedPassword,
           userType,
           verifytoken: accessToken,
         });
-        user.save().then((_) => {
-          profileDataInsertion(email, userType).then(() => {
+        user.save().then(_ => {
+          profileDataInsertion(email, userType)?.then(() => {
             res.json({
               statusCode: 200,
               success: true,
@@ -125,57 +131,59 @@ export const register = (req, res) => {
   });
 };
 
-export const login = (req, res) => {
-  Users.findOne({ email: req.body.email }, (err, user) => {
-    if (err || !user) {
-      if (err) throw new Error(err);
-      else {
-        return responseHandler.error(res, 'User not found!', 401);
-      }
-    } else {
-      const {
-        email, userType, _id, admin,
-      } = user;
-      if (req.body.userType === userType) {
-        bcrypt.compare(req.body.password, user.password, (err, result) => {
-          if (err) {
-            throw new Error(err);
-          }
-          if (result) {
-            const token = jwt.sign(
-              {
+export const login = (req: Request, res: Response) => {
+  User.findOne(
+    { email: req.body.email },
+    (err: Error, user: InterfaceUserModel) => {
+      if (err || !user) {
+        if (err) {
+          return responseHandler.error(res, err.message, 400);
+        } else {
+          return responseHandler.error(res, 'User not found!', 401);
+        }
+      } else {
+        const { email, userType, _id, admin } = user;
+        if (req.body.userType === userType) {
+          bcrypt.compare(req.body.password, user.password, (err, result) => {
+            if (err) {
+              return responseHandler.error(res, err.message, 400);
+            }
+            if (result) {
+              const token = jwt.sign(
+                {
+                  email,
+                  userType,
+                  userId: _id,
+                  admin: admin || false,
+                },
+                config.secretKey,
+                { expiresIn: '1h' },
+              );
+              const clientData = {
                 email,
                 userType,
-                userId: _id,
-                admin: admin || false,
-              },
-              config.secretKey,
-              { expiresIn: '1h' },
-            );
-            const clientData = {
-              email,
-              userType,
-            };
-            return responseHandler.success(res, { token, clientData });
-          }
-          return responseHandler.error(res, 'Incorrect password!', 401);
-        });
-      } else {
-        return responseHandler.error(res, 'Unauthorized access denied!', 403);
+              };
+              return responseHandler.success(res, { token, clientData });
+            }
+            return responseHandler.error(res, 'Incorrect password!', 401);
+          });
+        } else {
+          return responseHandler.error(res, 'Unauthorized access denied!', 403);
+        }
       }
-    }
-  });
+    },
+  );
 };
 
-export const getUserInfoFromToken = (req, res) => {
+export const getUserInfoFromToken = (req: Request, res: Response) => {
   if ((req.headers && req.headers.authorization) || req.body.token) {
     const authorization = req.headers.authorization || req.body.token;
     try {
-      const decodedToken = jwt.verify(authorization, config.secretKey);
-      Users.findOne({
+      const decodedToken: any = jwt.verify(authorization, config.secretKey);
+      User.findOne({
         _id: decodedToken.userId,
       })
-        .then((user) => {
+        .then((user: any) => {
           const { email, userType } = user;
           return responseHandler.success(res, {
             email,
@@ -196,7 +204,7 @@ export const forgotPassword = (req, res) => {
   if (req.body.email === '') {
     responseHandler.error(res, 'Email required!', 400);
   }
-  Users.findOne({ email: req.body.email })
+  User.findOne({ email: req.body.email })
     .exec()
     .then((user) => {
       if (user) {
@@ -236,7 +244,7 @@ export const forgotPassword = (req, res) => {
 };
 
 export const resetPassword = (req, res) => {
-  Users.findOne({
+  User.findOne({
     resetPasswordToken: req.query.token,
     resetPasswordExpires: {
       $gt: Date.now(),
@@ -261,7 +269,7 @@ export const resetPassword = (req, res) => {
 };
 
 export const updatePassword = (req, res) => {
-  Users.findOne({
+  User.findOne({
     email: req.body.email,
     resetPasswordToken: req.body.token,
     resetPasswordExpires: {
@@ -296,14 +304,14 @@ export const updatePassword = (req, res) => {
 exports.verify = (req, res) => {
   if (`${req.protocol}://${req.get('host')}` === `http://${host}`) {
     console.log('Domain is matched. Information is from Authentic email');
-    Users.find(
+    User.find(
       { email: req.body.email, verifytoken: req.body.id },
       (err) => {
         if (!err) {
           console.log('email is isUserVerified and token isUserVerified');
           const newvalues = { $set: { isUserVerified: 1 } };
           const query = { email: req.query.email };
-          Users.updateOne(query, newvalues, (error, result) => {
+          User.updateOne(query, newvalues, (error, result) => {
             if (error) {
               return responseHandler.error(err);
             }
@@ -347,7 +355,7 @@ function linkedinlogin(req, res, userType) {
         req.cache
           .load({
             options: { email: user_email },
-            loader: opts => Users.find(opts).exec(),
+            loader: opts => User.find(opts).exec(),
           })
           .then((response) => {
             if (result.length > 0) {
@@ -365,7 +373,7 @@ function linkedinlogin(req, res, userType) {
           });
 
         // New user creation.
-        const user = new Users({
+        const user = new User({
           _id: new mongoose.Types.ObjectId(),
           email: user_email,
           userType,
@@ -381,7 +389,7 @@ function linkedinlogin(req, res, userType) {
           req.cache
             .load({
               options: { email: user_email },
-              loader: opts => Users.find(opts).exec(),
+              loader: opts => User.find(opts).exec(),
             })
             // eslint-disable-next-line no-shadow
             .then((result) => {
