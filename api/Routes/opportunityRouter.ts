@@ -2,15 +2,15 @@ import express, { Router } from 'express';
 export const opportunityRouter: Router = express.Router();
 
 import {
-  addOppurtunity,
-  updateOppurtunity,
+  addOpportunity,
+  updateOpportunity,
   fetchAllOppurtunities,
-  fetchOppurtunityByID,
-  deleteOppurtunity,
+  fetchOpportunityByID,
+  deleteOpportunity,
 } from '../Controllers/opportunityController';
 
-opportunityRouter.post('/oppurtunity/add', addOppurtunity);
-opportunityRouter.put('/oppurtunity/:id/', updateOppurtunity);
-opportunityRouter.get('/oppurtunity', fetchAllOppurtunities);
-opportunityRouter.get('/oppurtunity/:id', fetchOppurtunityByID);
-opportunityRouter.delete('/oppurtunity/:id', deleteOppurtunity);
+opportunityRouter.post('/Opportunity/add', addOpportunity);
+opportunityRouter.put('/Opportunity/:id/', updateOpportunity);
+opportunityRouter.get('/Opportunity', fetchAllOppurtunities);
+opportunityRouter.get('/Opportunity/:id', fetchOpportunityByID);
+opportunityRouter.delete('/Opportunity/:id', deleteOpportunity);
