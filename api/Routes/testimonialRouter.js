@@ -1,15 +1,15 @@
 import express from 'express';
-import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth.js';
-
-const testimonialRouter = express.Router();
+import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth.ts';
 
 import {
   fetchAllTestimonial,
   fetchTestimonialByID,
   addTestimonial,
   updateTestimonial,
-  deleteTestimonial
-} from '../Controllers/testimonialController.js';
+  deleteTestimonial,
+} from '../Controllers/testimonialController';
+
+const testimonialRouter = express.Router();
 
 testimonialRouter.get('/testimonials', fetchAllTestimonial);
 testimonialRouter.get(

@@ -18,7 +18,7 @@ import testimonialRouter from './Routes/testimonialRouter.js';
 // import teamMembersrouter from './api/Routes/teamMembersrouter.js';
 
 /* db connection/envs. */
-import { connectDB } from './Configuration/db.js';
+import { connectDB } from './Configuration/db';
 import { CustomError } from './Types/customError';
 
 const app = express();
@@ -52,6 +52,8 @@ connectDB()
     app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
   })
   .catch((err: Error) => {
+    // tslint:disable-next-line: no-console
+    console.log('err', err);
     process.exit(1);
   });
 

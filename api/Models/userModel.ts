@@ -1,7 +1,8 @@
-import mongoose from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
+import { InterfaceUserModel } from './@modelTypes/interfaceUserModel';
 
-const userSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+const userSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   email: {
     type: String,
     required: true,
@@ -24,5 +25,8 @@ const userSchema = mongoose.Schema({
   resetPasswordExpiration: { type: Date, default: null }
 });
 
-const Users = mongoose.model('users', userSchema);
-export default Users;
+// tslint:disable-next-line: variable-name
+export const Users: Model<InterfaceUserModel> = model<InterfaceUserModel>(
+  'users',
+  userSchema
+);

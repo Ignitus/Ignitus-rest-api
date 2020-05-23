@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import Testimonial from '../Models/testimonialModel.js';
-import responseHandler from '../Utils/responseHandler.js';
+import responseHandler from '../Utils/responseHandler';
 
 export const addTestimonial = (req, res) => {
   Testimonial.create(req.body, (err, docs) => {

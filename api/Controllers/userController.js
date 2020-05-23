@@ -15,8 +15,8 @@ const Linkedin = require('node-linkedin')(
   process.env.LINKEDIN_APP_ID,
   process.env.LINKEDIN_SECRET,
 );*/
-import responseHandler from '../Utils/responseHandler.js';
-import { config } from '../Configuration/config.js';
+import responseHandler from '../Utils/responseHandler';
+import { config } from '../Configuration/config';
 
 /*
  * Feature Request Update, Not Needed atm.
@@ -33,7 +33,7 @@ const smtpTransport = nodemailer.createTransport({
 
 import Professor from '../Models/professorModel.js';
 import Student from '../Models/studentModel.js';
-import Users from '../Models/userModel.js';
+import { Users } from '../Models/userModel';
 
 // const scope = ['r_basicprofile', 'r_emailaddress'];
 /* If the user is already registered through LinkedIn & trying to register through email. */

@@ -1,5 +1,5 @@
 import Student from '../Models/studentModel.js';
-import responseHandler from '../Utils/responseHandler.js';
+import responseHandler from '../Utils/responseHandler';
 
 export const studentProfile = (req, res) => {
   Student.find({ email: req.userData.email }, (err, docs) => {

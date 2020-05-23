@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 
 import Oppurtunity from '../Models/opportunityModel.js';
-import responseHandler from '../Utils/responseHandler.js';
+import responseHandler from '../Utils/responseHandler';
 
 export const addOppurtunity = (req, res) => {
   Oppurtunity.create(req.body, (err, docs) => {

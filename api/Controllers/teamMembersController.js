@@ -1,5 +1,5 @@
 import TeamMember from '../Models/teamMembersModel.js';
-import responseHandler from '../Utils/responseHandler.js';
+import responseHandler from '../Utils/responseHandler';
 
 export const fetchAllTeamMembers = (req, res) => {
   TeamMember.find({}, (err, docs) => {
