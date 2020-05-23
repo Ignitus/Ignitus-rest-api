@@ -1,11 +1,12 @@
 import express from 'express';
-const userRouter = express.Router();
 
 import {
   register,
   getUserInfoFromToken,
-  login
-} from '../Controllers/userController.js';
+  login,
+} from '../Controllers/userController';
+
+const userRouter = express.Router();
 
 userRouter.post('/login', login);
 userRouter.post('/register', register);

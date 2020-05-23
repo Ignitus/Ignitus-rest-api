@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import Testimonial from '../Models/testimonialModel.js';
-import responseHandler from '../Utils/responseHandler';
+import Testimonial from '../Models/testimonialModel';
+import responseHandler from '../Utils/responseHandler.ts';
 
 export const addTestimonial = (req, res) => {
   Testimonial.create(req.body, (err, docs) => {
@@ -45,7 +45,7 @@ export const updateTestimonial = (req, res) => {
         return responseHandler.error(res, 'Testimonial not found!', 404);
       }
       return responseHandler.success(res, docs);
-    }
+    },
   );
 };
 

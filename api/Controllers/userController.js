@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
@@ -14,7 +16,7 @@ import crypto from 'crypto';
 const Linkedin = require('node-linkedin')(
   process.env.LINKEDIN_APP_ID,
   process.env.LINKEDIN_SECRET,
-);*/
+); */
 import responseHandler from '../Utils/responseHandler';
 import { config } from '../Configuration/config';
 
@@ -40,10 +42,10 @@ import { Users } from '../Models/userModel';
 function socialLoginCheck(req, res, userType, user) {
   if (
     /* && user.isUserVerified === 1 */
-    userType === user.userType &&
-    !user.password &&
-    user.linkedin.profileUrl &&
-    user.linkedin.accessToken
+    userType === user.userType
+    && !user.password
+    && user.linkedin.profileUrl
+    && user.linkedin.accessToken
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
@@ -57,7 +59,7 @@ function socialLoginCheck(req, res, userType, user) {
             throw new Error(err);
           }
           return responseHandler.success(res, result);
-        }
+        },
       );
     });
   }
@@ -68,12 +70,12 @@ const profileDataInsertion = (email, userType) => {
   if (userType === 'student') {
     profile = new Student({
       _id: new mongoose.Types.ObjectId(),
-      email
+      email,
     });
   } else if (userType === 'professor') {
     profile = new Professor({
       _id: new mongoose.Types.ObjectId(),
-      email
+      email,
     });
   }
   return profile.save();
@@ -81,46 +83,44 @@ const profileDataInsertion = (email, userType) => {
 
 export const register = (req, res) => {
   const {
-    body: { email, userType, password }
+    body: { email, userType, password },
   } = req;
   Users.findOne({ email }, (err, user) => {
     if (err) {
       throw new Error(err);
+    } else if (user && user.linkedin.profileUrl) {
+      socialLoginCheck(req, res, userType, user);
+    } else if (user) {
+      return responseHandler.error(res, 'User already exists!', 409);
     } else {
-      if (user && user.linkedin.profileUrl) {
-        socialLoginCheck(req, res, userType, user);
-      } else if (user) {
-        return responseHandler.error(res, 'User already exists!', 409);
-      } else {
-        bcrypt.hash(password, 10, (err, hashedPassword) => {
-          if (err) {
-            return responseHandler.error(res, err);
-          }
-          const randomNumberGeneration = Math.floor(
-            Math.random() * 100 + 54
-          ).toString();
-          const accessToken = crypto
-            .createHash(config.hashingType)
-            .update(randomNumberGeneration)
-            .digest(config.hashingDigest);
-          const user = new Users({
-            _id: new mongoose.Types.ObjectId(),
-            email,
-            password: hashedPassword,
-            userType,
-            verifytoken: accessToken
-          });
-          user.save().then(_ => {
-            profileDataInsertion(email, userType).then(() => {
-              res.json({
-                statusCode: 200,
-                success: true,
-                message: 'Success'
-              });
+      bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) {
+          return responseHandler.error(res, err);
+        }
+        const randomNumberGeneration = Math.floor(
+          Math.random() * 100 + 54,
+        ).toString();
+        const accessToken = crypto
+          .createHash(config.hashingType)
+          .update(randomNumberGeneration)
+          .digest(config.hashingDigest);
+        const user = new Users({
+          _id: new mongoose.Types.ObjectId(),
+          email,
+          password: hashedPassword,
+          userType,
+          verifytoken: accessToken,
+        });
+        user.save().then((_) => {
+          profileDataInsertion(email, userType).then(() => {
+            res.json({
+              statusCode: 200,
+              success: true,
+              message: 'Success',
             });
           });
         });
-      }
+      });
     }
   });
 };
@@ -133,7 +133,9 @@ export const login = (req, res) => {
         return responseHandler.error(res, 'User not found!', 401);
       }
     } else {
-      const { email, userType, _id, admin } = user;
+      const {
+        email, userType, _id, admin,
+      } = user;
       if (req.body.userType === userType) {
         bcrypt.compare(req.body.password, user.password, (err, result) => {
           if (err) {
@@ -145,19 +147,18 @@ export const login = (req, res) => {
                 email,
                 userType,
                 userId: _id,
-                admin: admin || false
+                admin: admin || false,
               },
               config.secretKey,
-              { expiresIn: '1h' }
+              { expiresIn: '1h' },
             );
             const clientData = {
               email,
-              userType
+              userType,
             };
             return responseHandler.success(res, { token, clientData });
-          } else {
-            return responseHandler.error(res, 'Incorrect password!', 401);
           }
+          return responseHandler.error(res, 'Incorrect password!', 401);
         });
       } else {
         return responseHandler.error(res, 'Unauthorized access denied!', 403);
@@ -172,13 +173,13 @@ export const getUserInfoFromToken = (req, res) => {
     try {
       const decodedToken = jwt.verify(authorization, config.secretKey);
       Users.findOne({
-        _id: decodedToken.userId
+        _id: decodedToken.userId,
       })
-        .then(user => {
+        .then((user) => {
           const { email, userType } = user;
           return responseHandler.success(res, {
             email,
-            userType
+            userType,
           });
         })
         .catch(err => responseHandler.error(res, err, 404));
@@ -190,19 +191,20 @@ export const getUserInfoFromToken = (req, res) => {
   }
 };
 
+/*
 export const forgotPassword = (req, res) => {
   if (req.body.email === '') {
     responseHandler.error(res, 'Email required!', 400);
   }
   Users.findOne({ email: req.body.email })
     .exec()
-    .then(user => {
+    .then((user) => {
       if (user) {
         const token = crypto.randomBytes(20).toString('hex');
         user
           .update({
             resetPasswordToken: token,
-            resetPasswordExpires: Date.now() + 360000
+            resetPasswordExpires: Date.now() + 360000,
           })
           .exec();
         // Send the mail to user's e-mail id.
@@ -212,14 +214,14 @@ export const forgotPassword = (req, res) => {
           to: req.body.email,
           subject: 'Link To Reset Password',
           html:
-            '<h3>Welcome to Ignitus!</h3>' +
-            '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>' +
-            '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>' +
-            `<a href=${link}>Reset password</a>` +
-            '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>' +
-            '<p>Sincerely</p>' +
-            '<p>Team Ignitus</p>' +
-            '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>'
+            '<h3>Welcome to Ignitus!</h3>'
+            + '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.</p>'
+            + '<p>Please click on the following link, to complete the process within one hour of receiving it:</p>'
+            + `<a href=${link}>Reset password</a>`
+            + '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>'
+            + '<p>Sincerely</p>'
+            + '<p>Team Ignitus</p>'
+            + '<p><a href=`https://www.ignitus.org/`>https://www.ignitus.org/</a></p>',
         };
         smtpTransport.sendMail(mailOptions, (error, response) => {
           if (error) {
@@ -237,23 +239,23 @@ export const resetPassword = (req, res) => {
   Users.findOne({
     resetPasswordToken: req.query.token,
     resetPasswordExpires: {
-      $gt: Date.now()
-    }
+      $gt: Date.now(),
+    },
   })
     .exec()
-    .then(user => {
+    .then((user) => {
       if (user) {
         return res.redirect(
-          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`
+          `http://www.ignitus.org/resetPassword?token=${req.query.token}&email=${user.email}`,
         );
       }
       return res
         .status(403)
         .send(
-          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>"
+          "<p>Password reset link is invalid or has expired.</p><p><a href='http://www.ignitus.org/forgotPassword'>Click here</a> to recover your account</p>",
         );
     })
-    .catch(err => {
+    .catch((err) => {
       responseHandler.error(res, err, 'Invalid token.');
     });
 };
@@ -263,22 +265,22 @@ export const updatePassword = (req, res) => {
     email: req.body.email,
     resetPasswordToken: req.body.token,
     resetPasswordExpires: {
-      $gt: Date.now()
-    }
+      $gt: Date.now(),
+    },
   })
     .exec()
-    .then(user => {
+    .then((user) => {
       if (user == null) {
         return responseHandler.error(res, 'User does not exist.', 403);
       }
       bcrypt
         .hash(req.body.password, 10)
-        .then(hash => {
+        .then((hash) => {
           user
             .update({
               password: hash,
               resetPasswordToken: null,
-              resetPasswordExpires: null
+              resetPasswordExpires: null,
             })
             .exec();
         })
@@ -287,6 +289,8 @@ export const updatePassword = (req, res) => {
     })
     .catch(error => responseHandler.error(res, error));
 };
+
+*/
 
 /* User verification disabled for now.
 exports.verify = (req, res) => {
