@@ -26,7 +26,7 @@ const userSchema = new Schema({
 });
 
 // tslint:disable-next-line: variable-name
-export const Users: Model<InterfaceUserModel> = model<InterfaceUserModel>(
+export const User: Model<InterfaceUserModel> = model<InterfaceUserModel>(
   'users',
   userSchema
 );
