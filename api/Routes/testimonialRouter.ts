@@ -1,5 +1,5 @@
-import express from 'express';
-import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth.ts';
+import express, { Router } from 'express';
+import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth';
 
 import {
   fetchAllTestimonial,
@@ -9,7 +9,7 @@ import {
   deleteTestimonial,
 } from '../Controllers/testimonialController';
 
-const testimonialRouter = express.Router();
+export const testimonialRouter: Router = express.Router();
 
 testimonialRouter.get('/testimonials', fetchAllTestimonial);
 testimonialRouter.get(
@@ -37,5 +37,3 @@ testimonialRouter.delete(
   verifyAdmin,
   deleteTestimonial,
 );
-
-export default testimonialRouter;
