@@ -32,8 +32,8 @@ function socialLoginCheck(
     /* && user.isUserVerified === 1 */
     userType === user.userType &&
     !user.password &&
-    user.linkedin.profileUrl &&
-    user.linkedin.accessToken
+    user.oAuth.linkedIn.profileUrl &&
+    user.oAuth.linkedIn.accessToken
   ) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) {
@@ -53,18 +53,12 @@ function socialLoginCheck(
   }
 }
 
-const profileDataInsertion = (email: string, userType: string) => {
+const profileDataInsertion = (userType: string) => {
   let profile;
   if (userType === 'student') {
-    profile = new Student({
-      _id: new mongoose.Types.ObjectId(),
-      email,
-    });
+    profile = new Student({});
   } else if (userType === 'professor') {
-    profile = new Professor({
-      _id: new mongoose.Types.ObjectId(),
-      email,
-    });
+    profile = new Professor({});
   }
   return profile?.save();
 };
@@ -76,7 +70,7 @@ export const register = (req: Request, res: Response) => {
   User.findOne({ email }, (err: Error, user: InterfaceUserModel) => {
     if (err) {
       return responseHandler.error(res, err.message, 400);
-    } else if (user && user.linkedin.profileUrl) {
+    } else if (user && user.oAuth.linkedIn.profileUrl) {
       socialLoginCheck(req, res, userType, user);
     } else if (user) {
       return responseHandler.error(res, 'User already exists!', 409);
@@ -100,7 +94,7 @@ export const register = (req: Request, res: Response) => {
           verifytoken: accessToken,
         });
         user.save().then(_ => {
-          profileDataInsertion(email, userType)?.then(() => {
+          profileDataInsertion(userType)?.then(() => {
             res.json({
               statusCode: 200,
               success: true,
