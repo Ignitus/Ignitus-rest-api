@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Model } from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
 import { InterfaceTestimonialModel } from './@modelTypes/interfaceTestimonialModel';
 
 const testimonialSchema = new Schema({
