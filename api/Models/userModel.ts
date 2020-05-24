@@ -2,7 +2,6 @@ import { Schema, model, Model } from 'mongoose';
 import { InterfaceUserModel } from './@modelTypes/interfaceUserModel';
 
 const userSchema = new Schema({
-  _id: Schema.Types.ObjectId,
   email: {
     type: String,
     required: true,
@@ -27,6 +26,6 @@ const userSchema = new Schema({
 
 // tslint:disable-next-line: variable-name
 export const User: Model<InterfaceUserModel> = model<InterfaceUserModel>(
-  'users',
+  'User',
   userSchema
 );

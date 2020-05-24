@@ -5,19 +5,21 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 
-import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import responseHandler from '../Utils/responseHandler';
+
+import { Request, Response } from 'express';
 import { config } from '../Configuration/config';
 
-import Professor from '../Models/professorModel.js';
-import Student from '../Models/studentModel.js';
 import { User } from '../Models/userModel';
+import { Professor } from '../Models/professorModel';
+import { Student } from '../Models/studentModel';
 import { InterfaceUserModel } from 'api/Models/@modelTypes/interfaceUserModel';
 import { TokenType } from './@controllerTypes/interfaceToken';
+
+import responseHandler from '../Utils/responseHandler';
 
 /* If the user is already registered through LinkedIn & trying to register through email. */
 function socialLoginCheck(
