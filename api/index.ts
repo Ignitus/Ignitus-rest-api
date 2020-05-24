@@ -11,8 +11,6 @@ import bodyParser from 'body-parser';
 /* application routes. */
 import { userRouter } from './Routes/usersRouter';
 import { opportunityRouter } from './Routes/opportunityRouter';
-import { studentRouter } from './Routes/studentRouter';
-import { professorRouter } from './Routes/professorRouter';
 import { testimonialRouter } from './Routes/testimonialRouter';
 
 /* db connection/envs. */
@@ -38,8 +36,6 @@ app.use((req: Request, res: Response, next: NextFunction): void => {
   next();
 });
 
-app.use('/', studentRouter);
-app.use('/', professorRouter);
 app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
