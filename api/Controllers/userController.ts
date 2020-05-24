@@ -152,15 +152,8 @@ export const login = (req: Request, res: Response) => {
 };
 
 export const getUserInformationFromToken = (req: Request, res: Response) => {
-  if (
-    (req.headers && req.headers?.authorization) ||
-    req.body?.token ||
-    req.headers['x-access-token']
-  ) {
-    const authorization: string =
-      req.headers?.authorization ||
-      req.body?.token ||
-      req.headers['x-access-token'];
+  if (req.headers && req.headers.authorization) {
+    const authorization: string = req.headers.authorization;
     try {
       const decodedToken = jwt.verify(
         authorization,
