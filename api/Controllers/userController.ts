@@ -125,7 +125,7 @@ export const login = (req: Request, res: Response) => {
               return responseHandler.error(res, err.message, 400);
             }
             if (result) {
-              const token = jwt.sign(
+              const token: string = jwt.sign(
                 {
                   email,
                   userType,
@@ -153,28 +153,27 @@ export const login = (req: Request, res: Response) => {
 
 export const getUserInformationFromToken = (req: Request, res: Response) => {
   if (req.headers && req.headers.authorization) {
-    const authorization: string = req.headers.authorization;
-    try {
-      const decodedToken = jwt.verify(
-        authorization,
-        config.secretKey,
-      ) as TokenType;
-
-      User.findOne({
-        _id: decodedToken.userId,
-      })
-        .then((user: any) => {
-          const { email, userType } = user;
-          return responseHandler.success(res, {
-            email,
-            userType,
+    const token: string = req.headers.authorization;
+    jwt.verify(
+      token,
+      config.secretKey,
+      async (err: any, decryptedToken: any) => {
+        if (err) {
+          return responseHandler.error(res, err.message, 404);
+        }
+        try {
+          const user = await User.findOne({
+            _id: decryptedToken.userId,
           });
-        })
-        .catch(err => responseHandler.error(res, err.message, 404));
-    } catch (err) {
-      responseHandler.error(res, err.message, 404);
-    }
+          res.json({
+            user,
+          });
+        } catch (err) {
+          return responseHandler.error(res, err.message, 404);
+        }
+      },
+    );
   } else {
-    return responseHandler.error(res, 'Unauthorized!', 401);
+    return responseHandler.error(res, 'No token provided!', 401);
   }
 };

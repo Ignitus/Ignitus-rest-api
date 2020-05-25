@@ -12,11 +12,11 @@ export const verifyOrdinaryUser = (
   const token: string =
     req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
-    jwt.verify(token, config.secretKey, (err: any, decoded: any) => {
+    jwt.verify(token, config.secretKey, (err: any, decrypted: any) => {
       if (err) {
         throw new Error(err);
       }
-      req.decoded = decoded;
+      req.decrypted = decrypted;
       next();
     });
   } else {
@@ -36,12 +36,12 @@ export const verifyStudent = (
   const token =
     req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
-    jwt.verify(token, config.secretKey, (err: any, decoded: any) => {
+    jwt.verify(token, config.secretKey, (err: any, decrypted: any) => {
       if (err) {
         throw new Error(err);
       }
-      if (decoded.userType === 'student') {
-        req.decoded = decoded;
+      if (decrypted.userType === 'student') {
+        req.decrypted = decrypted;
         next();
       } else {
         res.json({
@@ -66,7 +66,7 @@ export const verifyAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.decoded?.admin) {
+  if (req.decrypted?.admin) {
     next();
   } else {
     res.json({
