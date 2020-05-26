@@ -54,30 +54,29 @@ const profileDataInsertion = (userType: string) => {
   return profile?.save();
 };
 
-export const register = (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   const {
     body: { email, userType, password },
   } = req;
-  User.findOne({ email }, (err: Error, user: InterfaceUserModel) => {
-    if (err) {
-      return responseHandler.error(res, err.message, 400);
-    } else if (user && user.oAuth.linkedIn.profileUrl) {
-      socialLoginCheck(req, res, userType, user);
-    } else if (user) {
+  try {
+    const userObject: InterfaceUserModel | null = await User.findOne({ email });
+    if (userObject && userObject.oAuth.linkedIn.profileUrl) {
+      socialLoginCheck(req, res, userType, userObject);
+    } else if (userObject) {
       return responseHandler.error(res, 'User already exists!', 409);
     } else {
-      bcrypt.hash(password, 10, (err, hashedPassword) => {
+      bcrypt.hash(password, 10, async (err, hashedPassword) => {
         if (err) {
           return responseHandler.error(res, err.message, 400);
         }
-        new User({
+        const newUser = new User({
           _id: new mongoose.Types.ObjectId(),
           email,
           password: hashedPassword,
           userType,
-        })
-          .save()
-          .then(_ => {
+        });
+        try {
+          await newUser.save().then(_ => {
             profileDataInsertion(userType)?.then(() => {
               res.json({
                 statusCode: 200,
@@ -86,9 +85,14 @@ export const register = (req: Request, res: Response) => {
               });
             });
           });
+        } catch (err) {
+          return responseHandler.error(res, err.message, 400);
+        }
       });
     }
-  });
+  } catch (err) {
+    return responseHandler.error(res, err.message, 400);
+  }
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -120,8 +124,7 @@ export const login = async (req: Request, res: Response) => {
                 { expiresIn: '4h' },
               );
               const clientData: clientDataType = {
-                email,
-                userType,
+                ...userObject.toJSON(),
               };
               return responseHandler.success(res, { jwtToken, clientData });
             }

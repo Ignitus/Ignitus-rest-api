@@ -4,7 +4,6 @@ import path from 'path';
 /* for additional logging. */
 import logger from 'morgan';
 /* parsing middlewares. */
-import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
 /* application routes. */
@@ -22,7 +21,6 @@ const PORT: number | string = process.env.PORT ?? 3000;
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(path.resolve(), 'public')));
 
 // eslint-disable-next-line consistent-return
