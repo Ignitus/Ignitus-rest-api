@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Testimonial } from '../Models/testimonialModel';
 import { InterfaceTestimonialModel } from 'api/Models/@modelTypes/interfaceTestimonialModel';
-import responseHandler from '../Utils/responseHandler';
+import { responseHandler } from '../Utils/responseHandler';
 
 export const addTestimonial = (req: Request, res: Response) => {
   Testimonial.create(
@@ -27,7 +27,7 @@ export const fetchAllTestimonial = (req: Request, res: Response) => {
 export const fetchTestimonialByID = (req: Request, res: Response) => {
   Testimonial.findById(
     req.params.id,
-    (err: Error, docs: InterfaceTestimonialModel) => {
+    (err: Error, docs: InterfaceTestimonialModel | null) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
@@ -44,7 +44,7 @@ export const updateTestimonial = (req: Request, res: Response) => {
     req.params.id,
     req.body,
     { new: true },
-    (err: Error, docs) => {
+    (err: Error, docs: InterfaceTestimonialModel | null) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
@@ -57,14 +57,17 @@ export const updateTestimonial = (req: Request, res: Response) => {
 };
 
 export const deleteTestimonial = (req: Request, res: Response) => {
-  Testimonial.findByIdAndRemove(req.params.id, (err, docs) => {
-    if (err) {
-      return responseHandler.error(res, err.message, 400);
-    }
-    if (!docs) {
-      return responseHandler.error(res, 'Testimonial not found!', 404);
-    }
-    // eslint-disable-next-line no-underscore-dangle
-    return responseHandler.success(res, { _id: docs._id });
-  });
+  Testimonial.findByIdAndRemove(
+    req.params.id,
+    (err: Error, docs: InterfaceTestimonialModel | null) => {
+      if (err) {
+        return responseHandler.error(res, err.message, 400);
+      }
+      if (!docs) {
+        return responseHandler.error(res, 'Testimonial not found!', 404);
+      }
+      // eslint-disable-next-line no-underscore-dangle
+      return responseHandler.success(res, { _id: docs._id });
+    },
+  );
 };

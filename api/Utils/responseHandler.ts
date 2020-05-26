@@ -1,7 +1,7 @@
 // eslint-disable-next-line func-names
 import { Response } from 'express';
 
-const responseHandler = {
+export const responseHandler = {
   success(res: Response, response: any) {
     res.status(200).json({
       statusCode: 200,
@@ -22,5 +22,3 @@ const responseHandler = {
     });
   },
 };
-
-export default responseHandler;

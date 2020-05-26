@@ -9,17 +9,15 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-
 import { Request, Response } from 'express';
-import { config } from '../Configuration/config';
 
 import { User } from '../Models/userModel';
 import { Professor } from '../Models/professorModel';
 import { Student } from '../Models/studentModel';
 import { InterfaceUserModel } from 'api/Models/@modelTypes/interfaceUserModel';
 import { TokenType } from './@controllerTypes/interfaceToken';
-
-import responseHandler from '../Utils/responseHandler';
+import { config } from '../Configuration/config';
+import { responseHandler } from '../Utils/responseHandler';
 
 /* If the user is already registered through LinkedIn & trying to register through email. */
 function socialLoginCheck(
@@ -125,7 +123,7 @@ export const login = (req: Request, res: Response) => {
               return responseHandler.error(res, err.message, 400);
             }
             if (result) {
-              const token: string = jwt.sign(
+              const jwtToken: string = jwt.sign(
                 {
                   email,
                   userType,
@@ -139,7 +137,7 @@ export const login = (req: Request, res: Response) => {
                 email,
                 userType,
               };
-              return responseHandler.success(res, { token, clientData });
+              return responseHandler.success(res, { jwtToken, clientData });
             }
             return responseHandler.error(res, 'Incorrect password!', 401);
           });
@@ -151,29 +149,29 @@ export const login = (req: Request, res: Response) => {
   );
 };
 
-export const getUserInformationFromToken = (req: Request, res: Response) => {
+export const getUserInformationFromToken = async (
+  req: Request,
+  res: Response,
+) => {
   if (req.headers && req.headers.authorization) {
-    const token: string = req.headers.authorization;
-    jwt.verify(
-      token,
-      config.secretKey,
-      async (err: any, decryptedToken: any) => {
-        if (err) {
-          return responseHandler.error(res, err.message, 404);
-        }
-        try {
-          const user = await User.findOne({
-            _id: decryptedToken.userId,
-          });
-          res.json({
-            user,
-          });
-        } catch (err) {
-          return responseHandler.error(res, err.message, 404);
-        }
-      },
-    );
+    try {
+      const decryptedToken: TokenType = <TokenType>(
+        jwt.verify(req.headers.authorization, config.secretKey)
+      );
+      try {
+        const userObject: InterfaceUserModel | null = await User.findOne({
+          _id: decryptedToken.userId,
+        });
+        res.json({
+          userObject,
+        });
+      } catch (err) {
+        return responseHandler.error(res, err.message, 404);
+      }
+    } catch (err) {
+      return responseHandler.error(res, err.message, 401);
+    }
   } else {
-    return responseHandler.error(res, 'No token provided!', 401);
+    return responseHandler.error(res, 'No token provided! 💭', 401);
   }
 };

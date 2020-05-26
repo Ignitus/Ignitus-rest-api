@@ -1,62 +1,58 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../Configuration/config';
-import { Request, Response, NextFunction } from 'express';
+import { responseHandler } from '../Utils/responseHandler';
 
 export const verifyOrdinaryUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const token: string =
     req.body.token || req.query.token || req.headers['x-access-token'];
+
   if (token) {
-    jwt.verify(token, config.secretKey, (err: any, decrypted: any) => {
-      if (err) {
-        throw new Error(err);
-      }
-      req.decrypted = decrypted;
+    try {
+      const decryptedToken = <TokenType>jwt.verify(token, config.secretKey);
+      req.decrypted = decryptedToken;
       next();
-    });
+    } catch (err) {
+      return responseHandler.error(res, err.message, 401);
+    }
   } else {
-    res.json({
-      statusCode: 500,
-      success: false,
-      message: 'No token provided!'
-    });
+    return responseHandler.error(res, 'No token provided!', 401);
   }
 };
 
 export const verifyStudent = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  const token =
+  const token: string =
     req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
-    jwt.verify(token, config.secretKey, (err: any, decrypted: any) => {
-      if (err) {
-        throw new Error(err);
-      }
-      if (decrypted.userType === 'student') {
-        req.decrypted = decrypted;
+    try {
+      const decryptedToken: TokenType = <TokenType>(
+        jwt.verify(token, config.secretKey)
+      );
+      if (decryptedToken.userType === 'student') {
+        req.decrypted = decryptedToken;
         next();
       } else {
         res.json({
           statusCode: 403,
           success: false,
-          message: 'You are not authorized to perform this operation !'
+          message: 'You are not authorized to perform this operation !',
         });
       }
-    });
+    } catch (err) {
+      return responseHandler.error(res, err.message, 401);
+    }
   } else {
-    res.json({
-      statusCode: 500,
-      success: false,
-      message: 'No token provided!'
-    });
+    return responseHandler.error(res, 'No token provided!', 401);
   }
 };
 
@@ -64,7 +60,7 @@ export const verifyStudent = (
 export const verifyAdmin = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (req.decrypted?.admin) {
     next();
@@ -72,8 +68,7 @@ export const verifyAdmin = (
     res.json({
       statusCode: 500,
       success: false,
-      message:
-        'You are not authorized to perform this operation, Only admins are authorized!'
+      message: 'Not authorized!',
     });
   }
 };
