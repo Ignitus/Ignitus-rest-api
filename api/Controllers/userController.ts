@@ -108,7 +108,7 @@ export const register = (req: Request, res: Response) => {
 export const login = (req: Request, res: Response) => {
   User.findOne(
     { email: req.body.email },
-    (err: Error, user: InterfaceUserModel) => {
+    (err: Error, user: InterfaceUserModel | null) => {
       if (err || !user) {
         if (err) {
           return responseHandler.error(res, err.message, 400);

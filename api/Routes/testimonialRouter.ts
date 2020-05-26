@@ -12,10 +12,7 @@ import {
 export const testimonialRouter: Router = express.Router();
 
 testimonialRouter.get('/testimonials', fetchAllTestimonial);
-testimonialRouter.get(
-  '/testimonial/:id',
-  fetchTestimonialByID,
-);
+testimonialRouter.get('/testimonial/:id', fetchTestimonialByID);
 
 testimonialRouter.post(
   '/testimonial/add',

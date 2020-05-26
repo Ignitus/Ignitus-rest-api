@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Testimonial } from '../Models/testimonialModel';
 import { InterfaceTestimonialModel } from 'api/Models/@modelTypes/interfaceTestimonialModel';
+import { Testimonial } from '../Models/testimonialModel';
 import { responseHandler } from '../Utils/responseHandler';
 
 export const addTestimonial = (req: Request, res: Response) => {
