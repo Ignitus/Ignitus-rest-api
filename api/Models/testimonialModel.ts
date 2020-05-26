@@ -8,7 +8,6 @@ const testimonialSchema = new Schema({
   profilePicture: { type: String },
 });
 
-// tslint:disable-next-line: variable-name
 export const Testimonial: Model<InterfaceTestimonialModel> = model<
   InterfaceTestimonialModel
 >('Testimonial', testimonialSchema);

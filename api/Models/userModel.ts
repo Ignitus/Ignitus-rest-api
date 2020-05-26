@@ -102,7 +102,6 @@ const userSchema = new Schema({
   verifyToken: { type: String, default: null },
 });
 
-// tslint:disable-next-line: variable-name
 export const User: Model<InterfaceUserModel> = model<InterfaceUserModel>(
   'User',
   userSchema,

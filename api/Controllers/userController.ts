@@ -1,14 +1,6 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
-/* eslint-disable no-console */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
-/* eslint-disable camelcase */
-
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 import { Request, Response } from 'express';
 
 import { User } from '../Models/userModel';
@@ -18,6 +10,7 @@ import { InterfaceUserModel } from 'api/Models/@modelTypes/interfaceUserModel';
 import { TokenType } from './@controllerTypes/interfaceToken';
 import { config } from '../Configuration/config';
 import { responseHandler } from '../Utils/responseHandler';
+import { clientDataType } from 'api/Types/globalTypes';
 
 /* If the user is already registered through LinkedIn & trying to register through email. */
 function socialLoginCheck(
@@ -77,48 +70,41 @@ export const register = (req: Request, res: Response) => {
         if (err) {
           return responseHandler.error(res, err.message, 400);
         }
-        const randomNumberGeneration = Math.floor(
-          Math.random() * 100 + 54,
-        ).toString();
-        const accessToken: string = crypto
-          .createHash(config.hashingType)
-          .update(randomNumberGeneration)
-          .digest(config.hashingDigest);
-        const user = new User({
+        new User({
           _id: new mongoose.Types.ObjectId(),
           email,
           password: hashedPassword,
           userType,
-          verifytoken: accessToken,
-        });
-        user.save().then(_ => {
-          profileDataInsertion(userType)?.then(() => {
-            res.json({
-              statusCode: 200,
-              success: true,
-              message: 'Success',
+        })
+          .save()
+          .then(_ => {
+            profileDataInsertion(userType)?.then(() => {
+              res.json({
+                statusCode: 200,
+                success: true,
+                message: 'Success',
+              });
             });
           });
-        });
       });
     }
   });
 };
 
-export const login = (req: Request, res: Response) => {
-  User.findOne(
-    { email: req.body.email },
-    (err: Error, user: InterfaceUserModel | null) => {
-      if (err || !user) {
-        if (err) {
-          return responseHandler.error(res, err.message, 400);
-        } else {
-          return responseHandler.error(res, 'User not found!', 401);
-        }
-      } else {
-        const { email, userType, _id, admin } = user;
-        if (req.body.userType === userType) {
-          bcrypt.compare(req.body.password, user.password, (err, result) => {
+export const login = async (req: Request, res: Response) => {
+  try {
+    const userObject: InterfaceUserModel | null = await User.findOne({
+      email: req.body.email,
+    });
+    if (!userObject) {
+      return responseHandler.error(res, 'User not found!', 401);
+    } else {
+      const { email, userType, _id, admin }: InterfaceUserModel = userObject;
+      if (req.body.userType === userType) {
+        bcrypt.compare(
+          req.body.password,
+          userObject.password,
+          (err, result) => {
             if (err) {
               return responseHandler.error(res, err.message, 400);
             }
@@ -133,20 +119,22 @@ export const login = (req: Request, res: Response) => {
                 config.secretKey,
                 { expiresIn: '4h' },
               );
-              const clientData = {
+              const clientData: clientDataType = {
                 email,
                 userType,
               };
               return responseHandler.success(res, { jwtToken, clientData });
             }
             return responseHandler.error(res, 'Incorrect password!', 401);
-          });
-        } else {
-          return responseHandler.error(res, 'Unauthorized access denied!', 403);
-        }
+          },
+        );
+      } else {
+        return responseHandler.error(res, 'Unauthorized access denied!', 403);
       }
-    },
-  );
+    }
+  } catch (err) {
+    return responseHandler.error(res, err.message, 400);
+  }
 };
 
 export const getUserInformationFromToken = async (

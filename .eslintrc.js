@@ -46,5 +46,6 @@ module.exports = {
     ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
+    "no-underscore-dangle":  ["error", { "allow": ["_place"] }]
   },
 };

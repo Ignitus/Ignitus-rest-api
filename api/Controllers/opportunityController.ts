@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 import { Request, Response } from 'express';
 import { Opportunity } from '../Models/opportunityModel';
 import { InterfaceOpportunityModel } from 'api/Models/@modelTypes/interfaceOpportunityModel';
