@@ -2,5 +2,5 @@
   "watch": ["api/"],
   "ext": "ts, js",
   "ignore": ["public"],
-  "exec": "NODE_ENV=development ts-node api/index.ts"
+  "exec": "NODE_ENV=development ts-node --files api/index.ts"
 }

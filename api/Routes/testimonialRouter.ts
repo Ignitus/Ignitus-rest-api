@@ -1,21 +1,18 @@
-import express from 'express';
-import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth.js';
-
-const testimonialRouter = express.Router();
+import express, { Router } from 'express';
+import { verifyOrdinaryUser, verifyAdmin } from '../Middlewares/check-auth';
 
 import {
   fetchAllTestimonial,
   fetchTestimonialByID,
   addTestimonial,
   updateTestimonial,
-  deleteTestimonial
-} from '../Controllers/testimonialController.js';
+  deleteTestimonial,
+} from '../Controllers/testimonialController';
+
+export const testimonialRouter: Router = express.Router();
 
 testimonialRouter.get('/testimonials', fetchAllTestimonial);
-testimonialRouter.get(
-  '/testimonial/:id',
-  fetchTestimonialByID,
-);
+testimonialRouter.get('/testimonial/:id', fetchTestimonialByID);
 
 testimonialRouter.post(
   '/testimonial/add',
@@ -37,5 +34,3 @@ testimonialRouter.delete(
   verifyAdmin,
   deleteTestimonial,
 );
-
-export default testimonialRouter;
