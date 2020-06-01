@@ -75,19 +75,15 @@ export const register = async (req: Request, res: Response) => {
           password: hashedPassword,
           userType,
         });
-        try {
-          await newUser.save().then(_ => {
-            profileDataInsertion(userType)?.then(() => {
-              res.json({
-                statusCode: 200,
-                success: true,
-                message: 'Success',
-              });
+        await newUser.save().then(_ => {
+          profileDataInsertion(userType)?.then(() => {
+            res.json({
+              statusCode: 200,
+              success: true,
+              message: 'Success',
             });
           });
-        } catch (err) {
-          return responseHandler.error(res, err.message, 400);
-        }
+        });
       });
     }
   } catch (err) {
@@ -149,16 +145,12 @@ export const getUserInformationFromToken = async (
       const decryptedToken: TokenType = <TokenType>(
         jwt.verify(req.headers.authorization, config.secretKey)
       );
-      try {
-        const userObject: InterfaceUserModel | null = await User.findOne({
-          _id: decryptedToken.userId,
-        });
-        res.json({
-          userObject,
-        });
-      } catch (err) {
-        return responseHandler.error(res, err.message, 404);
-      }
+      const userObject: InterfaceUserModel | null = await User.findOne({
+        _id: decryptedToken.userId,
+      });
+      res.json({
+        userObject,
+      });
     } catch (err) {
       return responseHandler.error(res, err.message, 401);
     }
