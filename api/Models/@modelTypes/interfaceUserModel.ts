@@ -40,7 +40,7 @@ export interface InterfaceUserModel extends Document {
     researchGate: string;
   };
   shortHeadline: string;
-  username: string;
+  userName: string;
   userType: string;
   verifyToken: string;
 }

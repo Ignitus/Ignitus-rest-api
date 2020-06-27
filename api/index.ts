@@ -15,6 +15,8 @@ import { testimonialRouter } from './Routes/testimonialRouter';
 import { connectDB } from './Configuration/db';
 import { CustomError } from './Types/customError';
 
+require('dotenv').config();
+
 const app = express();
 const PORT: number | string = process.env.PORT ?? 3000;
 
@@ -40,7 +42,7 @@ app.use('/', testimonialRouter);
 connectDB()
   .then(() => {
     // tslint:disable-next-line: no-console
-    app.listen(PORT, () => console.log(`Our app is running on port ${PORT}`));
+    console.log('MongoDB connected!');
   })
   .catch((err: Error) => {
     // tslint:disable-next-line: no-console
@@ -59,4 +61,8 @@ app.use((err: CustomError, req: Request, res: Response): void => {
   res.status(err.status || 500);
 });
 
-export default app;
+const server = app.listen(PORT, () =>
+  console.log(`Our app is running on port ${PORT}`),
+);
+
+module.exports = server;
