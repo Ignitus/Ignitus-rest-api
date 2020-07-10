@@ -97,7 +97,12 @@ const userSchema = new Schema({
     researchGate: { type: String, default: null },
   },
   shortHeadline: { type: String, default: null },
-  username: { type: String, default: null },
+  userName: {
+    type:String,
+    required: true,
+    unqiue: true,
+    match: /^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/
+  },
   userType: { type: String, required: true },
   verifyToken: { type: String, default: null },
 });

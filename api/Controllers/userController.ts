@@ -32,6 +32,7 @@ function socialLoginCheck(
       }
       User.update(
         { email: req.body.email },
+        { userName: req.body.userName },
         { $set: { password: hash } },
         (error, result) => {
           if (error) {
@@ -56,10 +57,10 @@ const profileDataInsertion = (userType: string) => {
 
 export const register = async (req: Request, res: Response) => {
   const {
-    body: { email, userType, password },
+    body: { email, userName, userType, password },
   } = req;
   try {
-    const userObject: InterfaceUserModel | null = await User.findOne({ email });
+    const userObject: InterfaceUserModel | null = await User.findOne({ $or: [ { email }, { userName } ] });
     if (userObject && userObject.oAuth.linkedIn.profileUrl) {
       socialLoginCheck(req, res, userType, userObject);
     } else if (userObject) {
@@ -73,6 +74,7 @@ export const register = async (req: Request, res: Response) => {
           _id: new mongoose.Types.ObjectId(),
           email,
           password: hashedPassword,
+          userName,
           userType,
         });
         await newUser.save().then(_ => {
@@ -94,7 +96,10 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const userObject: InterfaceUserModel | null = await User.findOne({
-      email: req.body.email,
+      $or: [
+        { email: req.body.email },
+        { userName: req.body.userName }
+      ]
     });
     if (!userObject) {
       return responseHandler.error(res, 'User not found!', 401);
