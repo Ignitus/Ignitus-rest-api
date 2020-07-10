@@ -60,7 +60,9 @@ export const register = async (req: Request, res: Response) => {
     body: { email, userName, userType, password },
   } = req;
   try {
-    const userObject: InterfaceUserModel | null = await User.findOne({ $or: [ { email }, { userName } ] });
+    const userObject: InterfaceUserModel | null = await User.findOne({
+      $or: [{ email }, { userName }],
+    });
     if (userObject && userObject.oAuth.linkedIn.profileUrl) {
       socialLoginCheck(req, res, userType, userObject);
     } else if (userObject) {
@@ -96,10 +98,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const userObject: InterfaceUserModel | null = await User.findOne({
-      $or: [
-        { email: req.body.email },
-        { userName: req.body.userName }
-      ]
+      $or: [{ email: req.body.email }, { userName: req.body.userName }],
     });
     if (!userObject) {
       return responseHandler.error(res, 'User not found!', 401);
