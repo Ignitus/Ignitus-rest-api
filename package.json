@@ -12,7 +12,7 @@
     "start-dev": "nodemon",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "nyc": {
     "check-coverage": false,
