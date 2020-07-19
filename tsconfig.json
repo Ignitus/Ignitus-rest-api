@@ -12,7 +12,7 @@
     "emitDecoratorMetadata": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "typeRoots": ["api/@types", "node_modules/@types"]
   },
   "include": ["api/**/*"],
