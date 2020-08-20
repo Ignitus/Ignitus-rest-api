@@ -42,7 +42,7 @@
     "instrument": true
   },
   "dependencies": {
-    "bcrypt": "^3.0.1",
+    "bcrypt": "^5.0.0",
     "body-parser": "~1.18.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.2.0",
