@@ -38,7 +38,7 @@ describe('/testimonials', () => {
         },
       ];
 
-      Testimonial.create(testimonials);
+      Testimonial.insertMany(testimonials);
 
       const res = await request(server).get('/testimonials');
 
