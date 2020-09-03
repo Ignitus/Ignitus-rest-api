@@ -1,5 +1,7 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
 import { ConfigType } from 'api/Types/configType';
+
+dotenv.config();
 
 export const config: ConfigType = {
   secretKey: process.env.SECRET_KEY || '',

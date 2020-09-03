@@ -15,7 +15,8 @@ import { testimonialRouter } from './Routes/testimonialRouter';
 import { connectDB } from './Configuration/db';
 import { CustomError } from './Types/customError';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT: number | string = process.env.PORT ?? 3000;
