@@ -12,7 +12,8 @@
     "start-dev": "nodemon",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "ci": "CI=true npm test && npm run lint"
   },
   "nyc": {
     "check-coverage": false,
@@ -87,5 +88,10 @@
       "json",
       "html"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run ci"
+    }
   }
 }
