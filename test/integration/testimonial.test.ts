@@ -18,7 +18,6 @@ describe('/testimonials', () => {
   });
 
   afterEach(async () => {
-    await Testimonial.collection.drop();
     await server.close();
     await mongoose.connection.close();
   });
@@ -38,12 +37,40 @@ describe('/testimonials', () => {
         },
       ];
 
-      Testimonial.insertMany(testimonials);
+      await Testimonial.insertMany(testimonials);
 
       const res = await request(server).get('/testimonials');
 
       expect(res.status).toBe(200);
       expect(res.body.data.length).toBe(2);
+
+      await Testimonial.collection.drop();
+    });
+  });
+
+  describe('GET /:id', () => {
+    it('should return a testimonial if valid id is passed', async () => {
+      const testimonials = new Testimonial({
+        author: 'Author1',
+        description: 'description1',
+        authorDesignation: 'Developer',
+      });
+
+      await testimonials.save();
+
+      const res = await request(server).get(`/testimonial/${testimonials._id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.author).toBe(testimonials.author);
+
+      await Testimonial.collection.drop();
+    });
+
+    it('should return 404 if no testimonial with given id exists', async () => {
+      const id = new mongoose.Types.ObjectId();
+      const res = await request(server).get(`/testimonial/${id}`);
+
+      expect(res.status).toBe(404);
     });
   });
 });
