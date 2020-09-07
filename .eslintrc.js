@@ -25,7 +25,7 @@ module.exports = {
       },
     },
   },
-  plugins: ["@typescript-eslint", "prettier", "import"],
+  plugins: ['@typescript-eslint', 'prettier', 'import'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -46,14 +46,20 @@ module.exports = {
     ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
-    "no-underscore-dangle":  ["error", { "allow": ["_place"] }],
-    "import/order": [
-      "error",
+    'no-underscore-dangle': ['error', { allow: ['_place'] }],
+    'import/order': [
+      'error',
       {
-        "groups": ["builtin", "external", "internal", "parent", ["sibling", "index"]],
-        "newlines-between": "always",
-        "alphabetize": { "order": "asc" }
-      }
-    ]
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          ['sibling', 'index'],
+        ],
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc' },
+      },
+    ],
   },
 };
