@@ -4,15 +4,12 @@ import { Testimonial } from '../Models/testimonialModel';
 import { responseHandler } from '../Utils/responseHandler';
 
 export const addTestimonial = (req: Request, res: Response) => {
-  Testimonial.create(
-    req.body,
-    (err: Error, docs: InterfaceTestimonialModel) => {
-      if (err) {
-        return responseHandler.error(res, err.message, 400);
-      }
-      return responseHandler.success(res, docs);
-    },
-  );
+  Testimonial.create(req.body, (err: Error, docs: any) => {
+    if (err) {
+      return responseHandler.error(res, err.message, 400);
+    }
+    return responseHandler.success(res, docs);
+  });
 };
 
 export const fetchAllTestimonial = (req: Request, res: Response) => {

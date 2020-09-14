@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface InterfaceOpportunityModel extends Document {
-  datePosted: string;
+  datePosted: Date;
   decription: string;
   location: string;
   offeredBy: string;

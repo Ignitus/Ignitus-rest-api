@@ -3,15 +3,12 @@ import { Opportunity } from '../Models/opportunityModel';
 import { InterfaceOpportunityModel } from 'api/Models/@modelTypes/interfaceOpportunityModel';
 import { responseHandler } from '../Utils/responseHandler';
 export const addOpportunity = (req: Request, res: Response) => {
-  Opportunity.create(
-    req.body,
-    (err: Error, docs: InterfaceOpportunityModel) => {
-      if (err) {
-        responseHandler.error(res, err.message, 404);
-      }
-      return responseHandler.success(res, docs);
-    },
-  );
+  Opportunity.create(req.body, (err: Error, docs: any) => {
+    if (err) {
+      responseHandler.error(res, err.message, 404);
+    }
+    return responseHandler.success(res, docs);
+  });
 };
 
 export const fetchAllOppurtunities = (req: Request, res: Response) => {
