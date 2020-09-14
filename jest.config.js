@@ -5,4 +5,9 @@ module.exports = {
   coverageProvider: 'v8',
   testEnvironment: 'node',
   preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
 };

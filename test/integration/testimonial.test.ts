@@ -19,6 +19,9 @@ describe('/testimonials', () => {
 
   afterEach(async () => {
     await server.close();
+  });
+
+  afterAll(async () => {
     await mongoose.connection.close();
   });
 
