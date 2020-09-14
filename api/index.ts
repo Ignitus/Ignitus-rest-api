@@ -40,10 +40,13 @@ app.use('/', userRouter);
 app.use('/', opportunityRouter);
 app.use('/', testimonialRouter);
 
+let serverDbConnect: typeof import('mongoose');
+const getServerDbConnect = () => serverDbConnect;
 connectDB()
-  .then(() => {
+  .then(conn => {
     // tslint:disable-next-line: no-console
     console.log('MongoDB connected!');
+    serverDbConnect = conn;
   })
   .catch((err: Error) => {
     // tslint:disable-next-line: no-console
@@ -66,4 +69,7 @@ const server = app.listen(PORT, () =>
   console.log(`Our app is running on port ${PORT}`),
 );
 
-module.exports = server;
+module.exports = {
+  server,
+  getServerDbConnect,
+};

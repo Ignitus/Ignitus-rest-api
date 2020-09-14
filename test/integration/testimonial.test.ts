@@ -14,7 +14,7 @@ let server: any;
 
 describe('/testimonials', () => {
   beforeEach(() => {
-    server = require('../../api/index');
+    server = require('../../api/index').server;
   });
 
   afterEach(async () => {
@@ -23,6 +23,8 @@ describe('/testimonials', () => {
 
   afterAll(async () => {
     await mongoose.connection.close();
+    const db = require('../../api/index').getServerDbConnect;
+    await db().disconnect();
   });
 
   describe('GET /', () => {
