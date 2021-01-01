@@ -1,7 +1,7 @@
 import { Model, model, Schema } from 'mongoose';
 import { InterfaceOpportunityModel } from './@modelTypes/interfaceOpportunityModel';
 
-const opportunitySchema = new Schema({
+const opportunitySchema: Schema = new Schema({
   datePosted: { type: Date, required: true },
   decription: { type: String, required: true },
   location: { type: String, required: true },

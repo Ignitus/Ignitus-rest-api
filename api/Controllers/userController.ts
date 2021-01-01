@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import mongoose, { CallbackError } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
@@ -26,17 +27,18 @@ function socialLoginCheck(
     user.oAuth.linkedIn.profileUrl &&
     user.oAuth.linkedIn.accessToken
   ) {
-    bcrypt.hash(req.body.password, 10, (err, hash) => {
+    bcrypt.hash(req.body.password, 10, (err: CallbackError, hash: string) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
-      User.update(
+      User.updateOne(
+        // eslint-disable-next-line no-underscore-dangle
         { email: req.body.email },
-        { userName: req.body.userName },
         { $set: { password: hash } },
-        (error, result) => {
+        req.body,
+        (error, result): void => {
           if (error) {
-            throw new Error(err);
+            throw new Error(error);
           }
           return responseHandler.success(res, result);
         },
@@ -45,17 +47,17 @@ function socialLoginCheck(
   }
 }
 
-const profileDataInsertion = (userType: string) => {
+const profileDataInsertion = async (userType: string) => {
   let profile;
   if (userType === 'student') {
-    profile = new Student({});
+    profile = await new Student({});
   } else if (userType === 'professor') {
-    profile = new Professor({});
+    profile = await new Professor({});
   }
   return profile?.save();
 };
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   const {
     body: { email, userName, userType, password },
   } = req;
@@ -95,7 +97,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const userObject: InterfaceUserModel | null = await User.findOne({
       $or: [{ email: req.body.email }, { userName: req.body.userName }],
@@ -143,7 +145,7 @@ export const login = async (req: Request, res: Response) => {
 export const getUserInformationFromToken = async (
   req: Request,
   res: Response,
-) => {
+): Promise<void> => {
   if (req.headers && req.headers.authorization) {
     try {
       const decryptedToken: TokenType = <TokenType>(

@@ -1,7 +1,7 @@
 import { Schema, model, Model } from 'mongoose';
 import { InterfaceUserModel } from './@modelTypes/interfaceUserModel';
 
-const userSchema = new Schema({
+const userSchema: Schema = new Schema({
   admin: {
     type: Boolean,
     default: false,

@@ -1,7 +1,7 @@
 import { Schema, model, Model } from 'mongoose';
 import { InterfaceTestimonialModel } from './@modelTypes/interfaceTestimonialModel';
 
-const testimonialSchema = new Schema({
+const testimonialSchema: Schema = new Schema({
   author: { type: String, required: true },
   description: { type: String, required: true },
   authorDesignation: { type: String, required: true },

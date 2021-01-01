@@ -2,11 +2,12 @@ import { Request, Response } from 'express';
 import { InterfaceTestimonialModel } from 'api/Models/@modelTypes/interfaceTestimonialModel';
 import { Testimonial } from '../Models/testimonialModel';
 import { responseHandler } from '../Utils/responseHandler';
+import { CallbackError } from 'mongoose';
 
-export const addTestimonial = (req: Request, res: Response) => {
+export const addTestimonial = (req: Request, res: Response): void => {
   Testimonial.create(
     req.body,
-    (err: Error, docs: InterfaceTestimonialModel) => {
+    (err: CallbackError, docs: InterfaceTestimonialModel) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
@@ -15,19 +16,22 @@ export const addTestimonial = (req: Request, res: Response) => {
   );
 };
 
-export const fetchAllTestimonial = (req: Request, res: Response) => {
-  Testimonial.find({}, (err: Error, docs: InterfaceTestimonialModel[]) => {
-    if (err) {
-      return responseHandler.error(res, err.message, 400);
-    }
-    responseHandler.success(res, docs);
-  });
+export const fetchAllTestimonial = (req: Request, res: Response): void => {
+  Testimonial.find(
+    {},
+    (err: CallbackError, docs: InterfaceTestimonialModel[]) => {
+      if (err) {
+        return responseHandler.error(res, err.message, 400);
+      }
+      responseHandler.success(res, docs);
+    },
+  );
 };
 
-export const fetchTestimonialByID = (req: Request, res: Response) => {
+export const fetchTestimonialByID = (req: Request, res: Response): void => {
   Testimonial.findById(
     req.params.id,
-    (err: Error, docs: InterfaceTestimonialModel | null) => {
+    (err: CallbackError, docs: InterfaceTestimonialModel | null) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
@@ -39,12 +43,12 @@ export const fetchTestimonialByID = (req: Request, res: Response) => {
   );
 };
 
-export const updateTestimonial = (req: Request, res: Response) => {
+export const updateTestimonial = (req: Request, res: Response): void => {
   Testimonial.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true },
-    (err: Error, docs: InterfaceTestimonialModel | null) => {
+    (err: CallbackError, docs: InterfaceTestimonialModel | null) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }
@@ -56,10 +60,11 @@ export const updateTestimonial = (req: Request, res: Response) => {
   );
 };
 
-export const deleteTestimonial = (req: Request, res: Response) => {
-  Testimonial.findByIdAndRemove(
-    req.params.id,
-    (err: Error, docs: InterfaceTestimonialModel | null) => {
+export const deleteTestimonial = (req: Request, res: Response): void => {
+  Testimonial.findOneAndRemove(
+    { _id: req.params.id },
+    req.body,
+    (err: CallbackError, docs: InterfaceTestimonialModel | null) => {
       if (err) {
         return responseHandler.error(res, err.message, 400);
       }

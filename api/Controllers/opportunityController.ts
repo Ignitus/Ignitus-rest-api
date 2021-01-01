@@ -2,10 +2,12 @@ import { Request, Response } from 'express';
 import { Opportunity } from '../Models/opportunityModel';
 import { InterfaceOpportunityModel } from 'api/Models/@modelTypes/interfaceOpportunityModel';
 import { responseHandler } from '../Utils/responseHandler';
-export const addOpportunity = (req: Request, res: Response) => {
+import { CallbackError } from 'mongoose';
+
+export const addOpportunity = (req: Request, res: Response): void => {
   Opportunity.create(
     req.body,
-    (err: Error, docs: InterfaceOpportunityModel) => {
+    (err: CallbackError, docs: InterfaceOpportunityModel[]) => {
       if (err) {
         responseHandler.error(res, err.message, 404);
       }
@@ -14,19 +16,22 @@ export const addOpportunity = (req: Request, res: Response) => {
   );
 };
 
-export const fetchAllOppurtunities = (req: Request, res: Response) => {
-  Opportunity.find({}, (err: Error, docs: InterfaceOpportunityModel | null) => {
-    if (err) {
-      responseHandler.error(res, err.message, 400);
-    }
-    responseHandler.success(res, docs);
-  });
+export const fetchAllOppurtunities = (req: Request, res: Response): void => {
+  Opportunity.find(
+    {},
+    (err: CallbackError, docs: InterfaceOpportunityModel[] | null) => {
+      if (err) {
+        responseHandler.error(res, err.message, 400);
+      }
+      responseHandler.success(res, docs);
+    },
+  );
 };
 
-export const fetchOpportunityByID = (req: Request, res: Response) => {
+export const fetchOpportunityByID = (req: Request, res: Response): void => {
   Opportunity.findById(
     req.params.id,
-    (err: Error, docs: InterfaceOpportunityModel | null) => {
+    (err: CallbackError, docs: InterfaceOpportunityModel | null) => {
       if (err) {
         responseHandler.error(res, err.message, 400);
       }
@@ -38,12 +43,12 @@ export const fetchOpportunityByID = (req: Request, res: Response) => {
   );
 };
 
-export const updateOpportunity = (req: Request, res: Response) => {
+export const updateOpportunity = (req: Request, res: Response): void => {
   Opportunity.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true },
-    (err: Error, docs: InterfaceOpportunityModel | null) => {
+    (err: CallbackError, docs: InterfaceOpportunityModel | null) => {
       if (err) {
         responseHandler.error(res, err.message, 400);
       }
@@ -55,10 +60,11 @@ export const updateOpportunity = (req: Request, res: Response) => {
   );
 };
 
-export const deleteOpportunity = (req: Request, res: Response) => {
-  Opportunity.findByIdAndRemove(
-    req.params.id,
-    (err: Error, docs: InterfaceOpportunityModel | null) => {
+export const deleteOpportunity = (req: Request, res: Response): void => {
+  Opportunity.findOneAndRemove(
+    { _id: req.params.id },
+    req.body,
+    (err: CallbackError, docs: InterfaceOpportunityModel | null) => {
       if (err) {
         responseHandler.error(res, err.message, 400);
       }
