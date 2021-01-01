@@ -7,7 +7,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "postinstall": "npm run build",
+    "tsc": "tsc",
+    "postinstall": "npm run tsc",
     "start": "node build/index.js",
     "start-dev": "nodemon",
     "lint": "eslint . --ext .ts",
